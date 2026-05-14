@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { ArrowRight, FileText, Calendar, Video, BarChart3, Zap, Database } from 'lucide-svelte';
 	import Hero from '$lib/components/Hero.svelte';
 	import LandingChart from '$lib/components/LandingChart.svelte';
@@ -59,6 +59,10 @@
 		} finally {
 			loading = false;
 		}
+	});
+
+	onDestroy(() => {
+		document.body.style.overflow = '';
 	});
 
 	function handleEnter() {
