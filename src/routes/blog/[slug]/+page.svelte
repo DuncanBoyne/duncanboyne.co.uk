@@ -215,4 +215,51 @@
 		font-style: italic;
 		margin-bottom: 1.25rem;
 	}
+
+	.blog-content :global(pre) {
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: 0.5rem;
+		padding: 1rem 1.25rem;
+		overflow-x: auto;
+		margin-bottom: 1.25rem;
+		font-size: 0.875rem;
+		line-height: 1.6;
+	}
+
+	.blog-content :global(code) {
+		font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: 0.25rem;
+		padding: 0.125rem 0.375rem;
+		font-size: 0.875em;
+	}
+
+	.blog-content :global(pre code) {
+		background: none;
+		border: none;
+		padding: 0;
+		font-size: 1em;
+	}
+
+	.blog-content :global(table) {
+		width: 100%;
+		border-collapse: collapse;
+		margin-bottom: 1.25rem;
+		font-size: 1rem;
+	}
+
+	.blog-content :global(th),
+	.blog-content :global(td) {
+		border: 1px solid var(--color-border);
+		padding: 0.5rem 0.75rem;
+		text-align: left;
+	}
+
+	.blog-content :global(th) {
+		background: var(--color-surface);
+		font-weight: 600;
+		color: var(--color-text);
+	}
 </style>
