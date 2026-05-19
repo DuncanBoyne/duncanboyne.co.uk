@@ -300,6 +300,6 @@ Each concept builds on the previous one. Skipping ahead works until it does not.
 - [sqlbi.com/articles](https://sqlbi.com/articles/) — SQLBI's articles are the best free resource for understanding context deeply. Start with anything by Marco Russo or Alberto Ferrari on filter context.$$,
   'DAX is not hard. But it is different. These are the 10 concepts I would teach someone starting from scratch — the things that unlock everything else.',
   '2026-05-19T00:00:00.000Z',
-  NULL,
+  '/dax-cheat-sheet-light.png',
   '{"DAX", "PowerBI", "DataModeling", "Learning"}'
 );
