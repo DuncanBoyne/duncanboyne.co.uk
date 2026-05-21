@@ -127,7 +127,7 @@
 				</div>
 			</header>
 
-			{#if post.featured_image}
+			{#if post.featured_image && !carousels[post.slug]}
 				<div class="mb-8">
 					<img
 						src={post.featured_image}
