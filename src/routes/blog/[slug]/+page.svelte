@@ -7,7 +7,8 @@
 	import Carousel from '$lib/components/Carousel.svelte';
 
 	const carousels: Record<string, string[]> = {
-		'ai-adoption-power-bi': Array.from({ length: 8 }, (_, i) => `/carousel-ai-power-bi/slide-${i + 1}.png`)
+		'ai-adoption-power-bi': Array.from({ length: 8 }, (_, i) => `/carousel-ai-power-bi/slide-${i + 1}.png`),
+		'linkedin-analytics-dashboard-claude-code': Array.from({ length: 10 }, (_, i) => `/carousel-linkedin-dashboard/slide-${i + 1}.png`)
 	};
 	import type { Post } from '$lib/types';
 
