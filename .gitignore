@@ -26,3 +26,6 @@ npm-debug.log*
 
 # TypeScript
 *.tsbuildinfo
+
+# Local companion repo clone
+power-bi-projects/
