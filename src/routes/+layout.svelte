@@ -1,18 +1,7 @@
 <script lang="ts">
 	import '../app.css';
-	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-
-	// Handle GitHub Pages 404 redirect for SPA routing
-	onMount(() => {
-		const redirectPath = sessionStorage.getItem('redirectPath');
-		if (redirectPath && redirectPath !== '/') {
-			sessionStorage.removeItem('redirectPath');
-			goto(redirectPath);
-		}
-	});
 </script>
 
 <svelte:head>
