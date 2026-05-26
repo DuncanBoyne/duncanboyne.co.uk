@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { page } from '$app/stores';
-	import { Menu, X, Home, FileText, Video, Calendar, Mic, User, Mail, Sparkles, Users, Database, BookOpen, Tv, Gamepad2, ChevronDown, BarChart3 } from 'lucide-svelte';
+	import { Menu, X, Home, FileText, Video, Calendar, Mic, User, Mail, Sparkles, Users, ChevronDown, BarChart3 } from 'lucide-svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
 
 	let mobileMenuOpen = false;
@@ -56,16 +56,7 @@
 				{ href: '/user-group', label: 'NPPUG', icon: Users }
 			]
 		},
-		{
-			label: 'About',
-			icon: User,
-			children: [
-				{ href: '/about', label: 'About Me', icon: User },
-				{ href: '/reading', label: 'Reading', icon: BookOpen },
-				{ href: '/anime', label: 'Anime', icon: Tv },
-				{ href: '/gaming', label: 'Gaming', icon: Gamepad2 }
-			]
-		},
+		{ href: '/about', label: 'About', icon: User },
 		{ href: '/contact', label: 'Contact', icon: Mail }
 	];
 
