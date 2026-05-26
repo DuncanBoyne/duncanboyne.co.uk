@@ -3,6 +3,7 @@
 	import { getSessionizeSessions } from '$lib/sessionize';
 	import { getTalks } from '$lib/supabase';
 	import { ArrowUpRight } from 'lucide-svelte';
+	import { marked } from 'marked';
 	import type { SessionizeSession } from '$lib/sessionize';
 	import type { Talk } from '$lib/types';
 
@@ -89,12 +90,12 @@
 							{#if session.description || image}
 								<div class="row-expand"><div class="row-expand-in">
 									{#if image}
-										<div class="row-thumb-wrap">
-											<img src={image} alt={session.title} class="row-thumb" />
+										<div class="row-img-wrap">
+											<img src={image} alt={session.title} class="row-img" />
 										</div>
 									{/if}
 									{#if session.description}
-										<p class="row-desc">{session.description}</p>
+										<div class="row-desc">{@html marked(session.description)}</div>
 									{/if}
 									{#if session.sessionUrl}
 										<a href={session.sessionUrl} target="_blank" rel="noopener noreferrer" class="session-link">
@@ -160,23 +161,26 @@
 	.row-inner:hover .row-expand { grid-template-rows: 1fr; }
 	.row-expand-in { overflow: hidden; }
 
-	.row-thumb-wrap {
-		width: 100%; aspect-ratio: 16 / 5; overflow: hidden;
-		margin: 0.75rem 0 0.25rem;
+	.row-img-wrap {
+		margin: 0.75rem 0 0.5rem;
 		opacity: 0; transform: translateY(3px);
 		transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
 	}
-	.row-inner:hover .row-thumb-wrap { opacity: 1; transform: translateY(0); }
-	.row-thumb { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+	.row-inner:hover .row-img-wrap { opacity: 1; transform: translateY(0); }
+	.row-img { width: 100%; height: auto; display: block; }
 
 	.row-desc {
 		font-size: 0.875rem; color: var(--color-muted); line-height: 1.7;
 		max-width: 70ch; margin: 0.75rem 0 0.5rem;
 		opacity: 0; transform: translateY(3px);
-		transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+		transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
 	}
-	.row-thumb-wrap + .row-desc { transition-delay: 0.3s; }
 	.row-inner:hover .row-desc { opacity: 1; transform: translateY(0); }
+	.row-desc :global(p) { margin-bottom: 0.75rem; }
+	.row-desc :global(p:last-child) { margin-bottom: 0; }
+	.row-desc :global(strong) { font-weight: 700; color: var(--color-text); }
+	.row-desc :global(ul) { list-style: disc; padding-left: 1.25rem; margin-bottom: 0.75rem; }
+	.row-desc :global(li) { margin-bottom: 0.25rem; }
 
 	.session-link {
 		display: inline-flex; align-items: center; gap: 0.25rem;

@@ -155,13 +155,13 @@
 	.row-expand-in { overflow: hidden; }
 
 	.row-thumb-wrap {
-		position: relative; width: 100%; aspect-ratio: 16 / 5; overflow: hidden;
+		position: relative; width: 100%;
 		margin: 0.75rem 0 0.25rem;
 		opacity: 0; transform: translateY(3px);
 		transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
 	}
 	.row-link:hover .row-thumb-wrap { opacity: 1; transform: translateY(0); }
-	.row-thumb { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+	.row-thumb { width: 100%; height: auto; display: block; }
 	.thumb-overlay {
 		position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
 		background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s;
