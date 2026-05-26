@@ -1,189 +1,156 @@
 <script lang="ts">
-	import { Mic, Users, BarChart3, Sparkles, ExternalLink, Github, Linkedin, Youtube, ArrowRight } from 'lucide-svelte';
+	import { Github, Linkedin, Youtube, ArrowUpRight, ExternalLink } from 'lucide-svelte';
 
-	const socialLinks = [
-		{ href: 'https://github.com/DuncanBoyneJnr', icon: Github, label: 'GitHub' },
-		{ href: 'https://linkedin.com/in/duncanboyne', icon: Linkedin, label: 'LinkedIn' },
-		{ href: 'https://youtube.com/@PowerBIKindaGuy', icon: Youtube, label: 'YouTube' }
+	const social = [
+		{ href: 'https://github.com/DuncanBoyneJnr', icon: Github, label: 'GitHub', handle: '@DuncanBoyneJnr' },
+		{ href: 'https://linkedin.com/in/duncanboyne', icon: Linkedin, label: 'LinkedIn', handle: 'in/duncanboyne' },
+		{ href: 'https://youtube.com/@PowerBIKindaGuy', icon: Youtube, label: 'YouTube', handle: '@PowerBIKindaGuy' }
 	];
 
 	const skills = [
-		'Microsoft Power BI',
-		'DAX & Power Query',
-		'SQL',
-		'Microsoft Power Apps',
-		'Microsoft Power Automate',
-		'Dataverse',
-		'Dynamics 365',
-		'Epicor',
-		'InFor',
-		'Sage',
-		'Data Modeling',
-		'Financial Reporting',
-		'Manufacturing KPIs',
-		'Dashboard Design',
-		'AI Readiness'
-	];
-
-	const highlights = [
-		{
-			icon: BarChart3,
-			title: 'Power BI Consultant',
-			description: 'Turning complex data into clear, actionable insights across financial services and manufacturing'
-		},
-		{
-			icon: Mic,
-			title: 'International Speaker',
-			description: 'Speaking at conferences and events across the UK and Europe'
-		},
-		{
-			icon: Users,
-			title: 'Community Leader',
-			description: 'Founder of Norfolk Power Platform User Group'
-		},
-		{
-			icon: Sparkles,
-			title: 'Conference Founder',
-			description: 'Created the East of England Power Platform Summit'
-		}
+		'Microsoft Power BI', 'DAX & Power Query', 'SQL',
+		'Power Apps', 'Power Automate', 'Dataverse',
+		'Dynamics 365', 'Epicor', 'InFor', 'Sage',
+		'Data Modeling', 'Financial Reporting',
+		'Manufacturing KPIs', 'Dashboard Design', 'AI Readiness'
 	];
 </script>
 
 <svelte:head>
-	<title>About - Duncan Boyne</title>
-	<meta name="description" content="Learn about Duncan Boyne, Power BI Consultant at CPiO, International Speaker, and Founder of Norfolk Power Platform User Group." />
+	<title>About — Duncan Boyne</title>
+	<meta name="description" content="Power BI consultant, international speaker, founder of the Norfolk Power Platform User Group and the East of England Power Platform Summit." />
 </svelte:head>
 
-<section class="py-16">
-	<div class="container-custom">
-		<!-- Header -->
-		<div class="max-w-4xl mx-auto text-center mb-16">
-			<h1 class="text-4xl md:text-5xl font-bold text-text mb-4">About Me</h1>
-			<p class="text-lg text-muted italic">
-				Most dashboards don't fail because the data is wrong.<br />
-				They fail because nobody wants to open them.
-			</p>
-		</div>
+<!-- Hero -->
+<section class="page-hero">
+	<div class="wrap">
+		<p class="eyebrow">The Human Behind the Dashboards</p>
+		<h1 class="page-title">About<br><span class="accent-line">Me</span></h1>
+	</div>
+</section>
 
-		<!-- Bio Section -->
-		<div class="max-w-4xl mx-auto mb-16">
-			<div class="flex flex-col md:flex-row gap-12 items-start">
-				<!-- Profile Image + Social Links -->
-				<div class="flex-shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
-					<div class="w-48 h-48 rounded-2xl bg-gradient-to-br from-accent to-accent2 p-1">
-						<div class="w-full h-full rounded-2xl bg-surface flex items-center justify-center overflow-hidden">
-							<img src="/profile.jpg" alt="Duncan Boyne" class="w-full h-full object-cover" />
-						</div>
-					</div>
-					<div class="flex items-center gap-2">
-						{#each socialLinks as { href, icon: Icon, label }}
-							<a
-								{href}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="p-2 rounded-lg text-muted hover:text-accent hover:bg-border transition-colors"
-								aria-label="{label} (opens in new window)"
-							>
-								<Icon class="w-5 h-5" />
-							</a>
-						{/each}
-					</div>
+<!-- Bio -->
+<section class="bio-section">
+	<div class="wrap">
+		<div class="bio-grid">
+			<!-- Portrait col -->
+			<div class="portrait-col">
+				<div class="portrait-wrap">
+					<div class="portrait-accent"></div>
+					<img src="/headshot.png" alt="Duncan Boyne" class="portrait-img" />
 				</div>
-
-				<!-- Bio Content -->
-				<div class="flex-1">
-					<h2 class="text-2xl font-bold text-text mb-4">I'm Duncan, and I spend my time trying to fix that.</h2>
-					<div class="space-y-4 text-muted">
-						<p>
-							Professionally, I work with Power BI and the Microsoft Power Platform, helping teams turn messy data, unclear requirements, and "technically correct" dashboards into things people actually use. I sit in that middle space between business and tech, translating intent into something usable, human, and honest.
-						</p>
-						<p class="font-semibold text-text">But that's not the whole story.</p>
-						<p>
-							I'm a 90s kid who still adores Pokemon, raised on a Game Boy and the original PlayStation, and I've never really stopped being a gamer. Games were probably my first lesson in systems, feedback loops, and why good design matters, even if I didn't have the language for it at the time.
-						</p>
-						<p>
-							I'm a dad to two brilliant young humans (boys really, 11 and 8), who constantly remind me that curiosity beats confidence and that "why?" is usually the most important question in the room. Our household is completed by Bella, a wonderfully scatty three year old Border Collie who has absolutely no respect for meetings, deadlines, or personal space.
-						</p>
-						<p>
-							When I'm not working or parenting, you'll usually find me reading fantasy, tinkering with side projects, or disappearing down a rabbit hole because something caught my interest and refused to let go. I read to escape, to learn, and occasionally to justify buying more books when the shelf is already full.
-						</p>
-						<p>
-							I'm AuDHD and proud. It shapes how I think, how I work, and how I show up. It's the reason I can hyperfocus on a problem until it clicks, why I care deeply about accessibility and inclusion, and why I believe clarity is kindness, especially in data and design.
-						</p>
-						<p>
-							Community is a huge part of my life. I founded the Norfolk Power Platform User Group and I founded the East of England Power Platform Summit. EoEPPS is very much my baby, built from the ground up to create a space that is welcoming, practical, and human. Community changed my career, so now I invest a lot of time and energy into building the kind of spaces I wish I'd had earlier.
-						</p>
-						<p>
-							I write, speak, and build in public. Sometimes that's deep Power BI content, sometimes it's design, accessibility, or ethics, and sometimes it's just being honest about what didn't work and why. I'm far more interested in clarity and usefulness than polish or perfection.
-						</p>
-						<p>
-							If you're here for Power BI, human-centred design, community, gaming analogies, fantasy references, or slightly chaotic but well-intentioned tech content, you're in the right place.
-						</p>
-						<p class="font-semibold text-text">
-							And if nothing else, at least now you know there's a real human behind the dashboards.
-						</p>
-					</div>
+				<div class="social-links">
+					{#each social as { href, icon: Icon, label, handle }}
+						<a {href} target="_blank" rel="noopener noreferrer" class="social-row" aria-label="{label} {handle}">
+							<Icon class="w-4 h-4" aria-hidden="true" />
+							<span class="social-handle">{handle}</span>
+							<ArrowUpRight class="social-arrow w-3 h-3" />
+						</a>
+					{/each}
 				</div>
 			</div>
-		</div>
 
-		<!-- Highlights -->
-		<div class="mb-16">
-			<h2 class="text-2xl font-bold text-text text-center mb-8">What I Do</h2>
-			<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-				{#each highlights as { icon: Icon, title, description }}
-					<div class="card p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-accent/50">
-						<div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-							<Icon class="w-6 h-6 text-accent" aria-hidden="true" />
-						</div>
-						<h3 class="font-semibold text-text mb-2">{title}</h3>
-						<p class="text-sm text-muted">{description}</p>
-					</div>
-				{/each}
-			</div>
-		</div>
+			<!-- Text col -->
+			<div class="bio-col">
+				<p class="bio-lede">Most dashboards don't fail because the data is wrong. They fail because nobody wants to open them. I spend my time trying to fix that.</p>
 
-		<!-- Skills -->
-		<div class="max-w-4xl mx-auto mb-16">
-			<h2 class="text-2xl font-bold text-text text-center mb-8">Skills & Expertise</h2>
-			<div class="flex flex-wrap justify-center gap-3">
-				{#each skills as skill}
-					<span class="px-4 py-2 bg-surface border border-border text-muted rounded-lg text-sm font-medium hover:border-accent/50 transition-colors">
-						{skill}
-					</span>
-				{/each}
-			</div>
-		</div>
-
-		<!-- Speaking / Sessionize CTA -->
-		<div class="max-w-4xl mx-auto">
-			<div class="card p-8 text-center bg-gradient-to-br from-accent/5 to-accent2/5 border-accent/20">
-				<Mic class="w-12 h-12 text-accent mx-auto mb-4" aria-hidden="true" />
-				<h2 class="text-2xl font-bold text-text mb-2">Want Me to Speak at Your Event?</h2>
-				<p class="text-muted mb-6 max-w-xl mx-auto">
-					I speak at conferences, user groups, and community events about Power BI,
-					the Power Platform, and data storytelling. Check out my sessions and get in touch.
-				</p>
-				<div class="flex flex-col sm:flex-row gap-4 justify-center">
-					<a href="/contact" class="btn-primary">
-						Get in Touch
-						<ArrowRight class="w-4 h-4 ml-2" aria-hidden="true" />
-					</a>
-					<a href="/services" class="btn-secondary">
-						Work With Me
-					</a>
-					<a
-						href="https://sessionize.com/duncan-boyne"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="btn-secondary"
-					>
-						Sessionize Profile
-						<span class="sr-only"> (opens in new window)</span>
-						<ExternalLink class="w-4 h-4 ml-2" aria-hidden="true" />
-					</a>
+				<div class="bio-body">
+					<p>Professionally, I work with Power BI and the Microsoft Power Platform, helping teams turn messy data, unclear requirements, and "technically correct" dashboards into things people actually use. I sit in that middle space between business and tech — translating intent into something usable, human, and honest.</p>
+					<p>I'm a 90s kid who still adores Pokemon, raised on a Game Boy and the original PlayStation, and I've never really stopped being a gamer. Games were probably my first lesson in systems, feedback loops, and why good design matters, even if I didn't have the language for it at the time.</p>
+					<p>I'm a dad to two brilliant young humans (11 and 8), who constantly remind me that curiosity beats confidence and that "why?" is usually the most important question in the room. Our household is completed by Bella, a wonderfully scatty three year old Border Collie who has absolutely no respect for meetings, deadlines, or personal space.</p>
+					<p>I'm AuDHD and proud. It shapes how I think, how I work, and how I show up — the reason I can hyperfocus on a problem until it clicks, why I care deeply about accessibility and inclusion, and why I believe clarity is kindness, especially in data and design.</p>
+					<p>Community is a huge part of my life. I founded the Norfolk Power Platform User Group and the East of England Power Platform Summit. EoEPPS is very much my baby, built from the ground up to create a space that is welcoming, practical, and human.</p>
+					<p>I write, speak, and build in public. Sometimes that's deep Power BI content; sometimes it's design, accessibility, or ethics. I'm far more interested in clarity and usefulness than polish or perfection.</p>
 				</div>
 			</div>
 		</div>
 	</div>
 </section>
+
+<!-- Skills -->
+<section class="skills-section">
+	<div class="wrap">
+		<p class="section-label">Skills &amp; Expertise</p>
+		<div class="tag-list">
+			{#each skills as skill}
+				<span class="tag">{skill}</span>
+			{/each}
+		</div>
+	</div>
+</section>
+
+<!-- CTA -->
+<section class="cta-block">
+	<div class="wrap">
+		<p class="cta-pre">Want me at your event?</p>
+		<a href="https://sessionize.com/duncan-boyne" target="_blank" rel="noopener noreferrer" class="cta-main">
+			Sessionize <ExternalLink class="cta-ico" />
+		</a>
+		<p class="cta-sub">View my speaker profile and available sessions, or <a href="/contact" class="cta-inline-link">get in touch directly</a>.</p>
+	</div>
+</section>
+
+<style>
+	.wrap { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3.5rem); }
+
+	/* Hero */
+	.page-hero {
+		padding: clamp(3rem, 7vw, 6rem) 0 clamp(1.5rem, 3vw, 2.5rem);
+		border-bottom: 3px solid var(--color-accent3);
+	}
+	.eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.75rem; }
+	.page-title { font-size: clamp(3rem, 10vw, 9rem); font-weight: 900; letter-spacing: -0.04em; line-height: 0.9; color: var(--color-text); margin: 0; }
+	.accent-line { color: var(--color-accent); }
+
+	/* Bio */
+	.bio-section { padding: clamp(3rem, 6vw, 5rem) 0; border-bottom: 1px solid var(--color-border); }
+	.bio-grid { display: grid; gap: 3rem; }
+	@media (min-width: 768px) { .bio-grid { grid-template-columns: 280px 1fr; gap: 5rem; } }
+
+	/* Portrait */
+	.portrait-col { display: none; }
+	@media (min-width: 768px) { .portrait-col { display: flex; flex-direction: column; gap: 2rem; } }
+	.portrait-wrap { position: relative; width: 100%; }
+	.portrait-accent {
+		position: absolute; top: -0.75rem; left: -0.75rem;
+		width: 100%; height: 100%;
+		background: var(--color-accent); z-index: 0;
+	}
+	.portrait-img { position: relative; z-index: 1; width: 100%; height: auto; display: block; object-fit: cover; }
+	.social-links { display: flex; flex-direction: column; gap: 0.4rem; }
+	.social-row {
+		display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0;
+		border-bottom: 1px solid var(--color-border); text-decoration: none;
+		color: var(--color-muted); transition: color 0.3s;
+		font-size: 0.78rem; font-weight: 600;
+	}
+	.social-row:hover { color: var(--color-accent); }
+	.social-handle { flex: 1; }
+	.social-arrow { opacity: 0; transition: opacity 0.3s; }
+	.social-row:hover .social-arrow { opacity: 1; }
+
+	/* Bio text */
+	.bio-col {}
+	.bio-lede {
+		font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 700; line-height: 1.5;
+		color: var(--color-text); margin: 0 0 2rem;
+		border-left: 3px solid var(--color-accent); padding-left: 1.25rem;
+	}
+	.bio-body { display: flex; flex-direction: column; gap: 1.25rem; }
+	.bio-body p { font-size: 1rem; line-height: 1.8; color: var(--color-muted); margin: 0; }
+
+	/* Skills */
+	.skills-section { padding: clamp(3rem, 6vw, 5rem) 0; border-bottom: 1px solid var(--color-border); }
+	.section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 1.5rem; }
+	.tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+	.tag { font-size: 0.78rem; font-weight: 600; padding: 0.35rem 0.75rem; border: 1.5px solid var(--color-border); color: var(--color-muted); }
+
+	/* CTA */
+	.cta-block { padding: clamp(5rem, 10vw, 9rem) 0; }
+	.cta-pre { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-muted); margin: 0 0 1.25rem; }
+	.cta-main { display: inline-flex; align-items: center; gap: 0.5rem; font-size: clamp(2rem, 6vw, 5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: var(--color-text); text-decoration: none; transition: color 0.3s; }
+	.cta-main:hover { color: var(--color-accent2); }
+	.cta-ico { width: clamp(1.5rem, 4vw, 3rem); height: clamp(1.5rem, 4vw, 3rem); }
+	.cta-sub { margin: 1.25rem 0 0; font-size: 0.875rem; color: var(--color-muted); max-width: 48ch; }
+	.cta-inline-link { color: var(--color-accent); text-decoration: underline; }
+</style>

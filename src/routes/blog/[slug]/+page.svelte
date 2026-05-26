@@ -61,84 +61,57 @@
 	{/if}
 </svelte:head>
 
-<article class="py-16">
-	<div class="container-custom max-w-4xl">
-		<!-- Breadcrumbs -->
-		<nav aria-label="Breadcrumb" class="mb-6">
-			<ol class="flex items-center gap-2 text-sm text-muted flex-wrap">
-				<li><a href="/" class="hover:text-accent transition-colors">Home</a></li>
-				<li aria-hidden="true" class="text-border">›</li>
-				<li><a href="/blog" class="hover:text-accent transition-colors">Blog</a></li>
-				{#if post}
-					<li aria-hidden="true" class="text-border">›</li>
-					<li class="text-text truncate max-w-[200px]" aria-current="page">{post.title}</li>
-				{/if}
-			</ol>
-		</nav>
+<article>
+	<!-- Back link -->
+	<div class="post-nav">
+		<div class="wrap">
+			<a href="/blog" class="back-link">
+				<ArrowLeft class="w-4 h-4" /> Writing
+			</a>
+		</div>
+	</div>
 
-		<a
-			href="/blog"
-			class="inline-flex items-center text-muted hover:text-accent mb-8"
-		>
-			<ArrowLeft class="w-4 h-4 mr-2" />
-			Back to Blog
-		</a>
-
+	<div class="wrap">
 		{#if loading}
-			<div class="animate-pulse space-y-4">
-				<div class="h-8 bg-border rounded w-3/4" />
-				<div class="flex space-x-4">
-					<div class="h-4 bg-border rounded w-32" />
-					<div class="h-4 bg-border rounded w-24" />
-				</div>
-				<div class="aspect-video bg-border rounded-xl" />
-				<div class="space-y-2">
-					{#each [1, 2, 3, 4, 5] as _}
-						<div class="h-4 bg-border rounded" />
-					{/each}
-				</div>
+			<div class="skeleton-wrap">
+				<div class="sk-title"></div>
+				<div class="sk-meta"></div>
+				<div class="sk-img"></div>
+				{#each [1,2,3,4,5] as _}<div class="sk-line"></div>{/each}
 			</div>
 		{:else if error || !post}
-			<div class="text-center py-12">
-				<h1 class="text-2xl font-bold text-text mb-4">Post Not Found</h1>
-				<p class="text-muted mb-8">{error || 'This blog post could not be found.'}</p>
-				<a href="/blog" class="btn-primary">
-					<ArrowLeft class="w-4 h-4 mr-2" />
-					Back to Blog
-				</a>
+			<div class="not-found">
+				<h1>Post Not Found</h1>
+				<p>{error || 'This blog post could not be found.'}</p>
+				<a href="/blog" class="btn-primary"><ArrowLeft class="w-4 h-4 mr-2" /> Back to Writing</a>
 			</div>
 		{:else}
-			<header class="mb-8">
-				<h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-text mb-4">
-					{post.title}
-				</h1>
-
-				<div class="flex flex-wrap items-center gap-4 text-muted">
+			<header class="post-header">
+				<p class="post-eyebrow">
 					{#if post.published_at}
-						<div class="flex items-center">
-							<Calendar class="w-4 h-4 mr-2" />
-							<time datetime={post.published_at}>{formatDate(post.published_at)}</time>
-						</div>
+						<time datetime={post.published_at}>{formatDate(post.published_at)}</time>
 					{/if}
-					<div class="flex items-center">
-						<Clock class="w-4 h-4 mr-2" />
-						<span>{estimateReadingTime(post.content)} min read</span>
+					<span class="meta-sep">·</span>
+					<span>{estimateReadingTime(post.content)} min read</span>
+				</p>
+				<h1 class="post-title">{post.title}</h1>
+				{#if post.tags?.length}
+					<div class="post-tags">
+						{#each post.tags as tag}
+							<span class="tag">{tag}</span>
+						{/each}
 					</div>
-				</div>
+				{/if}
 			</header>
 
 			{#if post.featured_image && !carousels[post.slug]}
-				<div class="mb-8">
-					<img
-						src={post.featured_image}
-						alt={post.title}
-						class="w-full rounded-xl shadow-lg"
-					/>
+				<div class="post-image">
+					<img src={post.featured_image} alt={post.title} />
 				</div>
 			{/if}
 
 			{#if carousels[post.slug]}
-				<div class="mb-8">
+				<div class="post-image">
 					<Carousel images={carousels[post.slug]} alt={post.title} />
 				</div>
 			{/if}
@@ -146,11 +119,101 @@
 			<div class="blog-content">
 				{@html marked(post.content)}
 			</div>
+
+			<div class="post-footer">
+				<a href="/blog" class="back-link"><ArrowLeft class="w-4 h-4" /> Back to Writing</a>
+			</div>
 		{/if}
 	</div>
 </article>
 
 <style>
+	.wrap {
+		max-width: 780px;
+		margin: 0 auto;
+		padding: 0 clamp(1.25rem, 5vw, 3.5rem);
+	}
+
+	/* Nav */
+	.post-nav {
+		border-bottom: 1px solid var(--color-border);
+		padding: 1rem 0;
+		background: var(--color-surface);
+	}
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--color-muted);
+		text-decoration: none;
+		transition: color 0.3s;
+	}
+	.back-link:hover { color: var(--color-accent); }
+
+	/* Header */
+	.post-header {
+		padding: clamp(2.5rem, 5vw, 4rem) 0 2rem;
+		border-bottom: 1px solid var(--color-border);
+		margin-bottom: 2.5rem;
+	}
+
+	.post-eyebrow {
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+		margin: 0 0 1rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.meta-sep { opacity: 0.4; }
+
+	.post-title {
+		font-size: clamp(1.8rem, 5vw, 3.5rem);
+		font-weight: 900;
+		letter-spacing: -0.03em;
+		line-height: 1.1;
+		color: var(--color-text);
+		margin: 0 0 1.25rem;
+	}
+
+	.post-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+	.tag {
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		padding: 0.25rem 0.6rem;
+		border: 1.5px solid var(--color-border);
+		color: var(--color-muted);
+	}
+
+	/* Image */
+	.post-image { margin-bottom: 2.5rem; }
+	.post-image img { width: 100%; height: auto; display: block; }
+
+	/* Footer */
+	.post-footer { padding: 3rem 0 4rem; border-top: 1px solid var(--color-border); margin-top: 3rem; }
+
+	/* Skeleton */
+	.skeleton-wrap { padding: clamp(2rem, 5vw, 4rem) 0; display: flex; flex-direction: column; gap: 1rem; }
+	.sk-title { height: 2.5rem; background: var(--color-border); width: 75%; }
+	.sk-meta { height: 0.75rem; background: var(--color-border); width: 40%; }
+	.sk-img { aspect-ratio: 16/9; background: var(--color-border); margin: 1rem 0; }
+	.sk-line { height: 0.875rem; background: var(--color-border); }
+	.sk-line:nth-child(odd) { width: 90%; }
+
+	/* Not found */
+	.not-found { padding: clamp(3rem, 8vw, 6rem) 0; }
+	.not-found h1 { font-size: 1.5rem; font-weight: 900; margin: 0 0 0.75rem; }
+	.not-found p { color: var(--color-muted); margin: 0 0 2rem; }
+
 	.blog-content {
 		font-size: 1.125rem;
 		line-height: 1.8;

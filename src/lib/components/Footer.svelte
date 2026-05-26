@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount, onDestroy } from 'svelte';
 	import { Github, Linkedin, Youtube, Mail } from 'lucide-svelte';
 
 	const currentYear = new Date().getFullYear();
@@ -9,16 +10,26 @@
 		{ href: 'https://youtube.com/@PowerBIKindaGuy', icon: Youtube, label: 'YouTube' },
 		{ href: 'mailto:duncanboyne@hotmail.co.uk', icon: Mail, label: 'Email' }
 	];
+
+	let isDark = false;
+	let observer: MutationObserver;
+
+	onMount(() => {
+		isDark = document.documentElement.classList.contains('dark');
+		observer = new MutationObserver(() => {
+			isDark = document.documentElement.classList.contains('dark');
+		});
+		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+	});
+
+	onDestroy(() => observer?.disconnect());
+
+	$: logoFull = isDark ? '/logo-dark-full.png' : '/logo-light-full.png';
 </script>
 
 <footer class="bg-surface border-t border-border">
 	<div class="container-custom py-12">
-		<div class="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-			<!-- Brand -->
-			<div class="text-center md:text-left">
-				<p class="text-lg font-semibold text-text">Duncan Boyne</p>
-				<p class="text-sm text-muted">Power BI Consultant</p>
-			</div>
+		<div class="flex flex-col items-center gap-6">
 
 			<!-- Social Links -->
 			<div class="flex items-center gap-1 flex-wrap justify-center">
@@ -36,10 +47,24 @@
 				{/each}
 			</div>
 
+			<!-- Brand logo -->
+			<a href="/" aria-label="Duncan Boyne home">
+				<img src={logoFull} alt="Duncan Boyne" class="footer-logo" />
+			</a>
+
 			<!-- Copyright -->
 			<p class="text-sm text-muted">
 				&copy; {currentYear} Duncan Boyne. All rights reserved.
 			</p>
+
 		</div>
 	</div>
 </footer>
+
+<style>
+	.footer-logo {
+		height: auto;
+		width: clamp(180px, 30vw, 320px);
+		display: block;
+	}
+</style>

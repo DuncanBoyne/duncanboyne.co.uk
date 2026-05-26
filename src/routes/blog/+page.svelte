@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Rss } from 'lucide-svelte';
-	import BlogCard from '$lib/components/BlogCard.svelte';
+	import { Rss, ArrowUpRight } from 'lucide-svelte';
 	import { getPosts } from '$lib/supabase';
 	import type { Post } from '$lib/types';
 
@@ -26,7 +25,7 @@
 		try {
 			posts = (await getPosts()) || [];
 		} catch (e) {
-			error = 'Failed to load blog posts. Please try again later.';
+			error = 'Failed to load blog posts.';
 			console.error(e);
 		} finally {
 			loading = false;
@@ -36,82 +35,263 @@
 	$: filteredPosts = activeFilter === 'all'
 		? posts
 		: posts.filter(p => p.tags?.includes(activeFilter));
+
+	function formatDate(d: string) {
+		return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+	}
 </script>
 
 <svelte:head>
-	<title>Blog - Duncan Boyne</title>
-	<meta name="description" content="Read the latest articles on Power BI, data visualization, and business intelligence from Duncan Boyne." />
+	<title>Writing — Duncan Boyne</title>
+	<meta name="description" content="Insights, tutorials, and thoughts on Power BI, data visualization, and business intelligence." />
 </svelte:head>
 
-<section class="py-16">
-	<div class="container-custom">
-		<div class="text-center mb-12">
-			<h1 class="text-4xl md:text-5xl font-bold text-text mb-4">Blog</h1>
-			<p class="text-lg text-muted max-w-2xl mx-auto">
-				Insights, tutorials, and thoughts on Power BI, data visualization, and business intelligence.
-			</p>
-			<a
-				href="/rss.xml"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="inline-flex items-center gap-2 mt-4 text-sm text-muted hover:text-accent transition-colors"
-				aria-label="Subscribe via RSS feed (opens in new window)"
-			>
-				<Rss class="w-4 h-4" aria-hidden="true" />
-				Subscribe via RSS
+<section class="page-hero">
+	<div class="wrap">
+		<p class="eyebrow">Writing</p>
+		<h1 class="page-title">Blog</h1>
+		<div class="hero-foot">
+			<p class="page-sub">Power BI, data, automation, and whatever else is on my mind.</p>
+			<a href="/rss.xml" target="_blank" rel="noopener noreferrer" class="rss-link">
+				<Rss class="ico" /> RSS feed
 			</a>
 		</div>
+	</div>
+</section>
 
+<section class="filters-bar">
+	<div class="wrap">
+		<div class="filter-list" role="tablist" aria-label="Filter by category">
+			{#each filters as f}
+				<button
+					on:click={() => activeFilter = f.value}
+					class="filter-btn"
+					class:active={activeFilter === f.value}
+					role="tab"
+					aria-selected={activeFilter === f.value}
+				>
+					{f.label}
+				</button>
+			{/each}
+		</div>
+	</div>
+</section>
+
+<section class="posts-section">
+	<div class="wrap">
 		{#if loading}
-			<div role="status" aria-live="polite">
-				<span class="sr-only">Loading blog posts...</span>
-			</div>
-			<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-				{#each [1, 2, 3, 4, 5, 6] as _}
-					<div class="card animate-pulse">
-						<div class="aspect-video bg-border" />
-						<div class="p-6 space-y-3">
-							<div class="h-4 bg-border rounded w-1/3" />
-							<div class="h-6 bg-border rounded" />
-							<div class="h-4 bg-border rounded w-2/3" />
-						</div>
-					</div>
+			<ul class="row-list">
+				{#each [1,2,3,4,5,6] as _}
+					<li class="row-item skeleton">
+						<div class="sk-date"></div>
+						<div class="sk-title"></div>
+					</li>
 				{/each}
-			</div>
+			</ul>
 		{:else if error}
-			<p class="text-center text-muted py-12">{error}</p>
+			<p class="msg-empty">{error}</p>
+		{:else if filteredPosts.length === 0}
+			<p class="msg-empty">No posts in this category.</p>
 		{:else}
-			<!-- Filters -->
-			<div class="flex flex-col gap-3 mb-8 pb-6 border-b border-border">
-				<p class="text-xs font-semibold text-muted uppercase tracking-wider">Filter by category</p>
-				<div class="flex flex-wrap gap-2" role="tablist" aria-label="Filter by category">
-					{#each filters as filter}
-						<button
-							on:click={() => activeFilter = filter.value}
-							class="px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-accent {activeFilter === filter.value
-								? 'bg-accent text-bg'
-								: 'bg-surface border border-border text-muted hover:text-text hover:border-accent/50'}"
-							role="tab"
-							aria-selected={activeFilter === filter.value}
-						>
-							{filter.label}
-						</button>
-					{/each}
-				</div>
-			</div>
-
-			{#if filteredPosts.length === 0}
-				<div class="text-center py-12 bg-surface rounded-xl border border-border">
-					<p class="text-muted">No posts found for this category.</p>
-					<p class="text-muted/70 text-sm mt-2">Try a different filter or check back later.</p>
-				</div>
-			{:else}
-				<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-					{#each filteredPosts as post}
-						<BlogCard {post} />
-					{/each}
-				</div>
-			{/if}
+			<ul class="row-list">
+				{#each filteredPosts as post}
+					<li class="row-item">
+						<a href="/blog/{post.slug}" class="row-link">
+							<div class="row-top">
+								<span class="row-date">{formatDate(post.published_at ?? post.created_at)}</span>
+								<span class="row-title">{post.title}</span>
+								<ArrowUpRight class="row-arrow ico" />
+							</div>
+							<div class="row-expand"><div class="row-expand-in">
+								{#if post.featured_image}
+									<div class="row-thumb-wrap">
+										<img src={post.featured_image} alt={post.title} class="row-thumb" />
+									</div>
+								{/if}
+								{#if post.excerpt}
+									<p class="row-excerpt">{post.excerpt}</p>
+								{/if}
+							</div></div>
+						</a>
+					</li>
+				{/each}
+			</ul>
 		{/if}
 	</div>
 </section>
+
+<style>
+	.wrap {
+		max-width: 1100px;
+		margin: 0 auto;
+		padding: 0 clamp(1.25rem, 5vw, 3.5rem);
+	}
+
+	/* Hero */
+	.page-hero {
+		padding: clamp(3rem, 7vw, 6rem) 0 clamp(1.5rem, 3vw, 2.5rem);
+		border-bottom: 3px solid var(--color-accent3);
+	}
+
+	.eyebrow {
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+		margin: 0 0 0.75rem;
+	}
+
+	.page-title {
+		font-size: clamp(3rem, 10vw, 9rem);
+		font-weight: 900;
+		letter-spacing: -0.04em;
+		line-height: 0.9;
+		color: var(--color-text);
+		margin: 0 0 clamp(1rem, 2vw, 2rem);
+	}
+
+	.hero-foot {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 1rem;
+		padding-bottom: clamp(1rem, 2vw, 1.5rem);
+	}
+
+	.page-sub {
+		font-size: clamp(1rem, 1.8vw, 1.25rem);
+		color: var(--color-muted);
+		margin: 0;
+	}
+
+	.rss-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--color-muted);
+		text-decoration: none;
+		transition: color 0.3s;
+	}
+	.rss-link:hover { color: var(--color-accent); }
+
+	/* Filters */
+	.filters-bar {
+		padding: 1.25rem 0;
+		border-bottom: 1px solid var(--color-border);
+		background: var(--color-surface);
+	}
+
+	.filter-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.filter-btn {
+		padding: 0.4rem 0.9rem;
+		font-size: 0.78rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		border: 1.5px solid var(--color-border);
+		color: var(--color-muted);
+		background: transparent;
+		cursor: pointer;
+		transition: border-color 0.3s, color 0.3s, background 0.3s;
+	}
+	.filter-btn:hover { color: var(--color-text); border-color: var(--color-text); }
+	.filter-btn.active {
+		background: var(--color-accent);
+		color: var(--color-on-accent);
+		border-color: var(--color-accent);
+	}
+
+	/* Posts */
+	.posts-section { padding: 0 0 clamp(4rem, 8vw, 7rem); }
+
+	.row-list { list-style: none; margin: 0; padding: 0; }
+	.row-item { border-bottom: 1px solid var(--color-border); }
+	.row-item:first-child { border-top: 1px solid var(--color-border); }
+
+	.row-link {
+		display: block;
+		padding: 1.25rem 0;
+		text-decoration: none;
+	}
+
+	.row-top {
+		display: flex;
+		align-items: center;
+		gap: 1.25rem;
+	}
+
+	.row-date {
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		color: var(--color-muted);
+		white-space: nowrap;
+		width: 7rem;
+		flex-shrink: 0;
+	}
+
+	.row-title {
+		font-size: clamp(0.95rem, 2vw, 1.15rem);
+		font-weight: 600;
+		color: var(--color-text);
+		flex: 1;
+		transition: color 0.6s ease;
+	}
+	.row-link:hover .row-title { color: var(--color-accent2); }
+
+	:global(.ico) { width: 0.9em; height: 0.9em; flex-shrink: 0; display: inline-block; }
+
+	.row-arrow {
+		color: var(--color-muted);
+		flex-shrink: 0;
+		transition: color 0.6s ease, transform 0.6s ease;
+	}
+	.row-link:hover .row-arrow { color: var(--color-accent2); transform: translate(2px,-2px); }
+
+	.row-expand {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 0.9s ease;
+	}
+	.row-link:hover .row-expand { grid-template-rows: 1fr; }
+	.row-expand-in { overflow: hidden; }
+
+	.row-thumb-wrap {
+		width: 100%;
+		aspect-ratio: 16 / 5;
+		overflow: hidden;
+		margin: 0.75rem 0 0.25rem;
+		opacity: 0;
+		transform: translateY(3px);
+		transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+	}
+	.row-link:hover .row-thumb-wrap { opacity: 1; transform: translateY(0); }
+	.row-thumb { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+
+	.row-excerpt {
+		margin: 0.5rem 0 0.25rem;
+		font-size: 0.875rem;
+		color: var(--color-muted);
+		line-height: 1.6;
+		max-width: 70ch;
+		opacity: 0;
+		transform: translateY(3px);
+		transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
+	}
+	.row-link:hover .row-excerpt { opacity: 1; transform: translateY(0); }
+
+	/* Skeleton */
+	.skeleton { padding: 1.25rem 0; display: flex; gap: 1.5rem; align-items: center; }
+	.sk-date { width: 7rem; height: 0.75rem; background: var(--color-border); flex-shrink: 0; }
+	.sk-title { flex: 1; height: 1rem; background: var(--color-border); }
+
+	.msg-empty { padding: 4rem 0; color: var(--color-muted); font-size: 1rem; }
+</style>

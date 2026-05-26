@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount, onDestroy } from 'svelte';
 	import { page } from '$app/stores';
 	import { Menu, X, Home, FileText, Video, Calendar, Mic, User, Mail, Sparkles, Users, Database, BookOpen, Tv, Gamepad2, ChevronDown, BarChart3 } from 'lucide-svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
@@ -68,6 +69,21 @@
 		{ href: '/contact', label: 'Contact', icon: Mail }
 	];
 
+	let isDark = false;
+	let observer: MutationObserver;
+
+	onMount(() => {
+		isDark = document.documentElement.classList.contains('dark');
+		observer = new MutationObserver(() => {
+			isDark = document.documentElement.classList.contains('dark');
+		});
+		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+	});
+
+	onDestroy(() => observer?.disconnect());
+
+	$: logoSmall = isDark ? '/logo-dark-small.png' : '/logo-light-small.png';
+
 	function toggleMenu() {
 		mobileMenuOpen = !mobileMenuOpen;
 	}
@@ -113,9 +129,14 @@
 
 <svelte:window on:click={closeDropdowns} />
 
-<header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-border">
+<header class="sticky top-0 z-50 bg-surface border-b border-border">
 	<nav class="container-custom">
 		<div class="flex items-center justify-between h-16">
+			<!-- Logo -->
+			<a href="/" class="logo-link" aria-label="Duncan Boyne home">
+				<img src={logoSmall} alt="Duncan Boyne" class="logo-small" />
+			</a>
+
 			<!-- Desktop Navigation -->
 			<div class="hidden md:flex items-center space-x-4">
 				{#each navItems as item}
@@ -247,3 +268,19 @@
 		{/if}
 	</nav>
 </header>
+
+<style>
+	.logo-link {
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+		line-height: 0;
+	}
+	.logo-small {
+		display: block;
+		height: 2rem;
+		width: auto;
+		object-fit: contain;
+		object-position: left center;
+	}
+</style>

@@ -1,248 +1,671 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { ArrowRight, FileText, Calendar, Video, BarChart3, Zap, Database } from 'lucide-svelte';
-	import Hero from '$lib/components/Hero.svelte';
-	import LandingChart from '$lib/components/LandingChart.svelte';
-	import BlogCard from '$lib/components/BlogCard.svelte';
-	import EventCard from '$lib/components/EventCard.svelte';
-	import VideoCard from '$lib/components/VideoCard.svelte';
-	import { getPosts, getEvents, getVideos } from '$lib/supabase';
-	import type { Post, Event, Video as VideoType } from '$lib/types';
+	import { onMount } from 'svelte';
+	import { ArrowUpRight } from 'lucide-svelte';
+	import { getPosts, getEvents } from '$lib/supabase';
+	import type { Post, Event } from '$lib/types';
 
-	const whatIDo = [
-		{ icon: BarChart3, title: 'Power BI & Data Visualisation', desc: 'Reports and dashboards people actually use — built around real decisions, not just data.' },
-		{ icon: Zap,       title: 'Automation',                    desc: 'Killing the manual processes that eat your team\'s time and introduce errors.' },
-		{ icon: Database,  title: 'AI Readiness',                  desc: 'Getting your data foundations right before AI gets involved — the work that makes it all possible.' }
+	const services = [
+		{ num: '01', title: 'Power BI & Data Visualisation', desc: 'Reports and dashboards people actually use — built around real decisions, not just data.' },
+		{ num: '02', title: 'Automation', desc: "Killing the manual processes that eat your team's time and introduce errors." },
+		{ num: '03', title: 'AI Readiness', desc: 'Getting your data foundations right before AI gets involved — the work that makes it all possible.' }
 	];
-
-	// Scroll-triggered scale-in for individual cards
-	function revealCard(node: HTMLElement) {
-		node.style.opacity = '0';
-		node.style.transform = 'scale(1.05) translateY(16px)';
-		const observer = new IntersectionObserver(([entry]) => {
-			if (entry.isIntersecting) {
-				node.style.transition = 'opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)';
-				node.style.opacity = '1';
-				node.style.transform = 'scale(1) translateY(0)';
-				observer.disconnect();
-			}
-		}, { threshold: 0.15 });
-		observer.observe(node);
-		return { destroy() { observer.disconnect(); } };
-	}
-
-	// Dummy action so `use:revealSection` compiles (section itself doesn't need special treatment)
-	function revealSection(_node: HTMLElement) {}
 
 	let posts: Post[] = [];
 	let events: Event[] = [];
-	let videos: VideoType[] = [];
-	let loading = true;
-	let error: string | null = null;
-	let showLanding = !localStorage.getItem('hasSeenLanding');
+	let ready = false;
 
 	onMount(async () => {
-		if (showLanding) document.body.style.overflow = 'hidden';
-
-		try {
-			const [postsData, eventsData, videosData] = await Promise.all([
-				getPosts(3),
-				getEvents(true),
-				getVideos(3)
-			]);
-			posts = postsData || [];
-			events = (eventsData || []).slice(0, 2);
-			videos = videosData || [];
-		} catch (e) {
-			error = 'Failed to load content. Please try again later.';
-			console.error(e);
-		} finally {
-			loading = false;
-		}
+		setTimeout(() => { ready = true; }, 60);
+		const [p, e] = await Promise.all([getPosts(4), getEvents(true)]);
+		posts = p || [];
+		events = (e || []).slice(0, 3);
 	});
 
-	onDestroy(() => {
-		document.body.style.overflow = '';
-	});
-
-	function handleEnter() {
-		document.body.style.overflow = '';
-		localStorage.setItem('hasSeenLanding', 'true');
-		showLanding = false;
+	function formatDate(d: string) {
+		return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 	}
 </script>
 
 <svelte:head>
-	<title>Duncan Boyne - Power BI Consultant</title>
-	<meta name="description" content="Duncan Boyne is a Power BI Consultant helping organizations transform data into actionable insights." />
+	<title>Duncan Boyne — Power BI Consultant</title>
 </svelte:head>
 
-{#if showLanding}
-	<LandingChart on:enter={handleEnter} />
+<!-- ── HERO ─────────────────────────────────────────────────────────── -->
+<section class="hero" class:ready>
+	<div class="wrap">
+
+		<div class="hero-body">
+
+			<!-- Name block -->
+			<div class="name-block">
+				<p class="eyebrow">Power BI Consultant · Great Yarmouth, Norfolk</p>
+				<h1 aria-label="Duncan Boyne">
+					<span class="n-duncan">Duncan</span>
+					<span class="n-boyne">Boyne</span>
+				</h1>
+			</div>
+
+			<!-- Portrait -->
+			<div class="portrait-wrap">
+				<div class="portrait-offset"></div>
+				<img src="/headshot.png" alt="Duncan Boyne" class="portrait-img" />
+			</div>
+
+		</div>
+
+		<!-- Footer strip -->
+		<div class="hero-strip">
+			<p class="tagline">Your data has a story.<br><strong>Let's tell it properly.</strong></p>
+			<div class="hero-actions">
+				<a href="/services" class="btn-inv">Work with me</a>
+				<a href="/contact" class="btn-ghost">Get in touch <ArrowUpRight class="ico" /></a>
+			</div>
+		</div>
+
+	</div>
+</section>
+
+<!-- ── SERVICES — gold block ─────────────────────────────────────────── -->
+<section class="services-block">
+	<div class="wrap">
+
+		<div class="sb-head">
+			<span class="sb-label">What I Do</span>
+			<a href="/services" class="sb-all">All services <ArrowUpRight class="ico" /></a>
+		</div>
+
+		<ul class="svc-list">
+			{#each services as svc}
+				<li class="svc-row">
+					<div class="svc-top">
+						<span class="svc-num">{svc.num}</span>
+						<span class="svc-title">{svc.title}</span>
+						<ArrowUpRight class="svc-arrow ico" />
+					</div>
+					<div class="svc-expand"><div class="svc-expand-in">
+						<p class="svc-desc">{svc.desc}</p>
+					</div></div>
+				</li>
+			{/each}
+		</ul>
+
+	</div>
+</section>
+
+<!-- ── WRITING ───────────────────────────────────────────────────────── -->
+<section class="content-block">
+	<div class="wrap">
+
+		<div class="cb-head">
+			<h2 class="cb-title">Writing</h2>
+			<a href="/blog" class="cb-all">All posts <ArrowUpRight class="ico" /></a>
+		</div>
+
+		<ul class="row-list">
+			{#each posts as post}
+				<li class="row-item">
+					<a href="/blog/{post.slug}" class="row-link">
+						<div class="row-top">
+							<span class="row-date">{formatDate(post.published_at ?? post.created_at)}</span>
+							<span class="row-title">{post.title}</span>
+							<ArrowUpRight class="row-arrow ico" />
+						</div>
+						<div class="row-expand"><div class="row-expand-in">
+							{#if post.featured_image}
+								<div class="row-thumb-wrap">
+									<img src={post.featured_image} alt={post.title} class="row-thumb" />
+								</div>
+							{/if}
+							{#if post.excerpt}
+								<p class="row-excerpt">{post.excerpt}</p>
+							{/if}
+						</div></div>
+					</a>
+				</li>
+			{/each}
+		</ul>
+
+	</div>
+</section>
+
+<!-- ── SPEAKING ──────────────────────────────────────────────────────── -->
+{#if events.length > 0}
+<section class="content-block content-block--alt">
+	<div class="wrap">
+
+		<div class="cb-head">
+			<h2 class="cb-title">Speaking</h2>
+			<a href="/events" class="cb-all">All events <ArrowUpRight class="ico" /></a>
+		</div>
+
+		<ul class="row-list">
+			{#each events as ev}
+				<li class="row-item">
+					<div class="row-link event-row">
+						<div class="row-top">
+							<span class="row-date">{ev.event_date ? formatDate(ev.event_date) : 'TBC'}</span>
+							<span class="row-title">{ev.title}</span>
+							{#if ev.location}<span class="row-loc">{ev.location}</span>{/if}
+							<ArrowUpRight class="row-arrow ico" />
+						</div>
+						<div class="row-expand"><div class="row-expand-in">
+							<div class="ev-actions">
+								{#if ev.event_url}
+									<a href={ev.event_url} target="_blank" rel="noopener" class="ev-btn ev-btn--primary">
+										Sign up <ArrowUpRight class="ico" />
+									</a>
+								{/if}
+								{#if ev.talk_slug}
+									<a href="/talks/{ev.talk_slug}" class="ev-btn ev-btn--ghost">
+										View talk <ArrowUpRight class="ico" />
+									</a>
+								{/if}
+							</div>
+						</div></div>
+					</div>
+				</li>
+			{/each}
+		</ul>
+
+	</div>
+</section>
 {/if}
 
-<Hero />
-
-<!-- What I Do -->
-<section class="py-16 bg-bg" use:revealSection>
-	<div class="container-custom">
-		<div class="flex items-center justify-between mb-8">
-			<h2 class="text-2xl font-bold text-text">What I Do</h2>
-			<a href="/services" class="inline-flex items-center text-accent font-medium hover:underline group">
-				Work With Me
-				<ArrowRight class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
-			</a>
-		</div>
-		<div class="grid md:grid-cols-3 gap-6">
-			{#each whatIDo as item, i}
-				<a
-					href="/services"
-					class="card p-6 block no-underline scale-card hover:border-accent/50"
-					style="transition-delay: {i * 100}ms"
-					use:revealCard
-				>
-					<div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
-						<svelte:component this={item.icon} class="w-6 h-6 text-accent" aria-hidden="true" />
-					</div>
-					<h3 class="font-semibold text-text mb-2">{item.title}</h3>
-					<p class="text-sm text-muted">{item.desc}</p>
-				</a>
-			{/each}
-		</div>
+<!-- ── CTA ───────────────────────────────────────────────────────────── -->
+<section class="cta-block">
+	<div class="wrap">
+		<p class="cta-pre">Ready to work together?</p>
+		<a href="mailto:duncanboyne@hotmail.co.uk" class="cta-main">
+			Let's talk <ArrowUpRight class="cta-ico" />
+		</a>
+		<p class="cta-sub">duncanboyne@hotmail.co.uk</p>
 	</div>
 </section>
 
-<!-- Latest Blog Posts -->
-<section class="py-16 bg-surface">
-	<div class="container-custom">
-		<div class="flex items-center justify-between mb-8">
-			<div class="flex items-center gap-3">
-				<div class="p-2 bg-accent/10 rounded-lg">
-					<FileText class="w-5 h-5 text-accent" aria-hidden="true" />
-				</div>
-				<h2 class="text-2xl font-bold text-text">Latest Posts</h2>
-			</div>
-			<a href="/blog" class="inline-flex items-center text-accent font-medium hover:underline group">
-				Explore Blog
-				<ArrowRight class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
-			</a>
-		</div>
+<style>
+	/* ── Base ───────────────────────────────────────────────────────── */
+	.wrap {
+		max-width: 1100px;
+		margin: 0 auto;
+		padding: 0 clamp(1.25rem, 5vw, 3.5rem);
+	}
 
-		{#if loading}
-			<div role="status" aria-label="Loading blog posts" class="grid md:grid-cols-3 gap-6">
-				{#each [1, 2, 3] as _}
-					<div class="card animate-pulse">
-						<div class="aspect-video bg-border" style="min-height: 180px" />
-						<div class="p-5 space-y-3" style="min-height: 120px">
-							<div class="h-4 bg-border rounded w-1/3" />
-							<div class="h-5 bg-border rounded" />
-							<div class="h-4 bg-border rounded w-2/3" />
-							<div class="h-4 bg-border rounded w-1/2" />
-						</div>
-					</div>
-				{/each}
-			</div>
-		{:else if error}
-			<p class="text-center text-muted py-8">{error}</p>
-		{:else if posts.length === 0}
-			<div class="text-center py-12 bg-bg rounded-xl border border-border">
-				<FileText class="w-12 h-12 text-muted/50 mx-auto mb-4" aria-hidden="true" />
-				<p class="text-muted">No posts yet. Check back soon!</p>
-			</div>
-		{:else}
-			<div class="grid {posts.length < 3 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-6 grid-equal-height">
-				{#each posts as post}
-					<BlogCard {post} />
-				{/each}
-			</div>
-		{/if}
-	</div>
-</section>
+	:global(.ico) {
+		width: 0.9em;
+		height: 0.9em;
+		flex-shrink: 0;
+		display: inline-block;
+	}
 
-<!-- Upcoming Events -->
-<section class="py-16 bg-bg">
-	<div class="container-custom">
-		<div class="flex items-center justify-between mb-8">
-			<div class="flex items-center gap-3">
-				<div class="p-2 bg-accent/10 rounded-lg">
-					<Calendar class="w-5 h-5 text-accent" aria-hidden="true" />
-				</div>
-				<h2 class="text-2xl font-bold text-text">Upcoming Events</h2>
-			</div>
-			<a href="/events" class="inline-flex items-center text-accent font-medium hover:underline group">
-				View All Events
-				<ArrowRight class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
-			</a>
-		</div>
+	/* ── Hero ───────────────────────────────────────────────────────── */
+	.hero {
+		padding-top: clamp(3rem, 7vw, 6rem);
+		border-bottom: 3px solid var(--color-accent);
+	}
 
-		{#if loading}
-			<div role="status" aria-label="Loading events" class="grid md:grid-cols-2 gap-6">
-				{#each [1, 2] as _}
-					<div class="card animate-pulse p-5 space-y-3" style="min-height: 140px">
-						<div class="h-6 bg-border rounded w-1/4" />
-						<div class="h-5 bg-border rounded w-3/4" />
-						<div class="h-4 bg-border rounded" />
-						<div class="h-4 bg-border rounded w-1/2" />
-						<div class="h-4 bg-border rounded w-2/3" />
-					</div>
-				{/each}
-			</div>
-		{:else if events.length === 0}
-			<div class="text-center py-12 bg-surface rounded-xl border border-border">
-				<Calendar class="w-12 h-12 text-muted/50 mx-auto mb-4" aria-hidden="true" />
-				<p class="text-muted">No upcoming events at the moment.</p>
-				<p class="text-muted/70 text-sm mt-1">Check back soon!</p>
-			</div>
-		{:else}
-			<div class="grid md:grid-cols-2 gap-6 grid-equal-height">
-				{#each events as event}
-					<EventCard {event} />
-				{/each}
-			</div>
-		{/if}
-	</div>
-</section>
+	/* Eyebrow */
+	.eyebrow {
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+		margin: 0 0 clamp(1rem, 2vw, 2rem);
+		opacity: 0;
+		transform: translateY(8px);
+		transition: opacity 0.5s ease, transform 0.5s ease;
+	}
+	.hero.ready .eyebrow { opacity: 1; transform: translateY(0); }
 
-<!-- Recent Videos -->
-<section class="py-16 bg-surface">
-	<div class="container-custom">
-		<div class="flex items-center justify-between mb-8">
-			<div class="flex items-center gap-3">
-				<div class="p-2 bg-accent/10 rounded-lg">
-					<Video class="w-5 h-5 text-accent" aria-hidden="true" />
-				</div>
-				<h2 class="text-2xl font-bold text-text">Recent Videos</h2>
-			</div>
-			<a href="/videos" class="inline-flex items-center text-accent font-medium hover:underline group">
-				View All Videos
-				<ArrowRight class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
-			</a>
-		</div>
+	/* Name */
+	h1 {
+		margin: 0;
+		line-height: 0.85;
+		letter-spacing: -0.04em;
+	}
 
-		{#if loading}
-			<div role="status" aria-label="Loading videos" class="grid md:grid-cols-3 gap-6">
-				{#each [1, 2, 3] as _}
-					<div class="card animate-pulse">
-						<div class="aspect-video bg-border" style="min-height: 180px" />
-						<div class="p-5 space-y-3" style="min-height: 80px">
-							<div class="h-4 bg-border rounded w-1/3" />
-							<div class="h-5 bg-border rounded" />
-							<div class="h-4 bg-border rounded w-2/3" />
-						</div>
-					</div>
-				{/each}
-			</div>
-		{:else if videos.length === 0}
-			<div class="text-center py-12 bg-bg rounded-xl border border-border">
-				<Video class="w-12 h-12 text-muted/50 mx-auto mb-4" aria-hidden="true" />
-				<p class="text-muted">No videos yet. Check back soon!</p>
-			</div>
-		{:else}
-			<div class="grid md:grid-cols-3 gap-6 grid-equal-height">
-				{#each videos as video}
-					<VideoCard {video} />
-				{/each}
-			</div>
-		{/if}
-	</div>
-</section>
+	.n-duncan {
+		display: block;
+		font-size: clamp(3.5rem, 16vw, 17rem);
+		font-weight: 200;
+		color: var(--color-text);
+		opacity: 0;
+		transform: translateY(40px);
+		transition: opacity 0.7s ease 0.1s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s;
+	}
+	.n-boyne {
+		display: block;
+		font-size: clamp(3.5rem, 16vw, 17rem);
+		font-weight: 900;
+		color: var(--color-accent);
+		opacity: 0;
+		transform: translateY(40px);
+		transition: opacity 0.7s ease 0.22s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.22s;
+	}
+	.hero.ready .n-duncan,
+	.hero.ready .n-boyne {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	/* Hero layout — mobile: name full width, portrait below */
+	.hero-body {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.name-block { width: 100%; }
+
+	/* Portrait — hidden on mobile, shown on md+ alongside name */
+	.portrait-wrap {
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		.hero-body {
+			flex-direction: row;
+			align-items: flex-end;
+			justify-content: space-between;
+		}
+
+		.name-block { flex: 1; }
+
+		.portrait-wrap {
+			display: block;
+			position: relative;
+			flex-shrink: 0;
+			width: clamp(160px, 18vw, 280px);
+			align-self: flex-end;
+			opacity: 0;
+			transform: translateY(20px);
+			transition: opacity 0.7s ease 0.35s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s;
+		}
+		.hero.ready .portrait-wrap { opacity: 1; transform: translateY(0); }
+	}
+
+	.portrait-offset {
+		position: absolute;
+		bottom: 0.75rem;
+		right: -0.75rem;
+		width: 100%;
+		height: 85%;
+		background: var(--color-accent);
+		z-index: 0;
+	}
+
+	.portrait-img {
+		position: relative;
+		z-index: 1;
+		display: block;
+		width: 100%;
+		aspect-ratio: 3 / 4;
+		object-fit: cover;
+		object-position: top center;
+	}
+
+	/* 3px rule — accent3 (10%) */
+	.hero { border-bottom-color: var(--color-accent3); }
+
+	/* Hero strip */
+	.hero-strip {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+		padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(1.5rem, 3vw, 2.5rem);
+		opacity: 0;
+		transform: translateY(10px);
+		transition: opacity 0.6s ease 0.45s, transform 0.6s ease 0.45s;
+	}
+	.hero.ready .hero-strip { opacity: 1; transform: translateY(0); }
+
+	.tagline {
+		font-size: clamp(1rem, 2vw, 1.4rem);
+		font-weight: 400;
+		line-height: 1.5;
+		color: var(--color-text);
+		margin: 0;
+	}
+	/* "Let's tell it properly." — accent2 (30%) */
+	.tagline strong { font-weight: 700; color: var(--color-accent2); }
+
+	.hero-actions {
+		display: flex;
+		gap: 0.75rem;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.btn-inv {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.65rem 1.5rem;
+		background: var(--color-text);
+		color: var(--color-bg);
+		font-size: 0.85rem;
+		font-weight: 700;
+		text-decoration: none;
+		letter-spacing: 0.02em;
+		transition: opacity 0.2s;
+	}
+	.btn-inv:hover { opacity: 0.8; }
+
+	.btn-ghost {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.2rem;
+		padding: 0.65rem 1.5rem;
+		border: 1.5px solid var(--color-border);
+		color: var(--color-text);
+		font-size: 0.85rem;
+		font-weight: 700;
+		text-decoration: none;
+		letter-spacing: 0.02em;
+		transition: border-color 0.2s;
+	}
+	.btn-ghost:hover { border-color: var(--color-text); }
+
+	/* ── Services block (gold) ──────────────────────────────────────── */
+	.services-block {
+		background: var(--color-accent);
+		padding: clamp(3rem, 6vw, 5rem) 0;
+	}
+
+	.sb-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		margin-bottom: 2rem;
+	}
+
+	.sb-label {
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-on-accent);
+		opacity: 0.6;
+	}
+
+	.sb-all {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.2rem;
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--color-on-accent);
+		text-decoration: none;
+		opacity: 0.7;
+		transition: opacity 0.2s;
+	}
+	.sb-all:hover { opacity: 1; }
+
+	.svc-list { list-style: none; margin: 0; padding: 0; }
+
+	.svc-row {
+		border-top: 1.5px solid rgba(0,0,0,0.15);
+		padding: 1.1rem 0;
+	}
+	.svc-row:last-child { border-bottom: 1.5px solid rgba(0,0,0,0.15); }
+
+	.svc-top {
+		display: flex;
+		align-items: center;
+		gap: 1.25rem;
+	}
+
+	.svc-num {
+		font-size: 0.65rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		color: var(--color-on-accent);
+		opacity: 0.5;
+		width: 2rem;
+		flex-shrink: 0;
+	}
+
+	.svc-title {
+		font-size: clamp(1rem, 2.5vw, 1.5rem);
+		font-weight: 700;
+		color: var(--color-on-accent);
+		flex: 1;
+		transition: opacity 0.4s;
+	}
+	/* Services hover — accent2 tint (30%) */
+	.svc-row:hover .svc-title { opacity: 0.75; }
+
+	.svc-arrow {
+		color: var(--color-on-accent);
+		opacity: 0.5;
+		flex-shrink: 0;
+		transition: opacity 0.6s ease, transform 0.6s ease;
+	}
+	.svc-row:hover .svc-arrow { opacity: 1; transform: translate(2px,-2px); }
+
+	.svc-expand {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 0.9s ease;
+	}
+	.svc-row:hover .svc-expand { grid-template-rows: 1fr; }
+	.svc-expand-in { overflow: hidden; }
+
+	.svc-desc {
+		margin: 0.6rem 0 0.2rem 3.25rem;
+		font-size: 0.9rem;
+		color: var(--color-on-accent);
+		line-height: 1.65;
+		max-width: 52ch;
+		transform: translateY(3px);
+		transition: transform 0.7s ease 0.15s, opacity 0.7s ease 0.15s;
+		opacity: 0;
+	}
+	.svc-row:hover .svc-desc { transform: translateY(0); opacity: 0.75; }
+
+	/* ── Content blocks ─────────────────────────────────────────────── */
+	.content-block {
+		padding: clamp(3rem, 6vw, 5rem) 0;
+		border-bottom: 1px solid var(--color-border);
+	}
+	.content-block--alt {
+		background: var(--color-surface);
+	}
+
+	.cb-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		margin-bottom: 2rem;
+	}
+
+	.cb-title {
+		font-size: clamp(1.6rem, 4vw, 3rem);
+		font-weight: 900;
+		color: var(--color-text);
+		letter-spacing: -0.03em;
+		margin: 0;
+	}
+
+	.cb-all {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.2rem;
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--color-muted);
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+	/* Section "all" links — accent3 (10%) */
+	.cb-all:hover { color: var(--color-accent3); }
+
+	/* ── Row list ───────────────────────────────────────────────────── */
+	.row-list { list-style: none; margin: 0; padding: 0; }
+
+	.row-item { border-top: 1px solid var(--color-border); }
+	.row-item:last-child { border-bottom: 1px solid var(--color-border); }
+
+	.row-link {
+		display: block;
+		padding: 1.1rem 0;
+		text-decoration: none;
+	}
+
+	.row-top {
+		display: flex;
+		align-items: center;
+		gap: 1.25rem;
+	}
+
+	.row-date {
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		color: var(--color-muted);
+		white-space: nowrap;
+		width: 7rem;
+		flex-shrink: 0;
+	}
+
+	.row-title {
+		font-size: clamp(0.95rem, 2vw, 1.15rem);
+		font-weight: 600;
+		color: var(--color-text);
+		flex: 1;
+		transition: color 0.6s ease;
+	}
+	/* Row hover titles — accent2 (30%) */
+	.row-link:hover .row-title,
+	.event-row:hover .row-title { color: var(--color-accent2); }
+
+	.row-loc {
+		font-size: 0.72rem;
+		color: var(--color-muted);
+		white-space: nowrap;
+		flex-shrink: 0;
+	}
+
+	.row-arrow {
+		color: var(--color-muted);
+		flex-shrink: 0;
+		transition: color 0.6s ease, transform 0.6s ease;
+	}
+	/* Row arrows — accent2 (30%) */
+	.row-link:hover .row-arrow,
+	.event-row:hover .row-arrow {
+		color: var(--color-accent2);
+		transform: translate(2px,-2px);
+	}
+
+	/* Row expand */
+	.row-expand {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 0.9s ease;
+	}
+	.row-link:hover .row-expand,
+	.event-row:hover .row-expand { grid-template-rows: 1fr; }
+	.row-expand-in { overflow: hidden; }
+
+	/* Thumbnail */
+	.row-thumb-wrap {
+		width: 100%;
+		aspect-ratio: 16 / 5;
+		overflow: hidden;
+		margin: 0.75rem 0 0.25rem;
+		opacity: 0;
+		transform: translateY(3px);
+		transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+	}
+	.row-link:hover .row-thumb-wrap { opacity: 1; transform: translateY(0); }
+
+	.row-thumb { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+
+	.row-excerpt {
+		margin: 0.5rem 0 0.25rem;
+		font-size: 0.875rem;
+		color: var(--color-muted);
+		line-height: 1.6;
+		max-width: 70ch;
+		opacity: 0;
+		transform: translateY(3px);
+		transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
+	}
+	.row-link:hover .row-excerpt { opacity: 1; transform: translateY(0); }
+
+	/* Event row */
+	.event-row {
+		display: block;
+		padding: 1.1rem 0;
+		cursor: default;
+	}
+	.event-row:hover .row-expand { grid-template-rows: 1fr; }
+
+	.ev-actions {
+		display: flex;
+		gap: 0.75rem;
+		padding: 0.75rem 0 0.25rem;
+		opacity: 0;
+		transform: translateY(3px);
+		transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+	}
+	.event-row:hover .ev-actions { opacity: 1; transform: translateY(0); }
+
+	.ev-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		font-size: 0.8rem;
+		font-weight: 700;
+		padding: 0.4rem 1rem;
+		text-decoration: none;
+		letter-spacing: 0.02em;
+		transition: opacity 0.2s;
+	}
+	.ev-btn--primary { background: var(--color-accent); color: var(--color-on-accent); }
+	.ev-btn--primary:hover { opacity: 0.85; }
+	.ev-btn--ghost { border: 1.5px solid var(--color-border); color: var(--color-text); }
+	.ev-btn--ghost:hover { border-color: var(--color-text); }
+
+	/* ── CTA ────────────────────────────────────────────────────────── */
+	.cta-block {
+		padding: clamp(5rem, 10vw, 9rem) 0;
+	}
+
+	.cta-pre {
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-muted);
+		margin: 0 0 1.25rem;
+	}
+
+	.cta-main {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: clamp(2.8rem, 9vw, 8rem);
+		font-weight: 900;
+		letter-spacing: -0.04em;
+		line-height: 1;
+		color: var(--color-text);
+		text-decoration: none;
+		transition: color 0.3s;
+	}
+	/* CTA hover — accent2 (30%) */
+	.cta-main:hover { color: var(--color-accent2); }
+
+	.cta-ico {
+		width: clamp(2rem, 5vw, 5rem);
+		height: clamp(2rem, 5vw, 5rem);
+	}
+
+	.cta-sub {
+		margin: 1.25rem 0 0;
+		font-size: 0.85rem;
+		color: var(--color-muted);
+	}
+</style>
