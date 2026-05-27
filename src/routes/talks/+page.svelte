@@ -35,8 +35,11 @@
 			}
 
 			for (const s of sessions) {
-				const img = titleToImage[normalize(s.title)];
-				if (img) imageMap[s.id] = img;
+				const szNorm = normalize(s.title);
+				const match = Object.entries(titleToImage).find(([dbNorm]) =>
+					szNorm === dbNorm || szNorm.startsWith(dbNorm) || dbNorm.startsWith(szNorm)
+				);
+				if (match) imageMap[s.id] = match[1];
 			}
 		} catch (e) {
 			error = 'Failed to load talks.';
