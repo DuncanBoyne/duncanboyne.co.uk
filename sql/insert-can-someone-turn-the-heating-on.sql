@@ -34,7 +34,7 @@ You'll leave with a practical framework of questions every consultant and analys
 
 Most importantly, you'll leave asking better questions.$$,
   'talk',
-  NULL,
+  '/can-someone-turn-the-heating-on.png',
   NULL,
   NULL,
   NULL

@@ -12,6 +12,7 @@
 	}
 
 	let sessions: SessionizeSession[] = [];
+	let workshops: Talk[] = [];
 	let imageMap: Record<number, string> = {};
 	let loading = true;
 	let error: string | null = null;
@@ -28,6 +29,7 @@
 				getTalks()
 			]);
 			sessions = sz;
+			workshops = (supabaseTalks || []).filter(t => t.type === 'workshop');
 
 			const titleToImage: Record<string, string> = {};
 			for (const t of (supabaseTalks || []) as Talk[]) {
@@ -120,6 +122,58 @@
 	</div>
 </section>
 
+<!-- Workshops -->
+{#if !loading && workshops.length > 0}
+	<section class="talks-section" style="border-top: 1px solid var(--color-border); padding-top: clamp(4rem, 8vw, 7rem);">
+		<div class="wrap">
+			<h2 style="font-size: clamp(1.75rem, 5vw, 2.5rem); font-weight: 700; margin: 0 0 2rem; color: var(--color-text);">Workshops</h2>
+			<ul class="row-list">
+				{#each workshops as workshop}
+					{@const image = workshop.image ?? null}
+					{@const isOpen = openId === workshop.id}
+					<li class="row-item" class:open={isOpen}>
+						<button
+							class="row-btn"
+							on:click={() => toggle(workshop.id)}
+							aria-expanded={isOpen}
+						>
+							<span class="row-title">{workshop.title}</span>
+							<ChevronDown class="row-chevron" aria-hidden="true" />
+						</button>
+
+						<div class="row-expand" aria-hidden={!isOpen}>
+							<div class="row-expand-in">
+								<div class="row-body">
+									{#if image}
+										<div class="row-img-wrap">
+											<img src={image} alt={workshop.title} class="row-img" />
+										</div>
+									{/if}
+									{#if workshop.excerpt}
+										<div class="row-desc">{@html marked(workshop.excerpt)}</div>
+									{/if}
+									{#if workshop.content}
+										<div class="row-desc">{@html marked(workshop.content)}</div>
+									{/if}
+									{#if workshop.co_host_name}
+										<p class="row-host">
+											{#if workshop.co_host_url}
+												Co-hosted with <a href={workshop.co_host_url} target="_blank" rel="noopener noreferrer">{workshop.co_host_name}</a>
+											{:else}
+												Co-hosted with {workshop.co_host_name}
+											{/if}
+										</p>
+									{/if}
+								</div>
+							</div>
+						</div>
+					</li>
+				{/each}
+			</ul>
+		</div>
+	</section>
+{/if}
+
 <!-- CTA -->
 <section class="cta-block">
 	<div class="wrap">
@@ -201,6 +255,14 @@
 		color: var(--color-accent); text-decoration: none;
 	}
 	.session-link:hover { text-decoration: underline; }
+
+	.row-host {
+		font-size: 0.875rem; color: var(--color-muted); margin-top: 1rem;
+	}
+	.row-host a {
+		color: var(--color-accent); text-decoration: none;
+	}
+	.row-host a:hover { text-decoration: underline; }
 
 	/* CTA */
 	.cta-block { padding: clamp(5rem, 10vw, 9rem) 0; border-top: 1px solid var(--color-border); }
