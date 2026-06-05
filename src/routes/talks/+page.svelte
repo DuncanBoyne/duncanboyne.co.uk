@@ -15,6 +15,7 @@
 	let workshops: Talk[] = [];
 	let featuredFeedback: TalkFeedback[] = [];
 	let imageMap: Record<number, string> = {};
+	let slugMap: Record<number, string> = {};
 	let loading = true;
 	let error: string | null = null;
 	let openId: number | null = null;
@@ -54,16 +55,22 @@
 			workshops = (supabaseTalks || []).filter(t => t.type === 'workshop');
 
 			const titleToImage: Record<string, string> = {};
+			const titleToSlug: Record<string, string> = {};
 			for (const t of (supabaseTalks || []) as Talk[]) {
 				if (t.image) titleToImage[normalize(t.title)] = t.image;
+				titleToSlug[normalize(t.title)] = t.slug;
 			}
 
 			for (const s of sessions) {
 				const szNorm = normalize(s.title);
-				const match = Object.entries(titleToImage).find(([dbNorm]) =>
+				const match = Object.entries(titleToSlug).find(([dbNorm]) =>
 					szNorm === dbNorm || szNorm.startsWith(dbNorm) || dbNorm.startsWith(szNorm)
 				);
-				if (match) imageMap[s.id] = match[1];
+				if (match) slugMap[s.id] = match[1];
+				const imgMatch = Object.entries(titleToImage).find(([dbNorm]) =>
+					szNorm === dbNorm || szNorm.startsWith(dbNorm) || dbNorm.startsWith(szNorm)
+				);
+				if (imgMatch) imageMap[s.id] = imgMatch[1];
 			}
 		} catch (e) {
 			error = 'Failed to load talks.';
@@ -173,11 +180,18 @@
 									{#if session.description}
 										<div class="row-desc">{@html marked(session.description)}</div>
 									{/if}
-									{#if session.sessionUrl}
-										<a href={session.sessionUrl} target="_blank" rel="noopener noreferrer" class="session-link">
-											View on Sessionize <ArrowUpRight class="w-3.5 h-3.5 inline" />
-										</a>
-									{/if}
+									<div class="row-links">
+										{#if slugMap[session.id]}
+											<a href="/talks/{slugMap[session.id]}" class="session-link">
+												View talk <ArrowUpRight class="w-3.5 h-3.5 inline" />
+											</a>
+										{/if}
+										{#if session.sessionUrl}
+											<a href={session.sessionUrl} target="_blank" rel="noopener noreferrer" class="session-link">
+												View on Sessionize <ArrowUpRight class="w-3.5 h-3.5 inline" />
+											</a>
+										{/if}
+									</div>
 								</div>
 							</div>
 						</div>
@@ -230,6 +244,11 @@
 											{/if}
 										</p>
 									{/if}
+									<div class="row-links">
+										<a href="/talks/{workshop.slug}" class="session-link">
+											View workshop <ArrowUpRight class="w-3.5 h-3.5 inline" />
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -314,6 +333,8 @@
 	.row-desc :global(strong) { font-weight: 700; color: var(--color-text); }
 	.row-desc :global(ul) { list-style: disc; padding-left: 1.25rem; margin-bottom: 0.875rem; }
 	.row-desc :global(li) { margin-bottom: 0.3rem; }
+
+	.row-links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1rem; }
 
 	.session-link {
 		display: inline-flex; align-items: center; gap: 0.3rem; margin-top: 1rem;
