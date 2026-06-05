@@ -128,6 +128,19 @@ export interface GirlfriendApplication {
 	created_at: string;
 }
 
+export interface TalkFeedback {
+	id: number;
+	quote: string;
+	attribution_name: string;
+	attribution_role: string | null;
+	attribution_url: string | null;
+	talk_slug: string | null;
+	event_id: number | null;
+	featured: boolean;
+	sort_order: number;
+	created_at: string;
+}
+
 // Database types for Supabase
 export interface Database {
 	public: {

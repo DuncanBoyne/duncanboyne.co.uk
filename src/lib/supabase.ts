@@ -184,6 +184,28 @@ export async function getGamingAchievements() {
 	return data;
 }
 
+export async function getFeaturedFeedback() {
+	const { data, error } = await supabase
+		.from('talk_feedback')
+		.select('*')
+		.eq('featured', true)
+		.order('sort_order', { ascending: true });
+
+	if (error) throw error;
+	return data;
+}
+
+export async function getFeedbackByTalkSlug(talkSlug: string) {
+	const { data, error } = await supabase
+		.from('talk_feedback')
+		.select('*')
+		.eq('talk_slug', talkSlug)
+		.order('sort_order', { ascending: true });
+
+	if (error) throw error;
+	return data;
+}
+
 export async function submitGirlfriendApplication(
 	application: Database['public']['Tables']['girlfriend_applications']['Insert']
 ) {

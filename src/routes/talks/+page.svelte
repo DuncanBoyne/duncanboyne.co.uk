@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { getSessionizeSessions } from '$lib/sessionize';
-	import { getTalks } from '$lib/supabase';
+	import { getTalks, getFeaturedFeedback } from '$lib/supabase';
 	import { ArrowUpRight, ChevronDown } from 'lucide-svelte';
 	import { marked } from 'marked';
 	import type { SessionizeSession } from '$lib/sessionize';
-	import type { Talk } from '$lib/types';
+	import type { Talk, TalkFeedback } from '$lib/types';
 
 	function normalize(s: string) {
 		return s.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
@@ -13,21 +13,43 @@
 
 	let sessions: SessionizeSession[] = [];
 	let workshops: Talk[] = [];
+	let featuredFeedback: TalkFeedback[] = [];
 	let imageMap: Record<number, string> = {};
 	let loading = true;
 	let error: string | null = null;
 	let openId: number | null = null;
+	let carouselIndex = 0;
+	let carouselTimer: ReturnType<typeof setInterval>;
 
 	function toggle(id: number) {
 		openId = openId === id ? null : id;
 	}
 
+	function carouselNext() {
+		carouselIndex = (carouselIndex + 1) % featuredFeedback.length;
+	}
+
+	function carouselPrev() {
+		carouselIndex = (carouselIndex - 1 + featuredFeedback.length) % featuredFeedback.length;
+	}
+
+	function carouselGoto(i: number) {
+		carouselIndex = i;
+		clearInterval(carouselTimer);
+		carouselTimer = setInterval(carouselNext, 6000);
+	}
+
 	onMount(async () => {
 		try {
-			const [sz, supabaseTalks] = await Promise.all([
+			const [sz, supabaseTalks, feedback] = await Promise.all([
 				getSessionizeSessions(),
-				getTalks()
+				getTalks(),
+				getFeaturedFeedback()
 			]);
+			featuredFeedback = feedback || [];
+			if (featuredFeedback.length > 1) {
+				carouselTimer = setInterval(carouselNext, 6000);
+			}
 			sessions = sz;
 			workshops = (supabaseTalks || []).filter(t => t.type === 'workshop');
 
@@ -50,6 +72,8 @@
 			loading = false;
 		}
 	});
+
+	onDestroy(() => clearInterval(carouselTimer));
 </script>
 
 <svelte:head>
@@ -65,6 +89,48 @@
 		<p class="page-sub">Power BI, data storytelling, accessibility, and the Power Platform — at conferences and user groups across the UK and Europe.</p>
 	</div>
 </section>
+
+<!-- Feedback carousel -->
+{#if featuredFeedback.length > 0}
+<section class="feedback-section">
+	<div class="wrap">
+		<div class="carousel">
+			{#each featuredFeedback as item, i}
+				<div class="carousel-slide" class:active={i === carouselIndex} aria-hidden={i !== carouselIndex}>
+					<blockquote class="carousel-quote">"{item.quote}"</blockquote>
+					<div class="carousel-attr">
+						{#if item.attribution_url}
+							<a href={item.attribution_url} target="_blank" rel="noopener noreferrer" class="carousel-name">{item.attribution_name}</a>
+						{:else}
+							<span class="carousel-name">{item.attribution_name}</span>
+						{/if}
+						{#if item.attribution_role}
+							<span class="carousel-role">{item.attribution_role}</span>
+						{/if}
+					</div>
+				</div>
+			{/each}
+
+			{#if featuredFeedback.length > 1}
+				<div class="carousel-controls">
+					<button class="carousel-arrow" on:click={carouselPrev} aria-label="Previous">&#8592;</button>
+					<div class="carousel-dots">
+						{#each featuredFeedback as _, i}
+							<button
+								class="carousel-dot"
+								class:active={i === carouselIndex}
+								on:click={() => carouselGoto(i)}
+								aria-label="Go to slide {i + 1}"
+							></button>
+						{/each}
+					</div>
+					<button class="carousel-arrow" on:click={carouselNext} aria-label="Next">&#8594;</button>
+				</div>
+			{/if}
+		</div>
+	</div>
+</section>
+{/if}
 
 <!-- List -->
 <section class="talks-section">
@@ -276,4 +342,92 @@
 	.skeleton { padding: 1.25rem 0; display: flex; gap: 1.5rem; align-items: center; }
 	.sk-title { flex: 1; height: 1rem; background: var(--color-border); }
 	.msg-empty { padding: 4rem 0; color: var(--color-muted); font-size: 1rem; }
+
+	/* Feedback carousel */
+	.feedback-section {
+		padding: clamp(3rem, 6vw, 5rem) 0;
+		border-bottom: 1px solid var(--color-border);
+		background: var(--color-surface);
+	}
+
+	.carousel { position: relative; }
+
+	.carousel-slide {
+		display: none;
+		flex-direction: column;
+		gap: 1.25rem;
+		max-width: 68ch;
+	}
+	.carousel-slide.active { display: flex; }
+
+	.carousel-quote {
+		font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+		font-weight: 400;
+		font-style: italic;
+		line-height: 1.6;
+		color: var(--color-text);
+		margin: 0;
+		border: none;
+		padding: 0;
+	}
+
+	.carousel-attr {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		flex-wrap: wrap;
+	}
+
+	.carousel-name {
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		color: var(--color-accent);
+		text-decoration: none;
+		text-transform: uppercase;
+	}
+	a.carousel-name:hover { text-decoration: underline; }
+
+	.carousel-role {
+		font-size: 0.8rem;
+		color: var(--color-muted);
+	}
+	.carousel-role::before { content: '·'; margin-right: 0.6rem; opacity: 0.4; }
+
+	.carousel-controls {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-top: 1.75rem;
+	}
+
+	.carousel-arrow {
+		background: none;
+		border: 1.5px solid var(--color-border);
+		color: var(--color-muted);
+		width: 2rem;
+		height: 2rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		font-size: 0.9rem;
+		transition: border-color 0.2s, color 0.2s;
+		flex-shrink: 0;
+	}
+	.carousel-arrow:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+	.carousel-dots { display: flex; gap: 0.4rem; }
+
+	.carousel-dot {
+		width: 0.4rem;
+		height: 0.4rem;
+		border-radius: 50%;
+		background: var(--color-border);
+		border: none;
+		cursor: pointer;
+		padding: 0;
+		transition: background 0.2s;
+	}
+	.carousel-dot.active { background: var(--color-accent); }
 </style>

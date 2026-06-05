@@ -3,12 +3,13 @@
 	import { page } from '$app/stores';
 	import { ArrowLeft, ExternalLink, Globe, Linkedin } from 'lucide-svelte';
 	import { marked } from 'marked';
-	import { getTalkBySlug, getEventsByTalkSlug } from '$lib/supabase';
-	import type { Talk, Event } from '$lib/types';
+	import { getTalkBySlug, getEventsByTalkSlug, getFeedbackByTalkSlug } from '$lib/supabase';
+	import type { Talk, Event, TalkFeedback } from '$lib/types';
 
 	let talk: Talk | null = null;
 	let upcomingEvents: Event[] = [];
 	let pastEvents: Event[] = [];
+	let feedback: TalkFeedback[] = [];
 	let loading = true;
 	let error: string | null = null;
 
@@ -22,11 +23,13 @@
 
 	onMount(async () => {
 		try {
-			const [talkData, events] = await Promise.all([
+			const [talkData, events, feedbackData] = await Promise.all([
 				getTalkBySlug(slug),
-				getEventsByTalkSlug(slug)
+				getEventsByTalkSlug(slug),
+				getFeedbackByTalkSlug(slug)
 			]);
 			talk = talkData;
+			feedback = feedbackData || [];
 			const now = new Date().toISOString();
 			upcomingEvents = (events || []).filter(e => e.event_date >= now);
 			pastEvents = (events || []).filter(e => e.event_date < now);
@@ -159,6 +162,30 @@
 				</div>
 			{/if}
 
+			<!-- Feedback -->
+			{#if feedback.length > 0}
+				<div class="feedback-block">
+					<p class="feedback-label">What people said</p>
+					<ul class="feedback-list">
+						{#each feedback as item}
+							<li class="feedback-item">
+								<blockquote class="feedback-quote">"{item.quote}"</blockquote>
+								<div class="feedback-attr">
+									{#if item.attribution_url}
+										<a href={item.attribution_url} target="_blank" rel="noopener noreferrer" class="feedback-name">{item.attribution_name}</a>
+									{:else}
+										<span class="feedback-name">{item.attribution_name}</span>
+									{/if}
+									{#if item.attribution_role}
+										<span class="feedback-role">{item.attribution_role}</span>
+									{/if}
+								</div>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/if}
+
 			<div class="post-footer">
 				<a href="/talks" class="back-link"><ArrowLeft class="w-4 h-4" /> Back to Speaking</a>
 			</div>
@@ -228,6 +255,43 @@
 	.not-found { padding: clamp(3rem, 8vw, 6rem) 0; }
 	.not-found h1 { font-size: 1.5rem; font-weight: 900; margin: 0 0 0.75rem; }
 	.not-found p { color: var(--color-muted); margin: 0 0 2rem; }
+
+	/* Feedback */
+	.feedback-block { margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid var(--color-border); }
+	.feedback-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 1.5rem; }
+	.feedback-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2rem; }
+
+	.feedback-item { display: flex; flex-direction: column; gap: 0.75rem; }
+
+	.feedback-quote {
+		font-size: 1.05rem;
+		font-style: italic;
+		font-weight: 400;
+		line-height: 1.7;
+		color: var(--color-text);
+		margin: 0;
+		padding: 0;
+		border: none;
+		max-width: 65ch;
+	}
+
+	.feedback-attr { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+	.feedback-name {
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+		text-decoration: none;
+	}
+	a.feedback-name:hover { text-decoration: underline; }
+
+	.feedback-role {
+		font-size: 0.78rem;
+		color: var(--color-muted);
+	}
+	.feedback-role::before { content: '·'; margin-right: 0.5rem; opacity: 0.4; }
 
 	/* Content */
 	.talk-content { font-size: 1.125rem; line-height: 1.8; color: var(--color-text); max-width: 65ch; }
