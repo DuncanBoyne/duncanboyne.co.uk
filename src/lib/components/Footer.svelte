@@ -52,6 +52,11 @@
 				<img src={logoFull} alt="Duncan Boyne" class="footer-logo" />
 			</a>
 
+			<!-- Location (local SEO + honest signal) -->
+			<p class="text-sm text-muted">
+				Power BI consultant based in Norfolk. Serving Norwich, Great Yarmouth, and beyond.
+			</p>
+
 			<!-- Copyright -->
 			<p class="text-sm text-muted">
 				&copy; {currentYear} Duncan Boyne. All rights reserved.
