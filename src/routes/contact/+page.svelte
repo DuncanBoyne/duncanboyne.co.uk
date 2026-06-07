@@ -46,7 +46,7 @@
 	<div class="wrap">
 		<p class="eyebrow">Get in Touch</p>
 		<h1 class="page-title">Let's<br><span class="accent-line">Talk</span></h1>
-		<p class="page-sub">Power BI consulting, speaking enquiries, or just a conversation about your data.</p>
+		<p class="page-sub">Consulting work, a speaking slot, or just an honest conversation about the data that's keeping you up. All welcome.</p>
 	</div>
 </section>
 
@@ -61,7 +61,7 @@
 				{#if submitted}
 					<div class="success-block">
 						<p class="success-title">Message sent.</p>
-						<p class="success-sub">Thanks for reaching out. I typically reply within 1–2 business days.</p>
+						<p class="success-sub">Got it — thank you. I read everything that lands here myself, and I'll reply within a day or two. (If it's been longer, a collie probably ate the notification.)</p>
 					</div>
 				{:else}
 					<form on:submit|preventDefault={handleSubmit} class="contact-form">

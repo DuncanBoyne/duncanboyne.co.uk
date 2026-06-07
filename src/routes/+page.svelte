@@ -5,9 +5,9 @@
 	import type { Post, Event } from '$lib/types';
 
 	const services = [
-		{ num: '01', title: 'Power BI & Data Visualisation', desc: 'Reports and dashboards people actually use — built around real decisions, not just data.' },
-		{ num: '02', title: 'Automation', desc: "Killing the manual processes that eat your team's time and introduce errors." },
-		{ num: '03', title: 'AI Readiness', desc: 'Getting your data foundations right before AI gets involved — the work that makes it all possible.' }
+		{ num: '01', title: 'Power BI & Data Visualisation', desc: 'Dashboards people actually open. Built around the two questions you really have — not the twelve an imagined power user might ask.' },
+		{ num: '02', title: 'Automation', desc: "The Monday-morning copy-paste, the email approval chase, the report someone rebuilds by hand every month. I kill those — quietly, so nobody misses them." },
+		{ num: '03', title: 'AI Readiness', desc: "AI is only as good as the data under it. So before the shiny part, the unglamorous part: clean it, connect it, make it trustworthy. (Yes, that's the bit nobody sells you.)" }
 	];
 
 	let posts: Post[] = [];
@@ -174,7 +174,7 @@
 <!-- ── CTA ───────────────────────────────────────────────────────────── -->
 <section class="cta-block">
 	<div class="wrap">
-		<p class="cta-pre">Ready to work together?</p>
+		<p class="cta-pre">Got a dashboard nobody opens?</p>
 		<a href="mailto:duncanboyne@hotmail.co.uk" class="cta-main">
 			Let's talk <ArrowUpRight class="cta-ico" />
 		</a>
