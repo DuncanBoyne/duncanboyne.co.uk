@@ -6,8 +6,8 @@
 			number: '01',
 			title: 'Power BI & Data Visualisation',
 			tagline: 'Reports people actually open.',
-			description: "Most dashboards tell you something happened. Good ones tell you what to do about it. Here's the thing nobody admits: a report that's technically correct and never opened is still a failure. I build the kind people open — clear, fast, and shaped around the decisions your team is actually trying to make.",
-			detail: "I work across the whole stack — data modelling, DAX, Power Query, visual design — and I know how to wrestle data out of the systems your business already runs on (the friendly ones and the ones that fight back).",
+			description: "Most dashboards tell you something happened. Good ones tell you what to do about it. Here's the thing nobody admits: a report that's technically correct and never opened is still a failure. I build the kind people open. Clear, fast, and shaped around the decisions your team is actually trying to make.",
+			detail: "I work across the whole stack: data modelling, DAX, Power Query, visual design. And I know how to wrestle data out of the systems your business already runs on (the friendly ones and the ones that fight back).",
 			bullets: [
 				'Financial reporting: P&L, cash flow, variance analysis',
 				'Manufacturing & operations KPIs',
@@ -20,8 +20,8 @@
 			number: '02',
 			title: 'Automation',
 			tagline: 'Kill the spreadsheet shuffle.',
-			description: "Copying data between systems. Chasing approvals over email. Rebuilding the same report every Monday morning. That's not work — that's tax, paid in your team's hours and the odd quiet error nobody catches until it's expensive.",
-			detail: "I build Power Automate flows and connected workflows that take the dull, repeatable bits off your people's plates — so the humans get to do the human stuff, and the machine handles the shuffling (it never gets bored, and it never fat-fingers a cell).",
+			description: "Copying data between systems. Chasing approvals over email. Rebuilding the same report every Monday morning. That's not work. That's tax, paid in your team's hours and the odd quiet error nobody catches until it's expensive.",
+			detail: "I build Power Automate flows and connected workflows that take the dull, repeatable bits off your people's plates. The humans get to do the human stuff, and the machine handles the shuffling (it never gets bored, and it never fat-fingers a cell).",
 			bullets: [
 				'Power Automate flows and approvals',
 				'Connecting ERP, CRM, and reporting systems',
@@ -34,8 +34,8 @@
 			number: '03',
 			title: 'AI Readiness',
 			tagline: 'Get the boring bit right before the clever bit.',
-			description: "AI is only as good as the data underneath it. Point it at a mess and you don't get magic — you get a faster, more confident mess. So before the clever bit, the boring bit: data that's clean, connected, governed, and trustworthy.",
-			detail: "I help teams see where the data quality gaps actually are, how the data really flows (not how the diagram says it flows), and what needs fixing first. Honest roadmaps, not vendor pitch decks — and a straight answer if the real advice is 'not yet'.",
+			description: "AI is only as good as the data underneath it. Point it at a mess and you don't get magic. You get a faster, more confident mess. So before the clever bit, the boring bit: data that's clean, connected, governed, and trustworthy.",
+			detail: "I help teams see where the data quality gaps actually are, how the data really flows (not how the diagram says it flows), and what needs fixing first. Honest roadmaps, not vendor pitch decks. And a straight answer if the real advice is 'not yet'.",
 			bullets: [
 				'Data quality and governance assessment',
 				'Understanding your current data landscape',
@@ -60,7 +60,7 @@
 	<div class="wrap">
 		<p class="eyebrow">Work With Me</p>
 		<h1 class="page-title">Data that works.<br><span class="accent-line">For the people using it.</span></h1>
-		<p class="page-sub">Power BI, automation, and the unglamorous groundwork underneath — with real scars from financial and manufacturing environments.</p>
+		<p class="page-sub">Power BI, automation, and the unglamorous groundwork underneath. With real scars from financial and manufacturing environments.</p>
 	</div>
 </section>
 

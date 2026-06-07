@@ -5,8 +5,8 @@
 	import type { Post, Event } from '$lib/types';
 
 	const services = [
-		{ num: '01', title: 'Power BI & Data Visualisation', desc: 'Dashboards people actually open. Built around the two questions you really have — not the twelve an imagined power user might ask.' },
-		{ num: '02', title: 'Automation', desc: "The Monday-morning copy-paste, the email approval chase, the report someone rebuilds by hand every month. I kill those — quietly, so nobody misses them." },
+		{ num: '01', title: 'Power BI & Data Visualisation', desc: 'Dashboards people actually open. Built around the two questions you really have, not the twelve an imagined power user might ask.' },
+		{ num: '02', title: 'Automation', desc: "The Monday-morning copy-paste. The email approval chase. The report someone rebuilds by hand every month. I kill those, quietly, so nobody misses them." },
 		{ num: '03', title: 'AI Readiness', desc: "AI is only as good as the data under it. So before the shiny part, the unglamorous part: clean it, connect it, make it trustworthy. (Yes, that's the bit nobody sells you.)" }
 	];
 

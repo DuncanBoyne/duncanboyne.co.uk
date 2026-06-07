@@ -18,13 +18,13 @@
 
 <svelte:head>
 	<title>About — Duncan Boyne</title>
-	<meta name="description" content="Power BI consultant, international speaker, founder of the Norfolk Power Platform User Group and the East of England Power Platform Summit." />
+	<meta name="description" content="AI / BI storyteller and Power BI consultant. International speaker, founder of the Norfolk Power Platform User Group and the East of England Power Platform Summit." />
 </svelte:head>
 
 <!-- Hero -->
 <section class="page-hero">
 	<div class="wrap">
-		<p class="eyebrow">The Human Behind the Dashboards</p>
+		<p class="eyebrow">AI / BI Storyteller</p>
 		<h1 class="page-title">About<br><span class="accent-line">Me</span></h1>
 	</div>
 </section>
@@ -52,15 +52,15 @@
 
 			<!-- Text col -->
 			<div class="bio-col">
-				<p class="bio-lede">Most dashboards don't fail because the data is wrong. They fail because nobody wants to open them. I spend my time trying to fix that.</p>
+				<p class="bio-lede">A dashboard nobody opens is just an expensive screenshot. I spend my days making sure people actually open them.</p>
 
 				<div class="bio-body">
-					<p>Professionally, I live with Power BI and the Microsoft Power Platform, turning messy data, vague requirements, and "technically correct" dashboards into things people actually use. I sit in the awkward middle between business and tech — translating what someone meant into something usable, human, and honest. (It's less glamorous than it sounds, and far more satisfying.)</p>
-					<p>I'm a 90s kid who still adores Pokemon, raised on a Game Boy and the original PlayStation, and I never really stopped being a gamer. Games were my first lesson in systems, feedback loops, and why good design matters — I just didn't have the words for it yet.</p>
+					<p>Your data has a story. Most people bury it under charts nobody reads. I dig it out and tell it properly. That's the job, whether I'm doing it with Power BI or with AI on top. I've spent years as a Power BI consultant, living in messy data, vague requirements, and "technically correct" dashboards, turning all of it into things people actually use. These days I'm leaning harder into the AI side, because AI is only as good as the data you point it at, and the data is exactly where I've always lived. (Less glamorous than it sounds. Far more satisfying.)</p>
+					<p>I'm a 90s kid who still adores Pokemon, raised on a Game Boy and the original PlayStation, and I never really stopped being a gamer. Games were my first lesson in systems, feedback loops, and why good design matters. I just didn't have the words for it yet.</p>
 					<p>I'm a dad to two brilliant young humans, 11 and 8, who remind me daily that curiosity beats confidence and that "why?" is usually the most important question in the room. The household is rounded out by Bella, a wonderfully scatty three-year-old Border Collie with no respect for meetings, deadlines, or personal space.</p>
-					<p>I'm AuDHD and proud. It shapes how I think, how I work, and how I show up: it's why I can hyperfocus on a problem until it clicks, why accessibility and inclusion aren't optional to me, and why I believe clarity is kindness — especially in data and design.</p>
-					<p>Community is a huge part of my life. I founded the Norfolk Power Platform User Group and the East of England Power Platform Summit. EoEPPS is very much my baby — built from the ground up to be welcoming, practical, and human. Kids were welcome. Partners were welcome. Even a dog was welcome.</p>
-					<p>I write, speak, and build in public — sometimes deep Power BI, sometimes design, accessibility, or ethics. I'll always pick clarity and usefulness over polish. Perfect helps nobody. Useful helps someone today.</p>
+					<p>I'm AuDHD and proud. It shapes how I think, how I work, and how I show up: it's why I can hyperfocus on a problem until it clicks, why accessibility and inclusion aren't optional to me, and why I believe clarity is kindness. Especially in data and design.</p>
+					<p>Community is a huge part of my life. I founded the Norfolk Power Platform User Group and the East of England Power Platform Summit. EoEPPS is very much my baby, built from the ground up to be welcoming, practical, and human. Kids were welcome. Partners were welcome. Even a dog was welcome.</p>
+					<p>I write, speak, and build in public. Sometimes deep Power BI, sometimes AI, sometimes design, accessibility, or ethics. I'll always pick clarity and usefulness over polish. Perfect helps nobody. Useful helps someone today.</p>
 				</div>
 			</div>
 		</div>

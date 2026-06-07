@@ -61,7 +61,7 @@
 				{#if submitted}
 					<div class="success-block">
 						<p class="success-title">Message sent.</p>
-						<p class="success-sub">Got it — thank you. I read everything that lands here myself, and I'll reply within a day or two. (If it's been longer, a collie probably ate the notification.)</p>
+						<p class="success-sub">Got it, thank you. I read everything that lands here myself, and I'll reply within a day or two. (If it's been longer, a collie probably ate the notification.)</p>
 					</div>
 				{:else}
 					<form on:submit|preventDefault={handleSubmit} class="contact-form">
