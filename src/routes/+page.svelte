@@ -3,6 +3,7 @@
 	import { ArrowUpRight } from 'lucide-svelte';
 	import { getPosts, getEvents } from '$lib/supabase';
 	import type { Post, Event } from '$lib/types';
+	import Seo from '$lib/components/Seo.svelte';
 
 	const services = [
 		{ num: '01', title: 'Power BI & Data Visualisation', desc: 'Dashboards people actually open. Built around the two questions you really have, not the twelve an imagined power user might ask.' },
@@ -26,9 +27,11 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Duncan Boyne — Power BI Consultant</title>
-</svelte:head>
+<Seo
+	title="Duncan Boyne | Power BI Consultant in Norfolk (Norwich & Great Yarmouth)"
+	description="Power BI consultant based in Norfolk, working across Norwich and Great Yarmouth. Dashboards people actually open, automation, and data & AI readiness for finance and manufacturing teams."
+	path="/"
+/>
 
 <!-- ── HERO ─────────────────────────────────────────────────────────── -->
 <section class="hero" class:ready>

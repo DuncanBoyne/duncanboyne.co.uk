@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { ArrowUpRight, CheckCircle } from 'lucide-svelte';
+	import Seo from '$lib/components/Seo.svelte';
 
 	const services = [
 		{
@@ -50,10 +51,11 @@
 	const erp = ['Dynamics 365', 'Epicor', 'InFor', 'Sage'];
 </script>
 
-<svelte:head>
-	<title>Services — Duncan Boyne</title>
-	<meta name="description" content="Power BI, automation, and AI readiness consulting from Duncan Boyne." />
-</svelte:head>
+<Seo
+	title="Power BI Consulting in Norfolk, Norwich & Great Yarmouth | Duncan Boyne"
+	description="Power BI consulting, automation, and data & AI readiness for businesses across Norfolk, Norwich and Great Yarmouth. Deep experience in financial and manufacturing environments."
+	path="/services"
+/>
 
 <!-- Hero -->
 <section class="page-hero">

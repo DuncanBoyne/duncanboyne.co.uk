@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Github, Linkedin, Youtube, ArrowUpRight, ExternalLink } from 'lucide-svelte';
+	import Seo from '$lib/components/Seo.svelte';
 
 	const social = [
 		{ href: 'https://github.com/DuncanBoyneJnr', icon: Github, label: 'GitHub', handle: '@DuncanBoyneJnr' },
@@ -16,10 +17,12 @@
 	];
 </script>
 
-<svelte:head>
-	<title>About — Duncan Boyne</title>
-	<meta name="description" content="AI / BI storyteller and Power BI consultant. International speaker, founder of the Norfolk Power Platform User Group and the East of England Power Platform Summit." />
-</svelte:head>
+<Seo
+	title="About Duncan Boyne | Power BI & Data Consultant, Norfolk"
+	description="AI / BI storyteller and Power BI consultant in Norfolk, working across Norwich and Great Yarmouth. International speaker and founder of the Norfolk Power Platform User Group and the East of England Power Platform Summit."
+	path="/about"
+	type="profile"
+/>
 
 <!-- Hero -->
 <section class="page-hero">

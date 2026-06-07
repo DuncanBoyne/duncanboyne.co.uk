@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Mail, Github, Linkedin, Youtube, Send, Mic, ExternalLink, ArrowUpRight } from 'lucide-svelte';
+	import Seo from '$lib/components/Seo.svelte';
 
 	let formData = { name: '', email: '', subject: '', message: '' };
 	let submitting = false;
@@ -36,10 +37,11 @@
 	];
 </script>
 
-<svelte:head>
-	<title>Contact — Duncan Boyne</title>
-	<meta name="description" content="Get in touch with Duncan Boyne for Power BI consulting, speaking engagements, or collaboration opportunities." />
-</svelte:head>
+<Seo
+	title="Contact | Power BI Consultant in Norfolk — Duncan Boyne"
+	description="Get in touch with Duncan Boyne, Power BI consultant in Norfolk (Norwich and Great Yarmouth), for consulting work, speaking enquiries, or a conversation about your data."
+	path="/contact"
+/>
 
 <!-- Hero -->
 <section class="page-hero">
