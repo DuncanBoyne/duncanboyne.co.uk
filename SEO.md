@@ -73,6 +73,11 @@ The strongest play for a specific town is a dedicated page (e.g. `/power-bi-cons
 with genuinely town-specific copy — NOT a duplicated template (Google penalises doorway pages).
 Only worth it if you have real, distinct things to say per town. Ask and I'll scaffold one.
 
+## ⚠️ Do not delete these verification files
+Both live in `static/` and must stay forever — deleting either un-verifies you:
+- `static/google1539c18771c3851b.html` — Google Search Console
+- `static/BingSiteAuth.xml` — Bing Webmaster Tools
+
 ## Don't bother with
 - Keyword stuffing — the current copy is at the right density. More would hurt.
 - Buying backlinks / directory spam — risk > reward.
