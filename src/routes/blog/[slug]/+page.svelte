@@ -8,6 +8,7 @@
 
 	const carousels: Record<string, string[]> = {
 		'ai-adoption-power-bi': Array.from({ length: 8 }, (_, i) => `/carousel-ai-power-bi/slide-${i + 1}.png`),
+		'power-bi-is-becoming-an-ai-job': Array.from({ length: 10 }, (_, i) => `/carousel-power-bi-ai-job/slide-${i + 1}.png`),
 		'linkedin-analytics-dashboard-claude-code': Array.from({ length: 10 }, (_, i) => `/carousel-linkedin-dashboard/slide-${i + 1}.png`),
 		'deneb-two-measure-heatmap': Array.from({ length: 10 }, (_, i) => `/carousel-deneb-two-measure-heatmap/slide-${i + 1}.png`)
 	};
