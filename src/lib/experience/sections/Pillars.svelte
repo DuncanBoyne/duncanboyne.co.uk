@@ -1,50 +1,71 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core';
-	import type { Mesh } from 'three';
+	import {
+		CylinderGeometry,
+		Color,
+		InstancedMesh,
+		Matrix4,
+		MeshStandardMaterial,
+		Quaternion,
+		Vector3,
+		type Mesh
+	} from 'three';
 
-	// Two colonnades flanking the nave, vanishing upward into fog.
-	type Pillar = { x: number; z: number; health: 'sound' | 'damaged' | 'overloaded'; tilt: number };
-	const pillars: Pillar[] = [];
+	// One instanced draw for the colonnades; the overloaded pillar is its own
+	// mesh so it can strain and glow.
+	type Def = { x: number; z: number; damaged: boolean };
+	const defs: Def[] = [];
 	for (let side = -1; side <= 1; side += 2) {
 		for (let row = 0; row < 8; row++) {
-			const z = 30 - row * 8.5;
-			let health: Pillar['health'] = 'sound';
-			if (side === 1 && row === 3) health = 'overloaded';
-			else if ((side === -1 && row === 5) || (side === 1 && row === 6)) health = 'damaged';
-			pillars.push({ x: side * 9, z, health, tilt: health === 'damaged' ? 0.04 : 0 });
+			if (side === 1 && row === 3) continue; // the overloaded one
+			defs.push({
+				x: side * 9,
+				z: 30 - row * 8.5,
+				damaged: (side === -1 && row === 5) || (side === 1 && row === 6)
+			});
 		}
 	}
+
+	const geometry = new CylinderGeometry(1.05, 1.55, 40, 14, 4);
+	const material = new MeshStandardMaterial({ color: '#ffffff', roughness: 0.92 });
+	const mesh = new InstancedMesh(geometry, material, defs.length);
+
+	const m = new Matrix4();
+	const q = new Quaternion();
+	const sound = new Color('#3a3b42');
+	const dark = new Color('#1d1b18');
+	const axis = new Vector3(0, 0, 1);
+	defs.forEach((def, i) => {
+		q.setFromAxisAngle(axis, def.damaged ? 0.045 * (def.x > 0 ? -1 : 1) : 0);
+		m.compose(new Vector3(def.x, 20, def.z), q, new Vector3(1, 1, 1));
+		mesh.setMatrixAt(i, m);
+		mesh.setColorAt(i, def.damaged ? dark : sound);
+	});
+	mesh.instanceMatrix.needsUpdate = true;
+	if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
 
 	let overloaded = $state<Mesh>();
 	let t = 0;
 	useTask((delta) => {
 		t += delta;
 		if (overloaded) {
-			// the pillar carrying too much weight visibly strains
-			const s = 1 + Math.sin(t * 2.6) * 0.025;
+			const s = 1 + Math.sin(t * 2.6) * 0.03;
 			overloaded.scale.set(s, 1, s);
 		}
 	});
 </script>
 
 <T.Group>
-	{#each pillars as pillar}
-		{#if pillar.health === 'overloaded'}
-			<T.Mesh bind:ref={overloaded} position={[pillar.x, 20, pillar.z]}>
-				<T.CylinderGeometry args={[1.1, 1.5, 40, 12]} />
-				<T.MeshStandardMaterial color="#3a2f24" emissive="#b46304" emissiveIntensity={0.35} roughness={0.8} />
-			</T.Mesh>
-		{:else}
-			<T.Mesh
-				position={[pillar.x, 20, pillar.z]}
-				rotation.z={pillar.tilt}
-			>
-				<T.CylinderGeometry args={[1.1, 1.5, 40, 12]} />
-				<T.MeshStandardMaterial
-					color={pillar.health === 'damaged' ? '#1c1a17' : '#2b2b2e'}
-					roughness={0.9}
-				/>
-			</T.Mesh>
-		{/if}
-	{/each}
+	<T is={mesh} frustumCulled={false} />
+
+	<!-- the pillar carrying too much weight -->
+	<T.Mesh bind:ref={overloaded} position={[9, 20, 4.5]}>
+		<T.CylinderGeometry args={[1.05, 1.55, 40, 14, 4]} />
+		<T.MeshStandardMaterial
+			color="#46382a"
+			emissive="#b46304"
+			emissiveIntensity={0.5}
+			roughness={0.8}
+		/>
+	</T.Mesh>
 </T.Group>

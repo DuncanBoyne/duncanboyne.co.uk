@@ -1,34 +1,58 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core';
-	import type { Mesh, PointLight } from 'three';
+	import { CanvasTexture, SpriteMaterial, AdditiveBlending, type PointLight, type Sprite } from 'three';
+	import { createHeartMaterial } from '../materials/heartPulse';
+	import { createGlowCanvas } from '../materials/lightShaft';
 	import { sectionProgress } from '../stores';
 
 	const progress = sectionProgress(6);
 
-	let core = $state<Mesh>();
+	const heartMaterial = createHeartMaterial();
+
+	const glowTexture = new CanvasTexture(createGlowCanvas());
+	const glowMaterial = new SpriteMaterial({
+		map: glowTexture,
+		blending: AdditiveBlending,
+		depthWrite: false,
+		transparent: true,
+		opacity: 0.7
+	});
+	const haloMaterial = new SpriteMaterial({
+		map: glowTexture,
+		blending: AdditiveBlending,
+		depthWrite: false,
+		transparent: true,
+		opacity: 0.25
+	});
+
 	let light = $state<PointLight>();
+	let glow = $state<Sprite>();
+	let halo = $state<Sprite>();
 	let t = 0;
 
 	useTask((delta) => {
 		t += delta;
-		const pulse = 1 + Math.sin(t * 2.4) * 0.07;
-		if (core) core.scale.setScalar(pulse);
-		if (light) {
-			// the structure responds as the visitor approaches the heart
-			light.intensity = 8 + $progress * 60 + Math.sin(t * 2.4) * 4;
+		const energy = $progress;
+		const pulse = Math.sin(t * 2.2) * 0.5 + 0.5;
+		heartMaterial.uniforms.uTime.value = t;
+		heartMaterial.uniforms.uEnergy.value = energy;
+		if (light) light.intensity = 10 + energy * 70 + pulse * 6;
+		if (glow) {
+			const s = 7 + pulse * 1.2 + energy * 4;
+			glow.scale.set(s, s, 1);
+		}
+		if (halo) {
+			const s = 16 + pulse * 2 + energy * 9;
+			halo.scale.set(s, s, 1);
 		}
 	});
 </script>
 
 <T.Group position={[0, 10, -38]}>
-	<T.Mesh bind:ref={core}>
-		<T.IcosahedronGeometry args={[2.2, 2]} />
-		<T.MeshStandardMaterial
-			color="#f4d141"
-			emissive="#f4d141"
-			emissiveIntensity={1.4}
-			roughness={0.35}
-		/>
+	<T.Mesh material={heartMaterial}>
+		<T.IcosahedronGeometry args={[2.2, 5]} />
 	</T.Mesh>
-	<T.PointLight bind:ref={light} color="#f4d141" intensity={8} distance={70} decay={1.6} />
+	<T.Sprite bind:ref={glow} material={glowMaterial} />
+	<T.Sprite bind:ref={halo} material={haloMaterial} />
+	<T.PointLight bind:ref={light} color="#f4d141" intensity={10} distance={80} decay={1.6} />
 </T.Group>

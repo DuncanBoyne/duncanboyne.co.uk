@@ -1,55 +1,72 @@
 <script lang="ts">
-	import { T } from '@threlte/core';
+	import { T, useTask } from '@threlte/core';
+	import {
+		BoxGeometry,
+		InstancedMesh,
+		InstancedBufferAttribute,
+		Matrix4,
+		MeshStandardMaterial
+	} from 'three';
+	import { createCrackedStoneMaterial } from '../materials/crackedStone';
 	import { sectionProgress } from '../stores';
 
-	// Deterministic pseudo-random so the floor doesn't reshuffle between visits.
 	function rand(seed: number): number {
 		const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
 		return x - Math.floor(x);
 	}
 
-	// Stone tiles flanking the nave. Some flawless, some sunken/cracked.
-	type Tile = { x: number; z: number; size: number; shade: number; sunk: number; delay: number };
-	const tiles: Tile[] = [];
-	let i = 0;
-	for (let cx = -4; cx <= 4; cx++) {
-		for (let cz = -6; cz <= 7; cz++) {
-			i++;
-			const integrity = rand(i * 3.7);
-			tiles.push({
-				x: cx * 4.2 + (rand(i) - 0.5) * 0.4,
-				z: cz * 6.4 + (rand(i * 1.3) - 0.5) * 0.5,
-				size: 3.6,
-				shade: 0.16 + integrity * 0.1,
-				sunk: integrity < 0.18 ? 0.5 + rand(i * 2.1) * 0.6 : 0,
-				delay: rand(i * 5.9)
-			});
+	const COLS = 11;
+	const ROWS = 17;
+	const COUNT = COLS * ROWS;
+
+	const geometry = new BoxGeometry(3.9, 0.35, 6.1);
+	const material = createCrackedStoneMaterial();
+	const mesh = new InstancedMesh(geometry, material, COUNT);
+
+	const integrity = new Float32Array(COUNT);
+	const delay = new Float32Array(COUNT);
+	const seed = new Float32Array(COUNT);
+	const m = new Matrix4();
+
+	let n = 0;
+	for (let cx = 0; cx < COLS; cx++) {
+		for (let cz = 0; cz < ROWS; cz++) {
+			const x = (cx - (COLS - 1) / 2) * 4.1 + (rand(n) - 0.5) * 0.3;
+			const z = (cz - (ROWS - 1) / 2) * 6.4 + (rand(n * 1.3) - 0.5) * 0.4;
+			const tileIntegrity = rand(n * 3.7);
+			// fractured tiles sit visibly sunken
+			const sink = tileIntegrity < 0.2 ? 0.35 + rand(n * 2.1) * 0.4 : 0;
+			m.makeTranslation(x, -0.18 - sink, z);
+			mesh.setMatrixAt(n, m);
+			integrity[n] = tileIntegrity;
+			delay[n] = rand(n * 5.9);
+			seed[n] = rand(n * 9.4);
+			n++;
 		}
 	}
+	geometry.setAttribute('aIntegrity', new InstancedBufferAttribute(integrity, 1));
+	geometry.setAttribute('aDelay', new InstancedBufferAttribute(delay, 1));
+	geometry.setAttribute('aSeed', new InstancedBufferAttribute(seed, 1));
+	mesh.instanceMatrix.needsUpdate = true;
+
+	const baseMaterial = new MeshStandardMaterial({ color: '#0c0c0e', roughness: 0.95 });
 
 	const progress = sectionProgress(1);
-	// Tiles rise from below as the visitor looks down at the forming floor.
-	const rise = $derived(Math.min(1, $progress * 2.2));
+	let smoothed = 0;
+	useTask((delta) => {
+		material.uniforms.uTime.value += delta;
+		// keep tiles risen once the visitor has moved past the section
+		const target = Math.max(material.uniforms.uProgress.value, $progress);
+		smoothed += (target - smoothed) * Math.min(1, delta * 3);
+		material.uniforms.uProgress.value = Math.max(smoothed, material.uniforms.uProgress.value);
+	});
 </script>
 
 <T.Group>
-	<!-- base slab -->
-	<T.Mesh position={[0, -0.6, 0]}>
-		<T.BoxGeometry args={[44, 1, 104]} />
-		<T.MeshStandardMaterial color="#141414" roughness={0.95} />
+	<!-- void slab beneath the tiles -->
+	<T.Mesh position={[0, -1.1, 0]} material={baseMaterial}>
+		<T.BoxGeometry args={[46, 1.4, 112]} />
 	</T.Mesh>
 
-	{#each tiles as tile}
-		{@const reveal = Math.min(1, Math.max(0, (rise - tile.delay * 0.6) / 0.4))}
-		<T.Mesh
-			position={[tile.x, -0.05 - tile.sunk - (1 - reveal) * 3, tile.z]}
-			visible={reveal > 0.01}
-		>
-			<T.BoxGeometry args={[tile.size, 0.3, tile.size * 1.5]} />
-			<T.MeshStandardMaterial
-				color={`rgb(${Math.round(tile.shade * 255)}, ${Math.round(tile.shade * 250)}, ${Math.round(tile.shade * 240)})`}
-				roughness={0.9}
-			/>
-		</T.Mesh>
-	{/each}
+	<T is={mesh} frustumCulled={false} />
 </T.Group>
