@@ -42,11 +42,13 @@
 			'https://www.youtube.com/@PowerBIKindaGuy'
 		]
 	};
+
+	const jsonLdScript = `<script type="application/ld+json">${JSON.stringify(jsonLd)}<\/script>`;
 </script>
 
 <svelte:head>
 	<link rel="alternate" type="application/rss+xml" href="/rss.xml" title="Duncan Boyne Blog" />
-	{@html `<script type="application/ld+json">${JSON.stringify(jsonLd)}</` + `script>`}
+	{@html jsonLdScript}
 	<script defer src="https://cloud.umami.is/script.js" data-website-id="17dd8826-5bf3-43d7-b785-b78f205d2845"></script>
 </svelte:head>
 

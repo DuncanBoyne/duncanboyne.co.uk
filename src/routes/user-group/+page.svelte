@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Calendar, MapPin, Users, Clock, Sparkles, ExternalLink, Linkedin, Pizza, Mic } from 'lucide-svelte';
+	import { Calendar, MapPin, Users, Clock, Sparkles, ExternalLink, Pizza, Mic } from 'lucide-svelte';
+	import Linkedin from '$lib/components/icons/Linkedin.svelte';
 
 	const benefits = [
 		{

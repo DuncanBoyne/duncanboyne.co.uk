@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { Github, Linkedin, Youtube, ArrowUpRight, ExternalLink } from 'lucide-svelte';
+	import { ArrowUpRight, ExternalLink } from 'lucide-svelte';
+	import Github from '$lib/components/icons/Github.svelte';
+	import Linkedin from '$lib/components/icons/Linkedin.svelte';
+	import Youtube from '$lib/components/icons/Youtube.svelte';
 	import Seo from '$lib/components/Seo.svelte';
 
 	const social = [

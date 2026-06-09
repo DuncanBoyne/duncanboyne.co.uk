@@ -1,4 +1,4 @@
-export interface Post {
+export type Post = {
 	id: number;
 	title: string;
 	slug: string;
@@ -11,7 +11,7 @@ export interface Post {
 	updated_at: string;
 }
 
-export interface Event {
+export type Event = {
 	id: number;
 	title: string;
 	description: string | null;
@@ -25,7 +25,7 @@ export interface Event {
 	updated_at: string;
 }
 
-export interface Talk {
+export type Talk = {
 	id: number;
 	title: string;
 	slug: string;
@@ -40,7 +40,7 @@ export interface Talk {
 	updated_at: string;
 }
 
-export interface Video {
+export type Video = {
 	id: number;
 	title: string;
 	youtube_id: string;
@@ -50,7 +50,7 @@ export interface Video {
 	updated_at: string;
 }
 
-export interface Book {
+export type Book = {
 	id: number;
 	title: string;
 	slug: string;
@@ -68,7 +68,7 @@ export interface Book {
 	updated_at: string;
 }
 
-export interface Anime {
+export type Anime = {
 	id: number;
 	title: string;
 	slug: string;
@@ -87,7 +87,7 @@ export interface Anime {
 	updated_at: string;
 }
 
-export interface GamingAchievement {
+export type GamingAchievement = {
 	id: number;
 	title: string;
 	slug: string;
@@ -103,7 +103,7 @@ export interface GamingAchievement {
 	updated_at: string;
 }
 
-export interface GirlfriendApplication {
+export type GirlfriendApplication = {
 	id: number;
 	name: string | null;
 	nickname: string | null;
@@ -128,7 +128,7 @@ export interface GirlfriendApplication {
 	created_at: string;
 }
 
-export interface TalkFeedback {
+export type TalkFeedback = {
 	id: number;
 	quote: string;
 	attribution_name: string;
@@ -141,50 +141,33 @@ export interface TalkFeedback {
 	created_at: string;
 }
 
-// Database types for Supabase
-export interface Database {
+// Database types for Supabase.
+// Each table needs Relationships, and the schema needs Views/Functions/Enums/
+// CompositeTypes, or supabase-js's GenericSchema constraint fails and every
+// row type collapses to `never`.
+type TableDef<RowType, OmitKeys extends keyof RowType> = {
+	Row: RowType;
+	Insert: Omit<RowType, OmitKeys>;
+	Update: Partial<Omit<RowType, OmitKeys>>;
+	Relationships: [];
+};
+
+export type Database = {
 	public: {
 		Tables: {
-			posts: {
-				Row: Post;
-				Insert: Omit<Post, 'id' | 'created_at' | 'updated_at'>;
-				Update: Partial<Omit<Post, 'id' | 'created_at' | 'updated_at'>>;
-			};
-			events: {
-				Row: Event;
-				Insert: Omit<Event, 'id' | 'created_at' | 'updated_at'>;
-				Update: Partial<Omit<Event, 'id' | 'created_at' | 'updated_at'>>;
-			};
-			talks: {
-				Row: Talk;
-				Insert: Omit<Talk, 'id' | 'created_at' | 'updated_at'>;
-				Update: Partial<Omit<Talk, 'id' | 'created_at' | 'updated_at'>>;
-			};
-			videos: {
-				Row: Video;
-				Insert: Omit<Video, 'id' | 'created_at' | 'updated_at'>;
-				Update: Partial<Omit<Video, 'id' | 'created_at' | 'updated_at'>>;
-			};
-			books: {
-				Row: Book;
-				Insert: Omit<Book, 'id' | 'created_at' | 'updated_at'>;
-				Update: Partial<Omit<Book, 'id' | 'created_at' | 'updated_at'>>;
-			};
-			anime: {
-				Row: Anime;
-				Insert: Omit<Anime, 'id' | 'created_at' | 'updated_at'>;
-				Update: Partial<Omit<Anime, 'id' | 'created_at' | 'updated_at'>>;
-			};
-			gaming_achievements: {
-				Row: GamingAchievement;
-				Insert: Omit<GamingAchievement, 'id' | 'created_at' | 'updated_at'>;
-				Update: Partial<Omit<GamingAchievement, 'id' | 'created_at' | 'updated_at'>>;
-			};
-			girlfriend_applications: {
-				Row: GirlfriendApplication;
-				Insert: Omit<GirlfriendApplication, 'id' | 'created_at'>;
-				Update: Partial<Omit<GirlfriendApplication, 'id' | 'created_at'>>;
-			};
+			posts: TableDef<Post, 'id' | 'created_at' | 'updated_at'>;
+			events: TableDef<Event, 'id' | 'created_at' | 'updated_at'>;
+			talks: TableDef<Talk, 'id' | 'created_at' | 'updated_at'>;
+			videos: TableDef<Video, 'id' | 'created_at' | 'updated_at'>;
+			books: TableDef<Book, 'id' | 'created_at' | 'updated_at'>;
+			anime: TableDef<Anime, 'id' | 'created_at' | 'updated_at'>;
+			gaming_achievements: TableDef<GamingAchievement, 'id' | 'created_at' | 'updated_at'>;
+			talk_feedback: TableDef<TalkFeedback, 'id' | 'created_at'>;
+			girlfriend_applications: TableDef<GirlfriendApplication, 'id' | 'created_at'>;
 		};
+		Views: Record<string, never>;
+		Functions: Record<string, never>;
+		Enums: Record<string, never>;
+		CompositeTypes: Record<string, never>;
 	};
 }

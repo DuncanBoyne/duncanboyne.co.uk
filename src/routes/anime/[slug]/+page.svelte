@@ -35,7 +35,7 @@
 		plan_to_watch: 'bg-muted/20 text-muted'
 	};
 
-	$: slug = $page.params.slug;
+	$: slug = $page.params.slug ?? '';
 
 	onMount(async () => {
 		try {

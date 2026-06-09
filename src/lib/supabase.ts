@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from './types';
+import type { Database, Post, Event, Talk, Video, Book, Anime, GamingAchievement, TalkFeedback } from './types';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
@@ -8,7 +8,7 @@ export const supabase = createClient<Database>(supabaseUrl || '', supabaseAnonKe
 
 // Helper functions for data fetching
 
-export async function getPosts(limit?: number) {
+export async function getPosts(limit?: number): Promise<Post[]> {
 	let query = supabase
 		.from('posts')
 		.select('*')
@@ -20,10 +20,10 @@ export async function getPosts(limit?: number) {
 
 	const { data, error } = await query;
 	if (error) throw error;
-	return data;
+	return (data ?? []) as Post[];
 }
 
-export async function getPostBySlug(slug: string) {
+export async function getPostBySlug(slug: string): Promise<Post> {
 	const { data, error } = await supabase
 		.from('posts')
 		.select('*')
@@ -31,10 +31,10 @@ export async function getPostBySlug(slug: string) {
 		.single();
 
 	if (error) throw error;
-	return data;
+	return data as Post;
 }
 
-export async function getEvents(upcoming = true) {
+export async function getEvents(upcoming = true): Promise<Event[]> {
 	const now = new Date().toISOString();
 	let query = supabase.from('events').select('*');
 
@@ -46,20 +46,20 @@ export async function getEvents(upcoming = true) {
 
 	const { data, error } = await query;
 	if (error) throw error;
-	return data;
+	return (data ?? []) as Event[];
 }
 
-export async function getTalks() {
+export async function getTalks(): Promise<Talk[]> {
 	const { data, error } = await supabase
 		.from('talks')
 		.select('*')
 		.order('created_at', { ascending: false });
 
 	if (error) throw error;
-	return data;
+	return (data ?? []) as Talk[];
 }
 
-export async function getTalkBySlug(slug: string) {
+export async function getTalkBySlug(slug: string): Promise<Talk> {
 	const { data, error } = await supabase
 		.from('talks')
 		.select('*')
@@ -67,10 +67,10 @@ export async function getTalkBySlug(slug: string) {
 		.single();
 
 	if (error) throw error;
-	return data;
+	return data as Talk;
 }
 
-export async function getEventsByTalkSlug(talkSlug: string) {
+export async function getEventsByTalkSlug(talkSlug: string): Promise<Event[]> {
 	const { data, error } = await supabase
 		.from('events')
 		.select('*')
@@ -78,10 +78,10 @@ export async function getEventsByTalkSlug(talkSlug: string) {
 		.order('event_date', { ascending: true });
 
 	if (error) throw error;
-	return data;
+	return (data ?? []) as Event[];
 }
 
-export async function getVideos(limit?: number) {
+export async function getVideos(limit?: number): Promise<Video[]> {
 	let query = supabase
 		.from('videos')
 		.select('*')
@@ -93,20 +93,20 @@ export async function getVideos(limit?: number) {
 
 	const { data, error } = await query;
 	if (error) throw error;
-	return data;
+	return (data ?? []) as Video[];
 }
 
-export async function getBooks() {
+export async function getBooks(): Promise<Book[]> {
 	const { data, error } = await supabase
 		.from('books')
 		.select('*')
 		.order('created_at', { ascending: false });
 
 	if (error) throw error;
-	return data;
+	return (data ?? []) as Book[];
 }
 
-export async function getBookBySlug(slug: string) {
+export async function getBookBySlug(slug: string): Promise<Book> {
 	const { data, error } = await supabase
 		.from('books')
 		.select('*')
@@ -114,20 +114,20 @@ export async function getBookBySlug(slug: string) {
 		.single();
 
 	if (error) throw error;
-	return data;
+	return data as Book;
 }
 
-export async function getAnime() {
+export async function getAnime(): Promise<Anime[]> {
 	const { data, error } = await supabase
 		.from('anime')
 		.select('*')
 		.order('created_at', { ascending: false });
 
 	if (error) throw error;
-	return data;
+	return (data ?? []) as Anime[];
 }
 
-export async function getAnimeBySlug(slug: string) {
+export async function getAnimeBySlug(slug: string): Promise<Anime> {
 	const { data, error } = await supabase
 		.from('anime')
 		.select('*')
@@ -135,7 +135,7 @@ export async function getAnimeBySlug(slug: string) {
 		.single();
 
 	if (error) throw error;
-	return data;
+	return data as Anime;
 }
 
 export async function getYearInNumbers() {
@@ -174,17 +174,17 @@ export async function getYearInNumbers() {
 	};
 }
 
-export async function getGamingAchievements() {
+export async function getGamingAchievements(): Promise<GamingAchievement[]> {
 	const { data, error } = await supabase
 		.from('gaming_achievements')
 		.select('*')
 		.order('created_at', { ascending: false });
 
 	if (error) throw error;
-	return data;
+	return (data ?? []) as GamingAchievement[];
 }
 
-export async function getFeaturedFeedback() {
+export async function getFeaturedFeedback(): Promise<TalkFeedback[]> {
 	const { data, error } = await supabase
 		.from('talk_feedback')
 		.select('*')
@@ -192,10 +192,10 @@ export async function getFeaturedFeedback() {
 		.order('sort_order', { ascending: true });
 
 	if (error) throw error;
-	return data;
+	return (data ?? []) as TalkFeedback[];
 }
 
-export async function getFeedbackByTalkSlug(talkSlug: string) {
+export async function getFeedbackByTalkSlug(talkSlug: string): Promise<TalkFeedback[]> {
 	const { data, error } = await supabase
 		.from('talk_feedback')
 		.select('*')
@@ -203,7 +203,7 @@ export async function getFeedbackByTalkSlug(talkSlug: string) {
 		.order('sort_order', { ascending: true });
 
 	if (error) throw error;
-	return data;
+	return (data ?? []) as TalkFeedback[];
 }
 
 export async function submitGirlfriendApplication(

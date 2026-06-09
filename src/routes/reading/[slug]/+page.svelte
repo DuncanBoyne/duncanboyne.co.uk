@@ -31,7 +31,7 @@
 		completed: 'bg-success/20 text-success'
 	};
 
-	$: slug = $page.params.slug;
+	$: slug = $page.params.slug ?? '';
 
 	onMount(async () => {
 		try {

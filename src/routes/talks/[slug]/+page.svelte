@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { ArrowLeft, ExternalLink, Globe, Linkedin } from 'lucide-svelte';
+	import { ArrowLeft, ExternalLink, Globe } from 'lucide-svelte';
+	import Linkedin from '$lib/components/icons/Linkedin.svelte';
 	import { marked } from 'marked';
 	import { getTalkBySlug, getEventsByTalkSlug, getFeedbackByTalkSlug } from '$lib/supabase';
 	import type { Talk, Event, TalkFeedback } from '$lib/types';
@@ -13,7 +14,7 @@
 	let loading = true;
 	let error: string | null = null;
 
-	$: slug = $page.params.slug;
+	$: slug = $page.params.slug ?? '';
 
 	function formatDate(dateString: string): string {
 		return new Date(dateString).toLocaleDateString('en-GB', {

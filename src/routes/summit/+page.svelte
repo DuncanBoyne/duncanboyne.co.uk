@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Calendar, MapPin, Users, Target, Sparkles, ExternalLink, Linkedin } from 'lucide-svelte';
+	import { Calendar, MapPin, Users, Target, Sparkles, ExternalLink } from 'lucide-svelte';
+	import Linkedin from '$lib/components/icons/Linkedin.svelte';
 
 	const audiences = [
 		'Business Leaders',

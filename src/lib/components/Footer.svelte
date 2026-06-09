@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { Github, Linkedin, Youtube, Mail } from 'lucide-svelte';
+	import { Mail } from 'lucide-svelte';
+	import Github from '$lib/components/icons/Github.svelte';
+	import Linkedin from '$lib/components/icons/Linkedin.svelte';
+	import Youtube from '$lib/components/icons/Youtube.svelte';
 
 	const currentYear = new Date().getFullYear();
 

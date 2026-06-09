@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { Mail, Github, Linkedin, Youtube, Send, Mic, ExternalLink, ArrowUpRight } from 'lucide-svelte';
+	import { Mail, Send, Mic, ExternalLink, ArrowUpRight } from 'lucide-svelte';
+	import Github from '$lib/components/icons/Github.svelte';
+	import Linkedin from '$lib/components/icons/Linkedin.svelte';
+	import Youtube from '$lib/components/icons/Youtube.svelte';
 	import Seo from '$lib/components/Seo.svelte';
 
 	let formData = { name: '', email: '', subject: '', message: '' };
