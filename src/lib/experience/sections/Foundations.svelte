@@ -7,8 +7,9 @@
 		Matrix4,
 		MeshStandardMaterial
 	} from 'three';
+	import { gsap } from 'gsap';
 	import { createCrackedStoneMaterial } from '../materials/crackedStone';
-	import { sectionProgress } from '../stores';
+	import { decisions, sectionProgress } from '../stores';
 
 	function rand(seed: number): number {
 		const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
@@ -50,6 +51,13 @@
 	mesh.instanceMatrix.needsUpdate = true;
 
 	const baseMaterial = new MeshStandardMaterial({ color: '#0c0c0e', roughness: 0.95 });
+
+	// "Ignore reporting" — cracks visibly propagate across the foundation.
+	$effect(() => {
+		if ($decisions['ignore-reporting']) {
+			gsap.to(material.uniforms.uCrackSpread, { value: 0.5, duration: 3.5, ease: 'power2.out' });
+		}
+	});
 
 	const progress = sectionProgress(1);
 	let smoothed = 0;

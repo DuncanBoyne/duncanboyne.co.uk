@@ -2,7 +2,8 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { markSeen } from './gate';
-	import { experienceActive, scrollProgress, qualityTier } from './stores';
+	import { currentSection, decisions, experienceActive, scrollProgress, qualityTier } from './stores';
+	import { DECISIONS, chooseDecision } from './decisionsData';
 	import { createScrollTimeline } from './timeline';
 	import Scene from './Scene.svelte';
 	import StartOverlay from './ui/StartOverlay.svelte';
@@ -18,6 +19,22 @@
 
 	const showReveal = $derived(started && $scrollProgress > 0.985);
 	const showScrollHint = $derived(started && $scrollProgress < 0.02);
+	const inDecisions = $derived(started && $currentSection === 4);
+
+	// Whisper the consequence of a freshly made decision.
+	let consequence = $state<string | null>(null);
+	let consequenceTimer: ReturnType<typeof setTimeout>;
+	let known = new Set<string>();
+	$effect(() => {
+		for (const id of Object.keys($decisions)) {
+			if (!known.has(id)) {
+				known.add(id);
+				consequence = DECISIONS.find((d) => d.id === id)?.consequence ?? null;
+				clearTimeout(consequenceTimer);
+				consequenceTimer = setTimeout(() => (consequence = null), 4500);
+			}
+		}
+	});
 
 	let destroyTimeline: (() => void) | null = null;
 
@@ -61,11 +78,27 @@
 >
 	<div class="architect-spacer" bind:this={spacerEl}></div>
 
-	<div class="architect-stage" aria-hidden="true">
+	<div class="architect-stage" class:interactive={inDecisions} aria-hidden="true">
 		<Scene {tier} />
 	</div>
 
 	<Captions />
+
+	{#if consequence}
+		<p class="consequence" role="status">{consequence}</p>
+	{/if}
+
+	{#if inDecisions && !closing}
+		<!-- keyboard / assistive-tech mirror of the 3D plaques -->
+		<fieldset class="decision-mirror">
+			<legend class="sr-only-legend">The structure awaits your decisions</legend>
+			{#each DECISIONS as decision}
+				<button onclick={() => chooseDecision(decision.id)} disabled={$decisions[decision.id]}>
+					{decision.label}
+				</button>
+			{/each}
+		</fieldset>
+	{/if}
 
 	{#if !started}
 		<StartOverlay onbegin={begin} onskip={() => finish()} />
@@ -131,6 +164,62 @@
 		position: fixed;
 		inset: 0;
 		pointer-events: none;
+	}
+	/* raycasting only matters in the Hall of Decisions; wheel events still
+	   bubble to the overlay scroller */
+	.architect-stage.interactive {
+		pointer-events: auto;
+	}
+
+	.consequence {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 9vh;
+		text-align: center;
+		color: rgba(244, 209, 65, 0.85);
+		font-size: clamp(0.7rem, 1.6vw, 0.85rem);
+		font-weight: 300;
+		font-style: italic;
+		letter-spacing: 0.18em;
+		pointer-events: none;
+		margin: 0;
+		animation: consequence-in 0.9s ease both;
+	}
+	@keyframes consequence-in {
+		from { opacity: 0; transform: translateY(0.4rem); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+
+	/* visually hidden but focusable mirror controls */
+	.decision-mirror {
+		position: fixed;
+		left: -1px;
+		top: -1px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		border: 0;
+		padding: 0;
+		margin: 0;
+	}
+	.decision-mirror button:focus-visible {
+		position: fixed;
+		left: 1.5rem;
+		top: 1.5rem;
+		width: auto;
+		height: auto;
+		background: #000;
+		color: #f4d141;
+		border: 1px solid #f4d141;
+		padding: 0.6rem 1rem;
+		z-index: 30;
+	}
+	.sr-only-legend {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
 	}
 
 	.scroll-hint {

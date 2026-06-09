@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core';
+	import { gsap } from 'gsap';
 	import { createStainedGlassMaterial } from '../materials/stainedGlass';
 	import { createLightShaftMaterial } from '../materials/lightShaft';
+	import { decisions } from '../stores';
 
 	// Six panes per wall. Two are dying — their light has almost gone.
 	type Win = {
@@ -41,6 +43,14 @@
 		{ x: 10, z: 4, rot: -0.5, color: '#7aa6e0' },
 		{ x: -10, z: -7, rot: 0.5, color: '#7fd4cd' }
 	].map((s) => ({ ...s, material: createLightShaftMaterial(s.color) }));
+
+	// "Delay transformation" — a healthy window slowly dies.
+	$effect(() => {
+		if ($decisions['delay-transformation']) {
+			const victim = windows[3]; // the amber pane on the left wall
+			gsap.to(victim.material.uniforms.uHealth, { value: 0.1, duration: 4, ease: 'power2.inOut' });
+		}
+	});
 
 	useTask((delta) => {
 		for (const w of windows) w.material.uniforms.uTime.value += delta;

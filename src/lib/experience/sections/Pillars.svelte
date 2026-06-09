@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core';
+	import { gsap } from 'gsap';
 	import {
+		BoxGeometry,
 		CylinderGeometry,
 		Color,
 		InstancedMesh,
@@ -8,8 +10,10 @@
 		MeshStandardMaterial,
 		Quaternion,
 		Vector3,
-		type Mesh
+		type Mesh,
+		type PointLight
 	} from 'three';
+	import { decisions } from '../stores';
 
 	// One instanced draw for the colonnades; the overloaded pillar is its own
 	// mesh so it can strain and glow.
@@ -53,6 +57,20 @@
 			overloaded.scale.set(s, 1, s);
 		}
 	});
+
+	// "Invest in automation" — new towers rise at the edges of the structure.
+	const towerGeometry = new BoxGeometry(5, 16, 5);
+	towerGeometry.translate(0, 8, 0); // grow from the ground up
+	let towerA = $state<Mesh>();
+	let towerB = $state<Mesh>();
+	let towerLight = $state<PointLight>();
+	$effect(() => {
+		if ($decisions['invest-automation'] && towerA && towerB && towerLight) {
+			gsap.to(towerA.scale, { y: 2.2, duration: 4, ease: 'power2.inOut' });
+			gsap.to(towerB.scale, { y: 1.8, duration: 4.5, ease: 'power2.inOut', delay: 0.4 });
+			gsap.to(towerLight, { intensity: 45, duration: 4, ease: 'power2.out' });
+		}
+	});
 </script>
 
 <T.Group>
@@ -68,4 +86,13 @@
 			roughness={0.8}
 		/>
 	</T.Mesh>
+
+	<!-- automation towers, modest until the visitor invests -->
+	<T.Mesh bind:ref={towerA} geometry={towerGeometry} position={[19, 0, -20]}>
+		<T.MeshStandardMaterial color="#34353c" roughness={0.85} />
+	</T.Mesh>
+	<T.Mesh bind:ref={towerB} geometry={towerGeometry} position={[-19, 0, -26]}>
+		<T.MeshStandardMaterial color="#34353c" roughness={0.85} />
+	</T.Mesh>
+	<T.PointLight bind:ref={towerLight} position={[0, 30, -23]} color="#e2a414" intensity={0} distance={60} decay={1.8} />
 </T.Group>

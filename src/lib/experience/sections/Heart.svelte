@@ -3,9 +3,11 @@
 	import { CanvasTexture, SpriteMaterial, AdditiveBlending, type PointLight, type Sprite } from 'three';
 	import { createHeartMaterial } from '../materials/heartPulse';
 	import { createGlowCanvas } from '../materials/lightShaft';
-	import { sectionProgress } from '../stores';
+	import { decisions, sectionProgress } from '../stores';
 
 	const progress = sectionProgress(6);
+	// "Trust the data" — the heart burns brighter for the rest of the journey.
+	const boost = $derived($decisions['trust-the-data'] ? 0.4 : 0);
 
 	const heartMaterial = createHeartMaterial();
 
@@ -32,7 +34,7 @@
 
 	useTask((delta) => {
 		t += delta;
-		const energy = $progress;
+		const energy = Math.min(1, $progress + boost);
 		const pulse = Math.sin(t * 2.2) * 0.5 + 0.5;
 		heartMaterial.uniforms.uTime.value = t;
 		heartMaterial.uniforms.uEnergy.value = energy;

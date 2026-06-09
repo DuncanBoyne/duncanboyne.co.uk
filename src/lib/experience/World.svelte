@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { T, useTask, useThrelte } from '@threlte/core';
+	import { interactivity } from '@threlte/extras';
 	import { ACESFilmicToneMapping, Color, FogExp2 } from 'three';
 	import { get } from 'svelte/store';
 	import { qualityTier } from './stores';
@@ -10,6 +11,8 @@
 	import HallOfDecisions from './sections/HallOfDecisions.svelte';
 	import Library from './sections/Library.svelte';
 	import Heart from './sections/Heart.svelte';
+
+	interactivity();
 
 	const { scene, renderer } = useThrelte();
 	renderer.toneMapping = ACESFilmicToneMapping;
