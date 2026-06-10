@@ -94,6 +94,8 @@ export function createDissolveSystem(count = 24000): Points {
 				p.y += local * (6.0 + aSeed * 34.0);
 
 				vAlpha = local * (1.0 - smoothstep(0.85, 1.0, local * (0.6 + aSeed * 0.4)));
+				// settle once the journey completes so the name reveal stays readable
+				vAlpha *= 1.0 - smoothstep(0.8, 0.98, uPhase) * 0.85;
 				vHeat = local;
 
 				vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);

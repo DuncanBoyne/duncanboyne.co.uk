@@ -445,7 +445,8 @@
 		justify-content: center;
 		text-align: center;
 		padding: 2rem;
-		background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.78));
+		background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.92));
+		backdrop-filter: blur(5px);
 		animation: reveal-in 1.6s ease both;
 	}
 	@keyframes reveal-in {
@@ -468,28 +469,32 @@
 		letter-spacing: -0.03em;
 		line-height: 1;
 		margin: 0 0 1rem;
+		text-shadow: 0 2px 28px rgba(0, 0, 0, 0.95), 0 0 6px rgba(0, 0, 0, 0.8);
 	}
 	.reveal-roles {
-		color: rgba(255, 255, 255, 0.75);
+		color: rgba(255, 255, 255, 0.85);
 		font-size: clamp(0.75rem, 1.6vw, 0.95rem);
 		font-weight: 300;
 		letter-spacing: 0.12em;
 		margin: 0 0 0.9rem;
+		text-shadow: 0 1px 14px rgba(0, 0, 0, 0.95);
 	}
 	.reveal-tagline {
-		color: rgba(255, 255, 255, 0.55);
+		color: rgba(255, 255, 255, 0.7);
 		font-size: clamp(0.8rem, 1.6vw, 1rem);
 		font-weight: 300;
 		max-width: 34rem;
 		margin: 0 0 2.2rem;
+		text-shadow: 0 1px 14px rgba(0, 0, 0, 0.95);
 	}
 	.reveal-lines {
-		color: rgba(244, 209, 65, 0.85);
+		color: rgba(244, 209, 65, 0.95);
 		font-size: clamp(0.9rem, 2vw, 1.15rem);
 		font-weight: 300;
 		font-style: italic;
 		line-height: 1.7;
 		margin: 0 0 2.4rem;
+		text-shadow: 0 1px 14px rgba(0, 0, 0, 0.95);
 	}
 
 	.reveal-ctas {
