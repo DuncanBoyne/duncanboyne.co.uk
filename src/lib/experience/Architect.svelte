@@ -5,10 +5,12 @@
 	import { currentSection, decisions, experienceActive, scrollProgress, qualityTier } from './stores';
 	import { DECISIONS, chooseDecision } from './decisionsData';
 	import { createScrollTimeline } from './timeline';
+	import { AudioEngine } from './audio/engine';
 	import Scene from './Scene.svelte';
 	import StartOverlay from './ui/StartOverlay.svelte';
 	import Captions from './ui/Captions.svelte';
 	import SkipButton from './ui/SkipButton.svelte';
+	import MuteToggle from './ui/MuteToggle.svelte';
 
 	let { tier = 'full', onclose }: { tier?: 'full' | 'lite'; onclose: () => void } = $props();
 
@@ -37,6 +39,9 @@
 	});
 
 	let destroyTimeline: (() => void) | null = null;
+	let audio = $state<AudioEngine | null>(null);
+	let audioMuted = $state(false);
+	let unsubAudio: (() => void) | null = null;
 
 	onMount(() => {
 		qualityTier.set(tier === 'lite' ? 'lite' : 'high');
@@ -45,6 +50,8 @@
 		document.documentElement.classList.remove('architect-pending');
 		return () => {
 			destroyTimeline?.();
+			unsubAudio?.();
+			audio?.dispose();
 			experienceActive.set(false);
 			document.documentElement.classList.remove('architect-active');
 		};
@@ -55,6 +62,20 @@
 		if (overlayEl && spacerEl) {
 			destroyTimeline = createScrollTimeline(overlayEl, spacerEl);
 		}
+		// AudioContext needs this user gesture; a Skip start never creates it
+		try {
+			audio = new AudioEngine();
+			audioMuted = audio.isMuted;
+			unsubAudio = scrollProgress.subscribe((p) => audio?.setProgress(p));
+		} catch {
+			audio = null;
+		}
+	}
+
+	function toggleMute() {
+		if (!audio) return;
+		audio.setMuted(!audio.isMuted);
+		audioMuted = audio.isMuted;
 	}
 
 	function finish(destination?: string) {
@@ -113,6 +134,9 @@
 
 	{#if started && !showReveal && !closing}
 		<SkipButton onskip={() => finish()} />
+		{#if audio}
+			<MuteToggle muted={audioMuted} ontoggle={toggleMute} />
+		{/if}
 	{/if}
 
 	{#if showReveal}
