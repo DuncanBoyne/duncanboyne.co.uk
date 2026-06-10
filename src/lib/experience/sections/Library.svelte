@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { T, useTask } from '@threlte/core';
+	import { T, useTask, useThrelte } from '@threlte/core';
 	import {
 		BoxGeometry,
 		Color,
@@ -8,10 +8,11 @@
 		MeshStandardMaterial,
 		Vector3,
 		Quaternion,
-		type Group
+		type Group,
+		type Mesh
 	} from 'three';
 	import { Text } from '@threlte/extras';
-	import { currentSection } from '../stores';
+	import { currentSection, whisper } from '../stores';
 
 	function rand(seed: number): number {
 		const x = Math.sin(seed * 91.17 + 47.13) * 24634.6345;
@@ -70,10 +71,25 @@
 	// Text is unlit and ignores fog, so cull it outside neighbouring sections.
 	const wordsVisible = $derived($currentSection >= 4 && $currentSection <= 6);
 
+	// One book glows faintly. Finding it earns a whisper.
+	const { renderer } = useThrelte();
+	let discovered = false;
+	let glowingBook = $state<Mesh>();
+	function onBookFound() {
+		renderer.domElement.style.cursor = '';
+		if (discovered) return;
+		discovered = true;
+		whisper.set('The answers were here all along.');
+	}
+
 	let wordsGroup = $state<Group>();
 	let t = 0;
 	useTask((delta) => {
 		t += delta;
+		if (glowingBook) {
+			const mat = glowingBook.material as MeshStandardMaterial;
+			mat.emissiveIntensity = discovered ? 1.6 : 0.45 + Math.sin(t * 1.7) * 0.25;
+		}
 		if (!wordsGroup || !wordsVisible) return;
 		wordsGroup.children.forEach((child, i) => {
 			child.position.y = words[i].y + Math.sin(t * words[i].speed + i * 2.4) * 0.5;
@@ -83,6 +99,20 @@
 
 <T.Group>
 	<T is={mesh} frustumCulled={false} />
+
+	<!-- the hidden book -->
+	<T.Mesh
+		bind:ref={glowingBook}
+		position={[6.6, 6.05, -16.4]}
+		onpointerenter={() => {
+			renderer.domElement.style.cursor = 'pointer';
+			onBookFound();
+		}}
+		onpointerleave={() => (renderer.domElement.style.cursor = '')}
+	>
+		<T.BoxGeometry args={[0.55, 1.25, 0.32]} />
+		<T.MeshStandardMaterial color="#6b5a1e" emissive="#f4d141" emissiveIntensity={0.45} roughness={0.6} />
+	</T.Mesh>
 
 	<T.Group bind:ref={wordsGroup} visible={wordsVisible}>
 		{#each words as word}

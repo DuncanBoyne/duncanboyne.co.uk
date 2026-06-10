@@ -11,6 +11,7 @@
 	import HallOfDecisions from './sections/HallOfDecisions.svelte';
 	import Library from './sections/Library.svelte';
 	import Heart from './sections/Heart.svelte';
+	import Reveal from './sections/Reveal.svelte';
 
 	interactivity();
 
@@ -44,3 +45,4 @@
 <HallOfDecisions />
 <Library />
 <Heart />
+<Reveal />

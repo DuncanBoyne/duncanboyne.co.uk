@@ -20,3 +20,6 @@ export const qualityTier = writable<'high' | 'lite'>('high');
 
 /** Hall of Decisions choices; persist for the rest of the journey. */
 export const decisions = writable<Record<string, boolean>>({});
+
+/** Ephemeral whisper line (decision consequences, hidden discoveries). */
+export const whisper = writable<string | null>(null);

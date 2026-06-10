@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { markSeen } from './gate';
-	import { currentSection, decisions, experienceActive, scrollProgress, qualityTier } from './stores';
+	import { currentSection, decisions, experienceActive, scrollProgress, qualityTier, whisper } from './stores';
 	import { DECISIONS, chooseDecision } from './decisionsData';
 	import { createScrollTimeline } from './timeline';
 	import { AudioEngine } from './audio/engine';
@@ -22,19 +22,31 @@
 	const showReveal = $derived(started && $scrollProgress > 0.985);
 	const showScrollHint = $derived(started && $scrollProgress < 0.02);
 	const inDecisions = $derived(started && $currentSection === 4);
+	// raycasting matters in the hall and the library (the hidden book)
+	const stageInteractive = $derived(started && ($currentSection === 4 || $currentSection === 5));
 
-	// Whisper the consequence of a freshly made decision.
+	// Whisper consequences and discoveries.
 	let consequence = $state<string | null>(null);
 	let consequenceTimer: ReturnType<typeof setTimeout>;
+	function showWhisper(text: string) {
+		consequence = text;
+		clearTimeout(consequenceTimer);
+		consequenceTimer = setTimeout(() => (consequence = null), 4500);
+	}
 	let known = new Set<string>();
 	$effect(() => {
 		for (const id of Object.keys($decisions)) {
 			if (!known.has(id)) {
 				known.add(id);
-				consequence = DECISIONS.find((d) => d.id === id)?.consequence ?? null;
-				clearTimeout(consequenceTimer);
-				consequenceTimer = setTimeout(() => (consequence = null), 4500);
+				const text = DECISIONS.find((d) => d.id === id)?.consequence;
+				if (text) showWhisper(text);
 			}
+		}
+	});
+	$effect(() => {
+		if ($whisper) {
+			showWhisper($whisper);
+			whisper.set(null);
 		}
 	});
 
@@ -99,7 +111,7 @@
 >
 	<div class="architect-spacer" bind:this={spacerEl}></div>
 
-	<div class="architect-stage" class:interactive={inDecisions} aria-hidden="true">
+	<div class="architect-stage" class:interactive={stageInteractive} aria-hidden="true">
 		<Scene {tier} />
 	</div>
 

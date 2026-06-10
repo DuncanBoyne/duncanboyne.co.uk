@@ -63,6 +63,8 @@
 			<!-- Copyright -->
 			<p class="text-sm text-muted">
 				&copy; {currentYear} Duncan Boyne. All rights reserved.
+				<span aria-hidden="true">·</span>
+				<a href="/?experience" class="hover:text-accent underline-offset-2 hover:underline">Replay the intro</a>
 			</p>
 
 		</div>
