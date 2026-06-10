@@ -35,9 +35,9 @@
 
 <CameraRig />
 
-<T.AmbientLight intensity={0.55} color="#8d96ad" />
-<T.DirectionalLight position={[18, 60, 14]} intensity={0.85} color="#cdd5e8" />
-<T.DirectionalLight position={[-24, 30, -20]} intensity={0.3} color="#f4d141" />
+<T.AmbientLight intensity={0.9} color="#9aa2b5" />
+<T.DirectionalLight position={[18, 60, 14]} intensity={1.2} color="#cdd5e8" />
+<T.DirectionalLight position={[-24, 30, -20]} intensity={0.45} color="#f4d141" />
 
 <Foundations />
 <Pillars />

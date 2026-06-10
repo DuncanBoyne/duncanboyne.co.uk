@@ -3,9 +3,12 @@
 	import { CanvasTexture, SpriteMaterial, AdditiveBlending, type PointLight, type Sprite } from 'three';
 	import { createHeartMaterial } from '../materials/heartPulse';
 	import { createGlowCanvas } from '../materials/lightShaft';
-	import { decisions, sectionProgress } from '../stores';
+	import { currentSection, decisions, sectionProgress } from '../stores';
 
 	const progress = sectionProgress(6);
+	// Hidden until the library — it should land as the light at the end of
+	// the aisle, not an unexplained glow four sections early.
+	const visible = $derived($currentSection >= 5);
 	// "Trust the data" — the heart burns brighter for the rest of the journey.
 	const boost = $derived($decisions['trust-the-data'] ? 0.4 : 0);
 
@@ -50,7 +53,7 @@
 	});
 </script>
 
-<T.Group position={[0, 10, -38]}>
+<T.Group position={[0, 10, -38]} {visible}>
 	<T.Mesh material={heartMaterial}>
 		<T.IcosahedronGeometry args={[2.2, 5]} />
 	</T.Mesh>

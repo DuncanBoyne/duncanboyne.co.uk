@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core';
-	import { CatmullRomCurve3, Vector3, type PerspectiveCamera } from 'three';
+	import { CatmullRomCurve3, Vector3, type PerspectiveCamera, type PointLight } from 'three';
 	import { scrollProgress } from './stores';
 	import { CAMERA_PATH } from './sections';
 
@@ -27,6 +27,7 @@
 	}
 
 	let camera = $state<PerspectiveCamera>();
+	let lantern = $state<PointLight>();
 	const pos = new Vector3();
 	const look = new Vector3();
 	let smoothed = 0;
@@ -39,7 +40,13 @@
 		lookCurve.getPoint(u, look);
 		camera.position.copy(pos);
 		camera.lookAt(look);
+		if (lantern) {
+			// a soft travelling light keeps the nearby stone readable
+			lantern.position.copy(pos).lerp(look, 0.25);
+			lantern.position.y += 2;
+		}
 	});
 </script>
 
 <T.PerspectiveCamera makeDefault bind:ref={camera} fov={55} near={0.1} far={260} />
+<T.PointLight bind:ref={lantern} color="#d8cfae" intensity={30} distance={34} decay={1.9} />

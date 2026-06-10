@@ -90,6 +90,42 @@
 		audioMuted = audio.isMuted;
 	}
 
+	// While the stage accepts pointer events (hall/library), wheel and touch
+	// no longer scroll-chain from the fixed stage to the overlay — forward them.
+	function forwardWheel(e: WheelEvent) {
+		if (overlayEl) overlayEl.scrollTop += e.deltaY;
+	}
+	let lastTouchY = 0;
+	function stageTouchStart(e: TouchEvent) {
+		lastTouchY = e.touches[0].clientY;
+	}
+	function stageTouchMove(e: TouchEvent) {
+		if (!overlayEl) return;
+		const y = e.touches[0].clientY;
+		overlayEl.scrollTop += lastTouchY - y;
+		lastTouchY = y;
+	}
+
+	// Nudge visitors who stall mid-journey.
+	let lastScrollAt = $state(Date.now());
+	let clock = $state(Date.now());
+	$effect(() => {
+		void $scrollProgress;
+		lastScrollAt = Date.now();
+	});
+	onMount(() => {
+		const interval = setInterval(() => (clock = Date.now()), 1000);
+		return () => clearInterval(interval);
+	});
+	const showIdleHint = $derived(
+		started &&
+			!showReveal &&
+			!closing &&
+			clock - lastScrollAt > 6000 &&
+			$scrollProgress > 0.02 &&
+			$scrollProgress < 0.96
+	);
+
 	function finish(destination?: string) {
 		if (closing) return;
 		markSeen();
@@ -111,7 +147,14 @@
 >
 	<div class="architect-spacer" bind:this={spacerEl}></div>
 
-	<div class="architect-stage" class:interactive={stageInteractive} aria-hidden="true">
+	<div
+		class="architect-stage"
+		class:interactive={stageInteractive}
+		aria-hidden="true"
+		onwheel={forwardWheel}
+		ontouchstart={stageTouchStart}
+		ontouchmove={stageTouchMove}
+	>
 		<Scene {tier} />
 	</div>
 
@@ -144,6 +187,19 @@
 		</div>
 	{/if}
 
+	{#if showIdleHint}
+		<div class="scroll-hint idle" aria-hidden="true">
+			<span>{inDecisions ? 'Choose a decision · scroll to continue' : 'Scroll to continue'}</span>
+			<span class="chevron"></span>
+		</div>
+	{/if}
+
+	{#if started && !closing}
+		<div class="progress-rune" aria-hidden="true">
+			<div class="progress-fill" style="height: {$scrollProgress * 100}%"></div>
+		</div>
+	{/if}
+
 	{#if started && !showReveal && !closing}
 		<SkipButton onskip={() => finish()} />
 		{#if audio}
@@ -152,7 +208,14 @@
 	{/if}
 
 	{#if showReveal}
-		<div class="reveal-panel" class:closing>
+		<div
+			class="reveal-panel"
+			class:closing
+			onwheel={forwardWheel}
+			ontouchstart={stageTouchStart}
+			ontouchmove={stageTouchMove}
+		>
+			<img class="reveal-portrait" src="/headshot.png" alt="Duncan Boyne, the architect" />
 			<p class="reveal-eyebrow">The Architect</p>
 			<h2 class="reveal-name">Duncan Boyne</h2>
 			<p class="reveal-roles">
@@ -288,6 +351,42 @@
 	@keyframes chevron-drift {
 		0%, 100% { transform: translateY(0); opacity: 0.9; }
 		50% { transform: translateY(0.5rem); opacity: 0.4; }
+	}
+	.scroll-hint.idle {
+		animation: hint-in 1.2s ease both;
+	}
+
+	.progress-rune {
+		position: fixed;
+		right: 1.4rem;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 2px;
+		height: 38vh;
+		background: rgba(255, 255, 255, 0.12);
+		pointer-events: none;
+	}
+	.progress-fill {
+		width: 100%;
+		background: linear-gradient(to bottom, rgba(244, 209, 65, 0.4), rgba(244, 209, 65, 0.9));
+		transition: height 0.2s linear;
+	}
+
+	.reveal-portrait {
+		width: clamp(88px, 13vw, 132px);
+		height: clamp(88px, 13vw, 132px);
+		border-radius: 50%;
+		object-fit: cover;
+		border: 2px solid rgba(244, 209, 65, 0.65);
+		box-shadow:
+			0 0 32px rgba(244, 209, 65, 0.35),
+			0 0 90px rgba(244, 209, 65, 0.15);
+		margin-bottom: 1.4rem;
+		animation: portrait-in 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+	}
+	@keyframes portrait-in {
+		from { opacity: 0; transform: scale(0.7); filter: blur(6px); }
+		to { opacity: 1; transform: scale(1); filter: blur(0); }
 	}
 
 	.reveal-panel {
