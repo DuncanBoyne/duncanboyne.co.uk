@@ -106,6 +106,53 @@
 		lastTouchY = y;
 	}
 
+	// Keyboard navigation: arrows / PageUp/Down / Space / Home / End.
+	function onKeydown(e: KeyboardEvent) {
+		if (!started || closing || !overlayEl) return;
+		if (e.ctrlKey || e.altKey || e.metaKey) return;
+		const target = e.target as HTMLElement | null;
+		const onControl = !!target?.closest('button, a, input, select, textarea');
+		const step = overlayEl.clientHeight;
+		let delta: number | null = null;
+		switch (e.key) {
+			case 'ArrowDown':
+			case 'ArrowRight':
+				delta = step * 0.4;
+				break;
+			case 'ArrowUp':
+			case 'ArrowLeft':
+				delta = -step * 0.4;
+				break;
+			case 'PageDown':
+				delta = step * 0.9;
+				break;
+			case 'PageUp':
+				delta = -step * 0.9;
+				break;
+			case ' ':
+				// let a focused button receive Space normally
+				if (onControl) return;
+				delta = (e.shiftKey ? -1 : 1) * step * 0.9;
+				break;
+			case 'Home':
+				e.preventDefault();
+				overlayEl.scrollTo({ top: 0, behavior: 'smooth' });
+				return;
+			case 'End':
+				e.preventDefault();
+				overlayEl.scrollTo({ top: overlayEl.scrollHeight, behavior: 'smooth' });
+				return;
+		}
+		if (delta !== null) {
+			e.preventDefault();
+			overlayEl.scrollBy({ top: delta, behavior: 'smooth' });
+		}
+	}
+	onMount(() => {
+		window.addEventListener('keydown', onKeydown);
+		return () => window.removeEventListener('keydown', onKeydown);
+	});
+
 	// Nudge visitors who stall mid-journey.
 	let lastScrollAt = $state(Date.now());
 	let clock = $state(Date.now());
@@ -182,7 +229,7 @@
 
 	{#if showScrollHint}
 		<div class="scroll-hint" aria-hidden="true">
-			<span>Scroll</span>
+			<span>Scroll or press ↓</span>
 			<span class="chevron"></span>
 		</div>
 	{/if}
