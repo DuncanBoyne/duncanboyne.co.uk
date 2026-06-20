@@ -6,7 +6,7 @@
 	import Seo from '$lib/components/Seo.svelte';
 
 	const social = [
-		{ href: 'https://github.com/DuncanBoyneJnr', icon: Github, label: 'GitHub', handle: '@DuncanBoyneJnr' },
+		{ href: 'https://github.com/DuncanBoyne', icon: Github, label: 'GitHub', handle: '@DuncanBoyne' },
 		{ href: 'https://linkedin.com/in/duncanboyne', icon: Linkedin, label: 'LinkedIn', handle: 'in/duncanboyne' },
 		{ href: 'https://youtube.com/@PowerBIKindaGuy', icon: Youtube, label: 'YouTube', handle: '@PowerBIKindaGuy' }
 	];

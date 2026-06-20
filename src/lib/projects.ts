@@ -22,10 +22,10 @@ export interface Project {
 export const projects: Project[] = [
 	{
 		name: 'AI-BI',
-		repo: 'DuncanBoyneJnr/AI-BI',
+		repo: 'DuncanBoyne/AI-BI',
 		description:
 			'AI prompts, how-tos and tooling for working on Power BI with an AI agent in the loop. This is where the resources from my AI and Power BI talks live.',
-		href: 'https://github.com/DuncanBoyneJnr/AI-BI',
+		href: 'https://github.com/DuncanBoyne/AI-BI',
 		homepage: 'https://www.linkedin.com/in/duncanboyne/',
 		kind: 'open-source',
 		license: 'MIT',
@@ -34,10 +34,10 @@ export const projects: Project[] = [
 	},
 	{
 		name: 'Deneb Visual Builder',
-		repo: 'DuncanBoyneJnr/Deneb-Visual-Skill',
+		repo: 'DuncanBoyne/Deneb-Visual-Skill',
 		description:
 			'A Claude skill for generating, adapting, debugging and reviewing Deneb Vega-Lite visuals for Power BI.',
-		href: 'https://github.com/DuncanBoyneJnr/Deneb-Visual-Skill',
+		href: 'https://github.com/DuncanBoyne/Deneb-Visual-Skill',
 		kind: 'open-source',
 		license: 'MIT',
 		tags: ['Power BI', 'Deneb', 'Vega-Lite', 'Claude Skill'],
@@ -45,10 +45,10 @@ export const projects: Project[] = [
 	},
 	{
 		name: 'LinkedIn Dashboard Skill',
-		repo: 'DuncanBoyneJnr/linkedin-dashboard-skill',
+		repo: 'DuncanBoyne/linkedin-dashboard-skill',
 		description:
 			'A Claude Code skill that builds a LinkedIn analytics dashboard from Apify post exports and LinkedIn analytics files, then turns the numbers into content recommendations.',
-		href: 'https://github.com/DuncanBoyneJnr/linkedin-dashboard-skill',
+		href: 'https://github.com/DuncanBoyne/linkedin-dashboard-skill',
 		kind: 'open-source',
 		license: 'MIT',
 		tags: ['Claude Code', 'Analytics', 'LinkedIn', 'Content strategy'],
@@ -56,49 +56,49 @@ export const projects: Project[] = [
 	},
 	{
 		name: 'Power BI Projects',
-		repo: 'DuncanBoyneJnr/power-bi-projects',
+		repo: 'DuncanBoyne/power-bi-projects',
 		description:
 			'Companion files for Power BI build experiments, articles, demos and reference projects, including PBIP, TMDL, PBIR and rebuild notes.',
-		href: 'https://github.com/DuncanBoyneJnr/power-bi-projects',
+		href: 'https://github.com/DuncanBoyne/power-bi-projects',
 		kind: 'public-project',
 		tags: ['Power BI', 'PBIP', 'TMDL', 'PBIR']
 	},
 	{
 		name: 'duncanboyne.co.uk',
-		repo: 'DuncanBoyneJnr/duncanboyne.co.uk',
+		repo: 'DuncanBoyne/duncanboyne.co.uk',
 		description:
 			'The public source for this site: SvelteKit, Supabase content, speaking pages, blog pages and all the little choices that make a personal site feel personal.',
-		href: 'https://github.com/DuncanBoyneJnr/duncanboyne.co.uk',
+		href: 'https://github.com/DuncanBoyne/duncanboyne.co.uk',
 		kind: 'public-project',
 		language: 'Svelte',
 		tags: ['SvelteKit', 'Portfolio', 'Supabase', 'Static site']
 	},
 	{
 		name: 'ForkME',
-		repo: 'DuncanBoyneJnr/ForkME',
+		repo: 'DuncanBoyne/ForkME',
 		description:
 			'A barebones website starter for people who want something simple they can fork, adapt and publish quickly.',
-		href: 'https://github.com/DuncanBoyneJnr/ForkME',
+		href: 'https://github.com/DuncanBoyne/ForkME',
 		kind: 'public-project',
 		language: 'HTML',
 		tags: ['Starter site', 'HTML', 'Template']
 	},
 	{
 		name: 'EoEPPS',
-		repo: 'DuncanBoyneJnr/EoEPPS',
+		repo: 'DuncanBoyne/EoEPPS',
 		description:
 			'The public site repo for the East of England Power Platform Summit, built around a community event that is practical, welcoming and human.',
-		href: 'https://github.com/DuncanBoyneJnr/EoEPPS',
+		href: 'https://github.com/DuncanBoyne/EoEPPS',
 		kind: 'community',
 		language: 'Astro',
 		tags: ['Community', 'Astro', 'Power Platform', 'Event site']
 	},
 	{
 		name: 'NPPUG',
-		repo: 'DuncanBoyneJnr/NPPUG',
+		repo: 'DuncanBoyne/NPPUG',
 		description:
 			'The public site repo for the Norfolk Power Platform User Group, supporting meetups, sessions and local community activity.',
-		href: 'https://github.com/DuncanBoyneJnr/NPPUG',
+		href: 'https://github.com/DuncanBoyne/NPPUG',
 		kind: 'community',
 		language: 'Astro',
 		tags: ['Community', 'Astro', 'Power Platform', 'User group']

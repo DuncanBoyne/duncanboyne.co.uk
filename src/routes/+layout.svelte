@@ -38,7 +38,7 @@
 		},
 		sameAs: [
 			'https://www.linkedin.com/in/duncanboyne',
-			'https://github.com/DuncanBoyneJnr',
+			'https://github.com/DuncanBoyne',
 			'https://www.youtube.com/@PowerBIKindaGuy'
 		]
 	};

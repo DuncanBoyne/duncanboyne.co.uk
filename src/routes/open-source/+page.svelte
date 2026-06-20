@@ -30,7 +30,7 @@
 			Power BI resources, AI workflows, Claude skills, community sites and reusable starter projects.
 		</p>
 		<div class="hero-actions">
-			<a href="https://github.com/DuncanBoyneJnr" target="_blank" rel="noopener noreferrer" class="btn-primary-link">
+			<a href="https://github.com/DuncanBoyne" target="_blank" rel="noopener noreferrer" class="btn-primary-link">
 				<Github class="icon" aria-hidden="true" />
 				View GitHub profile
 				<ArrowUpRight class="icon-small" aria-hidden="true" />
@@ -156,7 +156,7 @@
 <section class="cta-section">
 	<div class="wrap">
 		<p class="cta-pre">Found something useful?</p>
-		<a href="https://github.com/DuncanBoyneJnr" target="_blank" rel="noopener noreferrer" class="cta-main">
+		<a href="https://github.com/DuncanBoyne" target="_blank" rel="noopener noreferrer" class="cta-main">
 			<span>Fork it, raise an issue, or nick the idea</span>
 			<ArrowUpRight class="cta-icon" aria-hidden="true" />
 		</a>
