@@ -4,6 +4,7 @@
 	import { getPosts, getEvents } from '$lib/supabase';
 	import type { Post, Event } from '$lib/types';
 	import Seo from '$lib/components/Seo.svelte';
+	import { featuredProjects, projectKindLabel } from '$lib/projects';
 
 	const services = [
 		{ num: '01', title: 'Power BI & Data Visualisation', desc: 'Dashboards people actually open. Built around the two questions you really have, not the twelve an imagined power user might ask.' },
@@ -131,7 +132,42 @@
 	</div>
 </section>
 
-<!-- ── SPEAKING ──────────────────────────────────────────────────────── -->
+<!-- OPEN SOURCE -->
+<section class="content-block content-block--alt">
+	<div class="wrap">
+
+		<div class="cb-head">
+			<h2 class="cb-title">Open Source</h2>
+			<a href="/open-source" class="cb-all">All projects <ArrowUpRight class="ico" /></a>
+		</div>
+
+		<ul class="row-list">
+			{#each featuredProjects as project}
+				<li class="row-item">
+					<a href={project.href} target="_blank" rel="noopener noreferrer" class="row-link">
+						<div class="row-top">
+							<span class="row-date">{project.license ? `${project.license} repo` : projectKindLabel(project.kind)}</span>
+							<span class="row-title">{project.name}</span>
+							<span class="row-loc">{project.repo}</span>
+							<ArrowUpRight class="row-arrow ico" />
+						</div>
+						<div class="row-expand"><div class="row-expand-in">
+							<p class="row-excerpt">{project.description}</p>
+							<div class="repo-tags" aria-label="{project.name} topics">
+								{#each project.tags as tag}
+									<span class="repo-tag">{tag}</span>
+								{/each}
+							</div>
+						</div></div>
+					</a>
+				</li>
+			{/each}
+		</ul>
+
+	</div>
+</section>
+
+<!-- SPEAKING -->
 {#if events.length > 0}
 <section class="content-block content-block--alt">
 	<div class="wrap">
@@ -597,6 +633,24 @@
 		transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
 	}
 	.row-link:hover .row-excerpt { opacity: 1; transform: translateY(0); }
+
+	.repo-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-top: 0.75rem;
+		opacity: 0;
+		transform: translateY(3px);
+		transition: opacity 0.7s ease 0.35s, transform 0.7s ease 0.35s;
+	}
+	.row-link:hover .repo-tags { opacity: 1; transform: translateY(0); }
+	.repo-tag {
+		font-size: 0.72rem;
+		font-weight: 700;
+		color: var(--color-muted);
+		border: 1px solid var(--color-border);
+		padding: 0.25rem 0.55rem;
+	}
 
 	/* Event row */
 	.event-row {
