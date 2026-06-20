@@ -8,22 +8,6 @@
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-		<script>
-			// Anti-flash shield for the homepage intro experience: first-time,
-			// motion-OK visitors get a black cover before hydration so the page
-			// doesn't flash before the experience overlay mounts. Released by
-			// ExperienceLoader (or by the CSS animation fallback in app.css).
-			try {
-				if (
-					location.pathname === '/' &&
-					!location.search.includes('skip') &&
-					!localStorage.getItem('architect:seen') &&
-					!window.matchMedia('(prefers-reduced-motion: reduce)').matches
-				) {
-					document.documentElement.classList.add('architect-pending');
-				}
-			} catch (e) {}
-		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover" class="transition-colors">

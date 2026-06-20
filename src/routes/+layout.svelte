@@ -1,10 +1,7 @@
 <script lang="ts">
 	import '../app.css';
-	import { page } from '$app/stores';
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-	import ExperienceLoader from '$lib/experience/ExperienceLoader.svelte';
-	import { experienceActive } from '$lib/experience/stores';
 
 	// LocalBusiness / ProfessionalService structured data for local SEO.
 	// Service-area only — no street address published.
@@ -55,7 +52,7 @@
 	<script defer src="https://cloud.umami.is/script.js" data-website-id="17dd8826-5bf3-43d7-b785-b78f205d2845"></script>
 </svelte:head>
 
-<div class="flex flex-col" style="min-height: 100dvh;" inert={$experienceActive || undefined}>
+<div class="flex flex-col" style="min-height: 100dvh;">
 	<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent focus:text-[#1F1F1F] focus:font-medium focus:rounded-lg">
 		Skip to main content
 	</a>
@@ -65,9 +62,3 @@
 	</main>
 	<Footer />
 </div>
-
-<!-- Lives outside the inert wrapper so the overlay stays interactive while
-     the page beneath is disabled for assistive tech. -->
-{#if $page.url.pathname === '/'}
-	<ExperienceLoader />
-{/if}

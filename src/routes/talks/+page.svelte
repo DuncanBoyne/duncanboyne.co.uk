@@ -7,8 +7,47 @@
 	import type { SessionizeSession } from '$lib/sessionize';
 	import type { Talk, TalkFeedback } from '$lib/types';
 
+	const filterOptions = [
+		{ id: 'power-bi', label: 'Power BI', terms: ['power bi', 'dashboard', 'dax', 'deneb', 'semantic model'] },
+		{ id: 'fabric', label: 'Fabric', terms: ['fabric'] },
+		{ id: 'ai', label: 'AI', terms: [' ai ', 'copilot', 'chatgpt', 'claude', 'grok', 'gemini', 'agentic', 'prompt'] },
+		{ id: 'design', label: 'Design', terms: ['design', 'wireframe', 'visual', 'visualisation', 'visualization', 'accessibility', 'layout', 'vega'] },
+		{ id: 'power-platform', label: 'Power Platform', terms: ['power platform', 'power apps', 'power automate', 'dataverse'] }
+	];
+
 	function normalize(s: string) {
 		return s.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+	}
+
+	function searchableText(...parts: Array<string | null | undefined>) {
+		return ` ${parts.filter(Boolean).join(' ').toLowerCase().replace(/[^a-z0-9]+/g, ' ')} `;
+	}
+
+	function matchesFilter(text: string, filterId: string) {
+		const filter = filterOptions.find(option => option.id === filterId);
+		return filter ? filter.terms.some(term => text.includes(term)) : true;
+	}
+
+	function sessionMatches(session: SessionizeSession) {
+		const text = searchableText(session.title, session.description);
+		return activeFilters.every(filterId => matchesFilter(text, filterId));
+	}
+
+	function workshopMatches(workshop: Talk) {
+		const text = searchableText(workshop.title, workshop.excerpt, workshop.content);
+		return activeFilters.every(filterId => matchesFilter(text, filterId));
+	}
+
+	function toggleFilter(filterId: string) {
+		activeFilters = activeFilters.includes(filterId)
+			? activeFilters.filter(id => id !== filterId)
+			: [...activeFilters, filterId];
+		openId = null;
+	}
+
+	function clearFilters() {
+		activeFilters = [];
+		openId = null;
 	}
 
 	let sessions: SessionizeSession[] = [];
@@ -16,11 +55,15 @@
 	let featuredFeedback: TalkFeedback[] = [];
 	let imageMap: Record<number, string> = {};
 	let slugMap: Record<number, string> = {};
+	let activeFilters: string[] = [];
 	let loading = true;
 	let error: string | null = null;
 	let openId: number | null = null;
 	let carouselIndex = 0;
 	let carouselTimer: ReturnType<typeof setInterval>;
+	$: filteredSessions = activeFilters.length === 0 ? sessions : sessions.filter(sessionMatches);
+	$: filteredWorkshops = activeFilters.length === 0 ? workshops : workshops.filter(workshopMatches);
+	$: filteredTotal = filteredSessions.length + filteredWorkshops.length;
 
 	function toggle(id: number) {
 		openId = openId === id ? null : id;
@@ -152,63 +195,101 @@
 			</ul>
 		{:else if error}
 			<p class="msg-empty">{error}</p>
-		{:else if sessions.length === 0}
+		{:else if sessions.length === 0 && workshops.length === 0}
 			<p class="msg-empty">No sessions found.</p>
 		{:else}
-			<ul class="row-list">
-				{#each sessions as session}
-					{@const image = imageMap[session.id] ?? null}
-					{@const isOpen = openId === session.id}
-					<li class="row-item" class:open={isOpen}>
+			<div class="filter-panel">
+				<div>
+					<p class="filter-kicker">Filter talks</p>
+					<p class="filter-count">
+						{filteredTotal} {filteredTotal === 1 ? 'result' : 'results'}
+						{#if activeFilters.length > 1}
+							matching all selected topics
+						{/if}
+					</p>
+				</div>
+				<div class="filter-list" role="group" aria-label="Filter talks by topic">
+					<button
+						class="filter-chip"
+						class:active={activeFilters.length === 0}
+						type="button"
+						on:click={clearFilters}
+						aria-pressed={activeFilters.length === 0}
+					>
+						All
+					</button>
+					{#each filterOptions as filter}
 						<button
-							class="row-btn"
-							on:click={() => toggle(session.id)}
-							aria-expanded={isOpen}
+							class="filter-chip"
+							class:active={activeFilters.includes(filter.id)}
+							type="button"
+							on:click={() => toggleFilter(filter.id)}
+							aria-pressed={activeFilters.includes(filter.id)}
 						>
-							<span class="row-title">{session.title}</span>
-							<ChevronDown class="row-chevron" aria-hidden="true" />
+							{filter.label}
 						</button>
+					{/each}
+				</div>
+			</div>
 
-						<div class="row-expand" aria-hidden={!isOpen}>
-							<div class="row-expand-in">
-								<div class="row-body">
-									{#if image}
-										<div class="row-img-wrap">
-											<img src={image} alt={session.title} class="row-img" />
+			{#if filteredTotal === 0}
+				<p class="msg-empty">No talks match those filters.</p>
+			{:else if filteredSessions.length > 0}
+				<ul class="row-list">
+					{#each filteredSessions as session}
+						{@const image = imageMap[session.id] ?? null}
+						{@const isOpen = openId === session.id}
+						<li class="row-item" class:open={isOpen}>
+							<button
+								class="row-btn"
+								on:click={() => toggle(session.id)}
+								aria-expanded={isOpen}
+							>
+								<span class="row-title">{session.title}</span>
+								<ChevronDown class="row-chevron" aria-hidden="true" />
+							</button>
+
+							<div class="row-expand" aria-hidden={!isOpen}>
+								<div class="row-expand-in">
+									<div class="row-body">
+										{#if image}
+											<div class="row-img-wrap">
+												<img src={image} alt={session.title} class="row-img" />
+											</div>
+										{/if}
+										{#if session.description}
+											<div class="row-desc">{@html marked(session.description)}</div>
+										{/if}
+										<div class="row-links">
+											{#if slugMap[session.id]}
+												<a href="/talks/{slugMap[session.id]}" class="session-link">
+													View talk <ArrowUpRight class="w-3.5 h-3.5 inline" />
+												</a>
+											{/if}
+											{#if session.sessionUrl}
+												<a href={session.sessionUrl} target="_blank" rel="noopener noreferrer" class="session-link">
+													View on Sessionize <ArrowUpRight class="w-3.5 h-3.5 inline" />
+												</a>
+											{/if}
 										</div>
-									{/if}
-									{#if session.description}
-										<div class="row-desc">{@html marked(session.description)}</div>
-									{/if}
-									<div class="row-links">
-										{#if slugMap[session.id]}
-											<a href="/talks/{slugMap[session.id]}" class="session-link">
-												View talk <ArrowUpRight class="w-3.5 h-3.5 inline" />
-											</a>
-										{/if}
-										{#if session.sessionUrl}
-											<a href={session.sessionUrl} target="_blank" rel="noopener noreferrer" class="session-link">
-												View on Sessionize <ArrowUpRight class="w-3.5 h-3.5 inline" />
-											</a>
-										{/if}
 									</div>
 								</div>
 							</div>
-						</div>
-					</li>
-				{/each}
-			</ul>
+						</li>
+					{/each}
+				</ul>
+			{/if}
 		{/if}
 	</div>
 </section>
 
 <!-- Workshops -->
-{#if !loading && workshops.length > 0}
+{#if !loading && filteredWorkshops.length > 0}
 	<section class="talks-section" style="border-top: 1px solid var(--color-border); padding-top: clamp(4rem, 8vw, 7rem);">
 		<div class="wrap">
 			<h2 style="font-size: clamp(1.75rem, 5vw, 2.5rem); font-weight: 700; margin: 0 0 2rem; color: var(--color-text);">Workshops</h2>
 			<ul class="row-list">
-				{#each workshops as workshop}
+				{#each filteredWorkshops as workshop}
 					{@const image = workshop.image ?? null}
 					{@const isOpen = openId === workshop.id}
 					<li class="row-item" class:open={isOpen}>
@@ -283,6 +364,53 @@
 
 	/* Talks */
 	.talks-section { padding: 0 0 clamp(4rem, 8vw, 7rem); }
+	.filter-panel {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 1.5rem;
+		padding: 0 0 1.5rem;
+		border-bottom: 1px solid var(--color-border);
+		margin-bottom: 0;
+	}
+	.filter-kicker {
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+		margin: 0 0 0.35rem;
+	}
+	.filter-count {
+		color: var(--color-muted);
+		font-size: 0.875rem;
+		margin: 0;
+	}
+	.filter-list {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: 0.5rem;
+	}
+	.filter-chip {
+		border: 1.5px solid var(--color-border);
+		background: transparent;
+		color: var(--color-muted);
+		cursor: pointer;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		line-height: 1;
+		padding: 0.65rem 0.8rem;
+		text-transform: uppercase;
+		transition: border-color 0.2s, color 0.2s, background 0.2s;
+	}
+	.filter-chip:hover,
+	.filter-chip.active {
+		border-color: var(--color-accent);
+		color: var(--color-accent);
+		background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+	}
 	.row-list { list-style: none; margin: 0; padding: 0; }
 	.row-item { border-bottom: 1px solid var(--color-border); }
 	.row-item:first-child { border-top: 1px solid var(--color-border); }
@@ -451,4 +579,12 @@
 		transition: background 0.2s;
 	}
 	.carousel-dot.active { background: var(--color-accent); }
+
+	@media (max-width: 720px) {
+		.filter-panel {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+		.filter-list { justify-content: flex-start; }
+	}
 </style>

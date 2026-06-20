@@ -120,26 +120,3 @@
 		scroll-behavior: auto !important;
 	}
 }
-
-/* ── The Architect experience ─────────────────────────────────────── */
-/* Black shield while the experience chunk loads on first visit.
-   The animation is a last-resort release if JS never clears the class. */
-html.architect-pending body::before {
-	content: '';
-	position: fixed;
-	inset: 0;
-	background: #000;
-	z-index: 99;
-	animation: architect-shield-release 0.8s ease 6s forwards;
-}
-
-@keyframes architect-shield-release {
-	to {
-		opacity: 0;
-		visibility: hidden;
-	}
-}
-
-html.architect-active body {
-	overflow: hidden;
-}
