@@ -30,7 +30,6 @@
 <!-- Hero -->
 <section class="page-hero">
 	<div class="wrap">
-		<p class="eyebrow">AI / BI Storyteller</p>
 		<h1 class="page-title">About<br><span class="accent-line">Me</span></h1>
 	</div>
 </section>
@@ -60,13 +59,27 @@
 			<div class="bio-col">
 				<p class="bio-lede">A dashboard nobody opens is just an expensive screenshot. I spend my days making sure people actually open them.</p>
 
-				<div class="bio-body">
+				<!-- Work story -->
+				<div class="bio-chapter">
 					<p>Your data has a story. Most people bury it under charts nobody reads. I dig it out and tell it properly. That's the job, whether I'm doing it with Power BI or with AI on top. I've spent years as a Power BI consultant, living in messy data, vague requirements, and "technically correct" dashboards, turning all of it into things people actually use. These days I'm leaning harder into the AI side, because AI is only as good as the data you point it at, and the data is exactly where I've always lived. (Less glamorous than it sounds. Far more satisfying.)</p>
-					<p>I'm a 90s kid who still adores Pokemon, raised on a Game Boy and the original PlayStation, and I never really stopped being a gamer. Games were my first lesson in systems, feedback loops, and why good design matters. I just didn't have the words for it yet.</p>
+				</div>
+
+				<!-- How I work -->
+				<div class="bio-chapter">
+					<p class="bio-philosophy">Clarity is kindness. Especially in data and design.</p>
+					<p>I'm AuDHD and proud. It shapes how I think, how I work, and how I show up: it's why I can hyperfocus on a problem until it clicks, why accessibility and inclusion aren't optional to me, and why I'd rather give you something useful today than something perfect never.</p>
+				</div>
+
+				<!-- Human story -->
+				<div class="bio-chapter">
+					<p>I'm a 90s kid who still adores Pokémon, raised on a Game Boy and the original PlayStation, and I never really stopped being a gamer. Games were my first lesson in systems, feedback loops, and why good design matters. I just didn't have the words for it yet.</p>
 					<p>I'm a dad to two brilliant young humans, 11 and 8, who remind me daily that curiosity beats confidence and that "why?" is usually the most important question in the room. The household is rounded out by Bella, a wonderfully scatty three-year-old Border Collie with no respect for meetings, deadlines, or personal space.</p>
-					<p>I'm AuDHD and proud. It shapes how I think, how I work, and how I show up: it's why I can hyperfocus on a problem until it clicks, why accessibility and inclusion aren't optional to me, and why I believe clarity is kindness. Especially in data and design.</p>
+				</div>
+
+				<!-- Community story -->
+				<div class="bio-chapter">
 					<p>Community is a huge part of my life. I founded the Norfolk Power Platform User Group and the East of England Power Platform Summit. EoEPPS is very much my baby, built from the ground up to be welcoming, practical, and human. Kids were welcome. Partners were welcome. Even a dog was welcome.</p>
-					<p>I write, speak, and build in public. Sometimes deep Power BI, sometimes AI, sometimes design, accessibility, or ethics. I'll always pick clarity and usefulness over polish. Perfect helps nobody. Useful helps someone today.</p>
+					<p>I write, speak, and build in public. Sometimes deep Power BI, sometimes AI, sometimes design, accessibility, or ethics. Perfect helps nobody. Useful helps someone today.</p>
 				</div>
 			</div>
 		</div>
@@ -76,7 +89,7 @@
 <!-- Skills -->
 <section class="skills-section">
 	<div class="wrap">
-		<p class="section-label">Skills &amp; Expertise</p>
+		<h2 class="skills-heading">Skills &amp; Expertise</h2>
 		<div class="tag-list">
 			{#each skills as skill}
 				<span class="tag">{skill}</span>
@@ -88,11 +101,10 @@
 <!-- CTA -->
 <section class="cta-block">
 	<div class="wrap">
-		<p class="cta-pre">Want me at your event?</p>
 		<a href="https://sessionize.com/duncan-boyne" target="_blank" rel="noopener noreferrer" class="cta-main">
 			Sessionize <ExternalLink class="cta-ico" />
 		</a>
-		<p class="cta-sub">Browse my sessions and speaker profile, or skip the middleman and <a href="/contact" class="cta-inline-link">get in touch directly</a>.</p>
+		<p class="cta-sub">Want me at your event? Browse my sessions and speaker profile, or skip the middleman and <a href="/contact" class="cta-inline-link">get in touch directly</a>.</p>
 	</div>
 </section>
 
@@ -104,7 +116,6 @@
 		padding: clamp(3rem, 7vw, 6rem) 0 clamp(1.5rem, 3vw, 2.5rem);
 		border-bottom: 3px solid var(--color-accent3);
 	}
-	.eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.75rem; }
 	.page-title { font-size: clamp(3rem, 10vw, 9rem); font-weight: 900; letter-spacing: -0.04em; line-height: 0.9; color: var(--color-text); margin: 0; }
 	.accent-line { color: var(--color-accent); }
 
@@ -136,27 +147,48 @@
 	.social-row:hover .social-arrow { opacity: 1; }
 
 	/* Bio text */
-	.bio-col {}
 	.bio-lede {
 		font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 700; line-height: 1.5;
-		color: var(--color-text); margin: 0 0 2rem;
-		border-left: 3px solid var(--color-accent); padding-left: 1.25rem;
+		color: var(--color-text); margin: 0 0 2.5rem;
+		max-width: 60ch;
 	}
-	.bio-body { display: flex; flex-direction: column; gap: 1.25rem; }
-	.bio-body p { font-size: 1rem; line-height: 1.8; color: var(--color-muted); margin: 0; }
+
+	/* Chapter dividers — thin rule + breathing room, not eyebrow labels */
+	.bio-chapter {
+		padding-top: 2rem;
+		border-top: 1px solid var(--color-border);
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+	.bio-chapter + .bio-chapter { margin-top: 0.25rem; }
+
+	.bio-chapter p { font-size: 1rem; line-height: 1.8; color: var(--color-muted); margin: 0; max-width: 68ch; text-wrap: pretty; }
+
+	/* Philosophy pull-quote — the AuDHD differentiator, surfaced as a professional statement */
+	.bio-philosophy {
+		font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+		font-weight: 700;
+		line-height: 1.4;
+		color: var(--color-text) !important;
+		letter-spacing: -0.01em;
+	}
 
 	/* Skills */
 	.skills-section { padding: clamp(3rem, 6vw, 5rem) 0; border-bottom: 1px solid var(--color-border); }
-	.section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 1.5rem; }
+	.skills-heading {
+		font-size: 1rem; font-weight: 700;
+		color: var(--color-text); margin: 0 0 1.5rem;
+		letter-spacing: 0;
+	}
 	.tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 	.tag { font-size: 0.78rem; font-weight: 600; padding: 0.35rem 0.75rem; border: 1.5px solid var(--color-border); color: var(--color-muted); }
 
 	/* CTA */
 	.cta-block { padding: clamp(5rem, 10vw, 9rem) 0; }
-	.cta-pre { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-muted); margin: 0 0 1.25rem; }
 	.cta-main { display: inline-flex; align-items: center; gap: 0.5rem; font-size: clamp(2rem, 6vw, 5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: var(--color-text); text-decoration: none; transition: color 0.3s; }
 	.cta-main:hover { color: var(--color-accent2); }
 	.cta-ico { width: clamp(1.5rem, 4vw, 3rem); height: clamp(1.5rem, 4vw, 3rem); }
-	.cta-sub { margin: 1.25rem 0 0; font-size: 0.875rem; color: var(--color-muted); max-width: 48ch; }
+	.cta-sub { margin: 1.25rem 0 0; font-size: 0.875rem; color: var(--color-muted); max-width: 52ch; }
 	.cta-inline-link { color: var(--color-accent); text-decoration: underline; }
 </style>

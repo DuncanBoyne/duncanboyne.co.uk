@@ -309,5 +309,5 @@
 	.talk-content :global(ol) { list-style-type: decimal; }
 	.talk-content :global(li) { margin-bottom: 0.5rem; }
 	.talk-content :global(hr) { border-color: var(--color-border); margin: 2rem 0; }
-	.talk-content :global(blockquote) { border-left: 4px solid var(--color-accent); padding-left: 1rem; color: var(--color-muted); font-style: italic; margin-bottom: 1.25rem; }
+	.talk-content :global(blockquote) { border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); background: color-mix(in srgb, var(--color-accent) 5%, transparent); padding: 1rem 1.25rem; color: var(--color-muted); font-style: italic; margin-bottom: 1.25rem; }
 </style>

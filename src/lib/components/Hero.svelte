@@ -65,7 +65,7 @@
 
 				<!-- Tagline -->
 				<p
-					class="hero-tagline font-medium md:whitespace-nowrap gradient-text reveal"
+					class="hero-tagline font-medium md:whitespace-nowrap tagline reveal"
 					class:reveal-visible={taglineVisible}
 				>
 					The Power BI Kinda Guy.
@@ -151,12 +151,8 @@
 		font-size: clamp(1.35rem, 4.8vw, 4.5rem);
 	}
 
-	/* Gold gradient on tagline */
-	.gradient-text {
-		background: linear-gradient(135deg, var(--color-accent) 0%, #c8950a 50%, var(--color-accent2) 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
+	.tagline {
+		color: var(--color-accent);
 	}
 
 	/* Word slide-up animation */

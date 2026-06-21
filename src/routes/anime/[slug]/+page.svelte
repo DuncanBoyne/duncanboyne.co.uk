@@ -269,8 +269,10 @@
 	}
 
 	.blog-content :global(blockquote) {
-		border-left: 4px solid var(--color-accent);
-		padding-left: 1rem;
+		border-top: 1px solid var(--color-border);
+		border-bottom: 1px solid var(--color-border);
+		background: color-mix(in srgb, var(--color-accent) 5%, transparent);
+		padding: 1rem 1.25rem;
 		color: var(--color-muted);
 		font-style: italic;
 		margin-bottom: 1.25rem;
