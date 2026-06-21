@@ -14,13 +14,43 @@
 
 	let posts: Post[] = [];
 	let events: Event[] = [];
+	let postsLoading = true;
+	let eventsLoading = true;
+	let postsError = false;
+	let eventsError = false;
 	let ready = false;
 
-	onMount(async () => {
+	// Fetched independently so one failing band never blanks the other.
+	async function loadPosts() {
+		postsLoading = true;
+		postsError = false;
+		try {
+			posts = (await getPosts(4)) || [];
+		} catch (e) {
+			postsError = true;
+			console.error('Failed to load posts', e);
+		} finally {
+			postsLoading = false;
+		}
+	}
+
+	async function loadEvents() {
+		eventsLoading = true;
+		eventsError = false;
+		try {
+			events = ((await getEvents(true)) || []).slice(0, 3);
+		} catch (e) {
+			eventsError = true;
+			console.error('Failed to load events', e);
+		} finally {
+			eventsLoading = false;
+		}
+	}
+
+	onMount(() => {
 		setTimeout(() => { ready = true; }, 60);
-		const [p, e] = await Promise.all([getPosts(4), getEvents(true)]);
-		posts = p || [];
-		events = (e || []).slice(0, 3);
+		loadPosts();
+		loadEvents();
 	});
 
 	function formatDate(d: string) {
@@ -105,29 +135,44 @@
 			<a href="/blog" class="cb-all">All posts <ArrowUpRight class="ico" /></a>
 		</div>
 
-		<ul class="row-list">
-			{#each posts as post}
-				<li class="row-item">
-					<a href="/blog/{post.slug}" class="row-link">
-						<div class="row-top">
-							<span class="row-date">{formatDate(post.published_at ?? post.created_at)}</span>
-							<span class="row-title">{post.title}</span>
-							<ArrowUpRight class="row-arrow ico" />
-						</div>
-						<div class="row-expand"><div class="row-expand-in">
-							{#if post.featured_image}
-								<div class="row-thumb-wrap">
-									<img src={post.featured_image} alt={post.title} class="row-thumb" />
-								</div>
-							{/if}
-							{#if post.excerpt}
-								<p class="row-excerpt">{post.excerpt}</p>
-							{/if}
-						</div></div>
-					</a>
-				</li>
-			{/each}
-		</ul>
+		{#if postsLoading}
+			<ul class="row-list" aria-hidden="true">
+				{#each [1, 2, 3, 4] as n}
+					<li class="row-item skeleton"><span class="sk-date"></span><span class="sk-title"></span></li>
+				{/each}
+			</ul>
+		{:else if postsError}
+			<div class="msg-block" role="alert">
+				<p class="msg-empty">That didn't load. Probably me, not you.</p>
+				<button type="button" class="msg-retry" on:click={loadPosts}>Try again <ArrowUpRight class="ico" /></button>
+			</div>
+		{:else if posts.length === 0}
+			<p class="msg-empty">Nothing published yet — the first piece is coming.</p>
+		{:else}
+			<ul class="row-list">
+				{#each posts as post}
+					<li class="row-item">
+						<a href="/blog/{post.slug}" class="row-link">
+							<div class="row-top">
+								<span class="row-date">{formatDate(post.published_at ?? post.created_at)}</span>
+								<span class="row-title">{post.title}</span>
+								<ArrowUpRight class="row-arrow ico" />
+							</div>
+							<div class="row-expand"><div class="row-expand-in">
+								{#if post.featured_image}
+									<div class="row-thumb-wrap">
+										<img src={post.featured_image} alt={post.title} class="row-thumb" />
+									</div>
+								{/if}
+								{#if post.excerpt}
+									<p class="row-excerpt">{post.excerpt}</p>
+								{/if}
+							</div></div>
+						</a>
+					</li>
+				{/each}
+			</ul>
+		{/if}
 
 	</div>
 </section>
@@ -168,7 +213,6 @@
 </section>
 
 <!-- SPEAKING -->
-{#if events.length > 0}
 <section class="content-block content-block--alt">
 	<div class="wrap">
 
@@ -177,38 +221,52 @@
 			<a href="/events" class="cb-all">All events <ArrowUpRight class="ico" /></a>
 		</div>
 
-		<ul class="row-list">
-			{#each events as ev}
-				<li class="row-item">
-					<div class="row-link event-row">
-						<div class="row-top">
-							<span class="row-date">{ev.event_date ? formatDate(ev.event_date) : 'TBC'}</span>
-							<span class="row-title">{ev.title}</span>
-							{#if ev.location}<span class="row-loc">{ev.location}</span>{/if}
-							<ArrowUpRight class="row-arrow ico" />
-						</div>
-						<div class="row-expand"><div class="row-expand-in">
-							<div class="ev-actions">
-								{#if ev.event_url}
-									<a href={ev.event_url} target="_blank" rel="noopener" class="ev-btn ev-btn--primary">
-										Sign up <ArrowUpRight class="ico" />
-									</a>
-								{/if}
-								{#if ev.talk_slug}
-									<a href="/talks/{ev.talk_slug}" class="ev-btn ev-btn--ghost">
-										View talk <ArrowUpRight class="ico" />
-									</a>
-								{/if}
+		{#if eventsLoading}
+			<ul class="row-list" aria-hidden="true">
+				{#each [1, 2, 3] as n}
+					<li class="row-item skeleton"><span class="sk-date"></span><span class="sk-title"></span></li>
+				{/each}
+			</ul>
+		{:else if eventsError}
+			<div class="msg-block" role="alert">
+				<p class="msg-empty">Couldn't pull the calendar just now.</p>
+				<button type="button" class="msg-retry" on:click={loadEvents}>Try again <ArrowUpRight class="ico" /></button>
+			</div>
+		{:else if events.length === 0}
+			<p class="msg-empty">Nothing on the calendar right now. Past talks live in <a href="/talks" class="msg-link">the archive</a> — or <a href="/contact" class="msg-link">invite me to your event</a>.</p>
+		{:else}
+			<ul class="row-list">
+				{#each events as ev}
+					<li class="row-item">
+						<div class="row-link event-row">
+							<div class="row-top">
+								<span class="row-date">{ev.event_date ? formatDate(ev.event_date) : 'TBC'}</span>
+								<span class="row-title">{ev.title}</span>
+								{#if ev.location}<span class="row-loc">{ev.location}</span>{/if}
+								<ArrowUpRight class="row-arrow ico" />
 							</div>
-						</div></div>
-					</div>
-				</li>
-			{/each}
-		</ul>
+							<div class="row-expand"><div class="row-expand-in">
+								<div class="ev-actions">
+									{#if ev.event_url}
+										<a href={ev.event_url} target="_blank" rel="noopener" class="ev-btn ev-btn--primary">
+											Sign up <ArrowUpRight class="ico" />
+										</a>
+									{/if}
+									{#if ev.talk_slug}
+										<a href="/talks/{ev.talk_slug}" class="ev-btn ev-btn--ghost">
+											View talk <ArrowUpRight class="ico" />
+										</a>
+									{/if}
+								</div>
+							</div></div>
+						</div>
+					</li>
+				{/each}
+			</ul>
+		{/if}
 
 	</div>
 </section>
-{/if}
 
 <!-- ── CTA ───────────────────────────────────────────────────────────── -->
 <section class="cta-block">
@@ -343,7 +401,7 @@
 		object-position: top center;
 	}
 
-	/* 3px rule — accent3 (10%) */
+	/* 3px hero rule — Burnt Gold (accent3) */
 	.hero { border-bottom-color: var(--color-accent3); }
 
 	/* Hero strip */
@@ -537,7 +595,7 @@
 		text-decoration: none;
 		transition: color 0.2s;
 	}
-	/* Section "all" links — accent3 (10%) */
+	/* Section "all" link hover — Burnt Gold (accent3) */
 	.cb-all:hover { color: var(--color-accent3); }
 
 	/* ── Row list ───────────────────────────────────────────────────── */
@@ -550,6 +608,83 @@
 		display: block;
 		padding: 1.1rem 0;
 		text-decoration: none;
+	}
+
+	/* ── Loading / empty / error states ─────────────────────────────── */
+	.skeleton {
+		display: flex;
+		align-items: center;
+		gap: 1.25rem;
+		padding: 1.1rem 0;
+	}
+	.sk-date, .sk-title {
+		height: 0.85rem;
+		background: var(--color-border);
+		position: relative;
+		overflow: hidden;
+	}
+	.sk-date { width: 7rem; flex-shrink: 0; }
+	.sk-title { flex: 1; max-width: 22rem; }
+	/* Shimmer sweep — a moving highlight, not a layout animation */
+	.sk-date::after, .sk-title::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		transform: translateX(-100%);
+		background: linear-gradient(90deg, transparent, var(--color-surface), transparent);
+		animation: sk-shimmer 1.4s ease-in-out infinite;
+	}
+
+	@keyframes sk-shimmer {
+		100% { transform: translateX(100%); }
+	}
+
+	.msg-empty {
+		padding: 2.5rem 0;
+		margin: 0;
+		color: var(--color-muted);
+		font-size: 0.95rem;
+		line-height: 1.6;
+		max-width: 52ch;
+	}
+	.msg-link {
+		color: var(--color-accent);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+	.msg-link:hover { color: var(--color-accent2); }
+
+	.msg-block {
+		padding: 2.5rem 0;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1rem;
+	}
+	.msg-block .msg-empty { padding: 0; }
+
+	.msg-retry {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.55rem 1.25rem;
+		border: 1.5px solid var(--color-border);
+		background: transparent;
+		color: var(--color-text);
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		cursor: pointer;
+		transition: border-color 0.2s, color 0.2s;
+	}
+	.msg-retry:hover { border-color: var(--color-text); color: var(--color-accent2); }
+	.msg-retry:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 2px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.sk-date::after, .sk-title::after { animation: none; }
 	}
 
 	.row-top {

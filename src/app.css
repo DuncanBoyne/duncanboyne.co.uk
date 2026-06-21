@@ -13,6 +13,8 @@
 		/* Darkened for 4.65:1 contrast on cream bg (#fix-1) */
 		--color-accent: #8B6800;
 		--color-accent2: #6B5000;
+		/* Burnt Gold — thin hero/page divider rules (DESIGN.md). 3.1:1 on cream, AA for the 3px rule */
+		--color-accent3: #B46304;
 		/* White text on dark-gold button passes 5.1:1 (#fix-1) */
 		--color-on-accent: #FFFFFF;
 		--color-success: #107C10;
