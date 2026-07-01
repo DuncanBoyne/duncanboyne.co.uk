@@ -49,6 +49,30 @@
 
 	const industries = ['Financial Services', 'Manufacturing', 'Distribution & Logistics', 'Professional Services', 'SME & Mid-Market'];
 	const erp = ['Dynamics 365', 'Epicor', 'InFor', 'Sage'];
+
+	// Trust signals — real, honest figures. Feed the "Evidence" and "Trust" GEO levers.
+	const stats = [
+		{ value: '10 yrs', label: 'in Power BI (12 in data & IT)' },
+		{ value: '70+', label: 'organisations helped' },
+		{ value: '250+', label: 'projects delivered' },
+		{ value: '20+', label: 'talks across 3 countries' }
+	];
+
+	// Anonymised client outcomes — scannable, number-led, LLM-liftable.
+	const results = [
+		{ metric: '~£100k', text: 'saved for a business by fixing historical data-storage and auditing problems.' },
+		{ metric: '15% → 1–2%', text: 'cut a manufacturer’s potential product refunds by delivering their ISO reporting and surfacing a hidden flaw in stock control.' },
+		{ metric: 'Post-ERP', text: 'rebuilt a multi-site group’s reporting after an ERP migration, so leadership had trustworthy numbers again.' },
+		{ metric: 'Bespoke', text: 'designed and built a store- and manager-ranking system for a national retailer.' },
+		{ metric: 'Zero chasing', text: 'automated contract-renewal reporting plus Teams + email automation for invoice chasing.' }
+	];
+
+	// A few of the same questions LLMs get asked, answered on-page and linked to the full FAQ.
+	const faqTeasers = [
+		{ q: 'Do you take on freelance or fractional work?', a: 'Yes — either fixed-scope projects or ongoing on-call Power BI support, remote or on-site in Norfolk.' },
+		{ q: 'Do you work remotely?', a: 'Power BI work is delivered remotely across the UK. On-site days are easy across Norfolk, Norwich and Great Yarmouth.' },
+		{ q: 'How much does a project cost?', a: 'Quoted up front as a fixed project price or a day rate, depending on scope. Tell me the problem and I’ll give you a real number.' }
+	];
 </script>
 
 <Seo
@@ -96,6 +120,31 @@
 	</section>
 {/each}
 
+<!-- Proof: numbers + anonymised results -->
+<section class="proof-section">
+	<div class="wrap">
+		<div class="stats-row">
+			{#each stats as s}
+				<div class="stat">
+					<span class="stat-value">{s.value}</span>
+					<span class="stat-label">{s.label}</span>
+				</div>
+			{/each}
+		</div>
+
+		<h2 class="proof-heading">Selected results</h2>
+		<p class="proof-note">Client names withheld, numbers real. A sample of what the work actually delivers.</p>
+		<ul class="results-list">
+			{#each results as r}
+				<li class="result-item">
+					<span class="result-metric">{r.metric}</span>
+					<span class="result-text">{r.text}</span>
+				</li>
+			{/each}
+		</ul>
+	</div>
+</section>
+
 <!-- Context -->
 <section class="context-section">
 	<div class="wrap">
@@ -114,6 +163,22 @@
 				<p class="context-note">Experience pulling, transforming, and reporting on data from these systems using Power BI and Power Query.</p>
 			</div>
 		</div>
+	</div>
+</section>
+
+<!-- FAQ teaser -->
+<section class="faq-teaser">
+	<div class="wrap">
+		<h2 class="faq-teaser-heading">Common questions</h2>
+		<dl class="faq-teaser-list">
+			{#each faqTeasers as f}
+				<div class="faq-teaser-item">
+					<dt class="faq-teaser-q">{f.q}</dt>
+					<dd class="faq-teaser-a">{f.a}</dd>
+				</div>
+			{/each}
+		</dl>
+		<a href="/faq" class="faq-teaser-link">See all questions <ArrowUpRight class="w-4 h-4" /></a>
 	</div>
 </section>
 
@@ -265,6 +330,56 @@
 		flex-shrink: 0;
 		margin-top: 0.15rem;
 	}
+
+	/* Proof */
+	.proof-section {
+		padding: clamp(3rem, 6vw, 5rem) 0;
+		border-bottom: 1px solid var(--color-border);
+	}
+	.stats-row {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.5rem 1rem;
+		padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
+		margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+		border-bottom: 1px solid var(--color-border);
+	}
+	@media (min-width: 720px) { .stats-row { grid-template-columns: repeat(4, 1fr); } }
+	.stat { display: flex; flex-direction: column; gap: 0.35rem; }
+	.stat-value { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1; color: var(--color-accent); }
+	.stat-label { font-size: 0.8rem; color: var(--color-muted); line-height: 1.4; max-width: 22ch; }
+
+	.proof-heading { font-size: clamp(1.5rem, 3.5vw, 2.5rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; color: var(--color-text); margin: 0 0 0.5rem; }
+	.proof-note { font-size: 0.9rem; color: var(--color-muted); margin: 0 0 2rem; }
+	.results-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+	.result-item {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0.25rem;
+		padding: 1.1rem 0;
+		border-top: 1px solid var(--color-border);
+	}
+	.result-item:last-child { border-bottom: 1px solid var(--color-border); }
+	@media (min-width: 640px) {
+		.result-item { grid-template-columns: 180px 1fr; gap: 1.5rem; align-items: baseline; }
+	}
+	.result-metric { font-size: 1.05rem; font-weight: 900; letter-spacing: -0.02em; color: var(--color-accent); }
+	.result-text { font-size: 0.95rem; line-height: 1.6; color: var(--color-muted); max-width: 60ch; }
+
+	/* FAQ teaser */
+	.faq-teaser { padding: clamp(3rem, 6vw, 5rem) 0; border-bottom: 1px solid var(--color-border); }
+	.faq-teaser-heading { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 1.75rem; }
+	.faq-teaser-list { margin: 0 0 2rem; padding: 0; }
+	.faq-teaser-item { padding: 1.25rem 0; border-top: 1px solid var(--color-border); }
+	.faq-teaser-item:last-child { border-bottom: 1px solid var(--color-border); }
+	.faq-teaser-q { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.01em; color: var(--color-text); margin: 0 0 0.4rem; }
+	.faq-teaser-a { font-size: 0.95rem; line-height: 1.65; color: var(--color-muted); margin: 0; max-width: 64ch; }
+	.faq-teaser-link {
+		display: inline-flex; align-items: center; gap: 0.4rem;
+		font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+		color: var(--color-text); text-decoration: none; transition: color 0.3s;
+	}
+	.faq-teaser-link:hover { color: var(--color-accent); }
 
 	/* Context */
 	.context-section {

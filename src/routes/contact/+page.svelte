@@ -32,6 +32,13 @@
 		}
 	}
 
+	// Short, contact-relevant Q&A. Mirrors the master /faq for the "Intent" GEO lever.
+	const faqs = [
+		{ q: 'Do you take on freelance or fractional Power BI work?', a: 'Yes — either fixed-scope projects or ongoing on-call support, delivered remotely across the UK or on-site in Norfolk.' },
+		{ q: 'How quickly will I hear back?', a: 'I read everything that lands here myself and reply within a day or two.' },
+		{ q: 'What should I include in a message?', a: 'A sentence or two on what you’re trying to solve is plenty. If I’m not the right fit, I’ll say so and point you elsewhere.' }
+	];
+
 	const socialLinks = [
 		{ href: 'https://github.com/DuncanBoyne', icon: Github, label: 'GitHub', username: '@DuncanBoyne' },
 		{ href: 'https://linkedin.com/in/duncanboyne', icon: Linkedin, label: 'LinkedIn', username: 'in/duncanboyne' },
@@ -144,6 +151,22 @@
 	</div>
 </section>
 
+<!-- FAQ -->
+<section class="faq-section">
+	<div class="wrap">
+		<p class="col-label">Before You Ask</p>
+		<dl class="faq-list">
+			{#each faqs as f}
+				<div class="faq-item">
+					<dt class="faq-q">{f.q}</dt>
+					<dd class="faq-a">{f.a}</dd>
+				</div>
+			{/each}
+		</dl>
+		<a href="/faq" class="faq-link">More questions answered <ArrowUpRight class="w-4 h-4" /></a>
+	</div>
+</section>
+
 <style>
 	.wrap { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3.5rem); }
 
@@ -157,8 +180,22 @@
 	.accent-line { color: var(--color-accent); }
 	.page-sub { font-size: clamp(1rem, 1.8vw, 1.2rem); color: var(--color-muted); max-width: 52ch; margin: 0; }
 
+	/* FAQ */
+	.faq-section { padding: 0 0 clamp(5rem, 10vw, 9rem); }
+	.faq-list { margin: 0 0 1.75rem; padding: 0; }
+	.faq-item { padding: 1.25rem 0; border-top: 1px solid var(--color-border); }
+	.faq-item:last-child { border-bottom: 1px solid var(--color-border); }
+	.faq-q { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.01em; color: var(--color-text); margin: 0 0 0.4rem; }
+	.faq-a { font-size: 0.95rem; line-height: 1.65; color: var(--color-muted); margin: 0; max-width: 64ch; }
+	.faq-link {
+		display: inline-flex; align-items: center; gap: 0.4rem;
+		font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+		color: var(--color-text); text-decoration: none; transition: color 0.3s;
+	}
+	.faq-link:hover { color: var(--color-accent); }
+
 	/* Content */
-	.content-section { padding: clamp(3rem, 6vw, 5rem) 0 clamp(5rem, 10vw, 9rem); }
+	.content-section { padding: clamp(3rem, 6vw, 5rem) 0 clamp(3rem, 6vw, 5rem); }
 	.content-grid { display: grid; gap: 4rem; }
 	@media (min-width: 768px) { .content-grid { grid-template-columns: 1fr 1fr; gap: 6rem; } }
 

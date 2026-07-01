@@ -10,6 +10,7 @@ const SITE = 'https://www.duncanboyne.co.uk';
 const staticRoutes: { path: string; priority: number; changefreq: string }[] = [
 	{ path: '/', priority: 1.0, changefreq: 'weekly' },
 	{ path: '/services', priority: 0.9, changefreq: 'monthly' },
+	{ path: '/faq', priority: 0.8, changefreq: 'monthly' },
 	{ path: '/about', priority: 0.8, changefreq: 'monthly' },
 	{ path: '/contact', priority: 0.8, changefreq: 'yearly' },
 	{ path: '/blog', priority: 0.7, changefreq: 'weekly' },

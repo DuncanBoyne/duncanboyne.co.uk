@@ -2,6 +2,9 @@
 
 Goal: rank for **"Power BI consultant Norfolk / Norwich / Great Yarmouth"** and related local terms.
 
+> There are two sections here: **traditional SEO** (Google/Bing ranking) below, and
+> **GEO** (getting cited by ChatGPT/Copilot/Perplexity and AI Overviews) at the very bottom.
+
 The website work is done (see "What's already built" below). The remaining wins are
 **off-site** and only you can do them — they matter *more* than the code for local search.
 
@@ -82,3 +85,56 @@ Both live in `static/` and must stay forever — deleting either un-verifies you
 - Keyword stuffing — the current copy is at the right density. More would hurt.
 - Buying backlinks / directory spam — risk > reward.
 - Meta keywords tag — Google ignores it.
+
+---
+
+# GEO — getting found on ChatGPT & other LLMs
+
+GEO (Generative Engine Optimization) is about being the answer an assistant *cites* when
+someone asks "who's a good freelance Power BI consultant in Norfolk?" — not about ranking a
+blue link. The framework used here (from a talk): **CITES** —
+**C**larity, **I**ntent, **T**rust, **E**vidence, **S**tructure.
+
+## What's built for GEO (on-site)
+
+- **`/faq` page + `FAQPage` JSON-LD** (`src/routes/faq/+page.svelte`) — 12 questions phrased
+  the way people ask assistants (freelance/fractional, remote, cost, results, industries,
+  experience). Each answer is a tight, self-contained, citable block. The schema is the
+  payload LLMs and AI Overviews lift answers from. *(Intent + Structure)*
+- **Evidence block on `/services`** — a "Selected results" list of **anonymised, number-led
+  client wins** (£100k saved; refunds 15%→1–2%; post-ERP reporting rebuild; bespoke ranking
+  system; invoice-chase automation) plus a "by the numbers" strip. Numbers are real, client
+  names withheld. *(Evidence)*
+- **Woven Q&As** on `/services` and `/contact` — page-relevant subsets that link to `/faq`.
+  *(Intent)*
+- **Trust enrichment** — `founder` in the `ProfessionalService` JSON-LD is now a full `Person`
+  (jobTitle, 10 yrs Power BI / 12 in data, 250+ projects / 70+ orgs, founder of NPPUG &
+  EoEPPS, 20+ talks in 3 countries, Sessionize in `sameAs`). *(Trust)*
+- **Internal linking** — footer quick links + `/faq` in the sitemap, so crawlers/LLMs
+  actually find the new content. *(Clarity/Structure)*
+
+## The honest inputs behind the numbers
+So future edits stay truthful — these are Duncan's real figures, not invented:
+10 yrs Power BI / 12 yrs data & IT · 70+ organisations · 250+ projects ·
+20+ talks in 3 countries (soon 5) · 8 EoEPPS events, 500+ attendees ·
+**no Microsoft certifications** (deliberately not claimed anywhere).
+
+## GEO wins that are OFF-site (only Duncan can do)
+LLMs weight third-party corroboration heavily. The on-site work is necessary but not
+sufficient — these move the needle most:
+1. **LinkedIn** — headline/about must match the site language ("freelance/fractional Power BI
+   consultant, Norfolk") and ideally restate a metric or two. LLMs read LinkedIn heavily.
+2. **Consistent NAP everywhere** — same name + area + URL on every profile/directory (this is
+   the "Clarity: location consistency" lever from the talk).
+3. **Get mentioned in others' content** — guest posts, podcast/user-group writeups, event
+   pages that name you *and* what you do. Third-party pages that state "Duncan Boyne, Power BI
+   consultant in Norfolk" are what an LLM trusts more than your own site.
+4. **Keep the results current** — add a new anonymised win to `/services` + `/faq` whenever you
+   land one. Specific, quantified outcomes are the single most citable thing you own.
+
+## Verify the GEO bits are live
+- View-source `/faq` → one `<script type="application/ld+json">` block with `"@type":"FAQPage"`.
+- Rich Results Test (https://search.google.com/test/rich-results) on `/faq` → detects FAQ.
+- `/sitemap.xml` includes `/faq`.
+- Ask ChatGPT/Perplexity (with browsing) "freelance Power BI consultant Norfolk" after the
+  site has been re-crawled — this takes weeks, not hours. Don't expect instant results.

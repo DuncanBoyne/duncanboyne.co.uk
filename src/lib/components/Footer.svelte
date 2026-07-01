@@ -50,6 +50,15 @@
 				{/each}
 			</div>
 
+			<!-- Quick links (internal linking for crawlers + LLMs) -->
+			<nav class="footer-links" aria-label="Footer">
+				<a href="/services">Services</a>
+				<a href="/faq">FAQ</a>
+				<a href="/blog">Blog</a>
+				<a href="/about">About</a>
+				<a href="/contact">Contact</a>
+			</nav>
+
 			<!-- Brand logo -->
 			<a href="/" aria-label="Duncan Boyne home">
 				<img src={logoFull} alt="Duncan Boyne" class="footer-logo" />
@@ -75,4 +84,17 @@
 		width: clamp(180px, 30vw, 320px);
 		display: block;
 	}
+	.footer-links {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.5rem 1.5rem;
+	}
+	.footer-links a {
+		font-size: 0.85rem;
+		color: var(--color-muted);
+		text-decoration: none;
+		transition: color 0.3s;
+	}
+	.footer-links a:hover { color: var(--color-accent); }
 </style>
