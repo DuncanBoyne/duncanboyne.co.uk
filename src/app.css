@@ -112,6 +112,19 @@
 	background: var(--color-muted);
 }
 
+/* Anti-flash shield: hides the homepage until IntroLoader decides whether
+   to run the chaos-to-clarity intro. Class is added synchronously in
+   app.html before hydration; IntroLoader removes it (or this fallback does). */
+html.intro-pending body {
+	opacity: 0;
+	animation: intro-shield-release 0s linear 4s forwards;
+}
+@keyframes intro-shield-release {
+	to {
+		opacity: 1;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	*,
 	*::before,

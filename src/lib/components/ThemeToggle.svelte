@@ -5,12 +5,8 @@
 	let isDark = false;
 
 	onMount(() => {
-		const savedTheme = localStorage.getItem('theme');
-		if (savedTheme) {
-			isDark = savedTheme === 'dark';
-		} else {
-			isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-		}
+		// Dark is the site default (see app.html); light only if explicitly chosen.
+		isDark = localStorage.getItem('theme') !== 'light';
 		updateTheme();
 	});
 
