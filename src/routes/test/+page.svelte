@@ -175,10 +175,10 @@
 <section class="cta-block">
 	<div class="wrap">
 		<p class="cta-pre">Ready to work together?</p>
-		<a href="mailto:duncanboyne@hotmail.co.uk" class="cta-main">
+		<a href="mailto:duncan@duncanboyne.co.uk" class="cta-main">
 			Let's talk <ArrowUpRight class="cta-ico" />
 		</a>
-		<p class="cta-sub">duncanboyne@hotmail.co.uk</p>
+		<p class="cta-sub">duncan@duncanboyne.co.uk</p>
 	</div>
 </section>
 

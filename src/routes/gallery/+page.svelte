@@ -50,16 +50,23 @@
 
 <svelte:window on:keydown={onKeydown} />
 
-<!-- Hero -->
-<section class="page-hero">
+<!-- ══ HERO — poster cover ═════════════════════════════════════════════ -->
+<section class="band band--cream gl-hero">
+	<div class="bleeds" aria-hidden="true">
+		<span class="b-shape b-circle gl-hero-disc"></span>
+		<span class="b-shape gl-hero-bar"></span>
+	</div>
 	<div class="wrap">
+		<div class="modules" aria-hidden="true">
+			<span class="mod mod-ink"></span><span class="mod mod-gold"></span><span class="mod mod-red"></span>
+		</div>
 		<p class="eyebrow">Out and About</p>
 		<h1 class="page-title">Gallery</h1>
 		<p class="page-sub">Moments from conferences, user groups, and community events — on stage and in the room.</p>
 	</div>
 </section>
 
-<!-- Grouped grids -->
+<!-- ══ GROUPED GRIDS — photos carry the design, kept field-neutral ══════ -->
 <section class="gallery-section">
 	<div class="wrap">
 		{#if galleryPhotos.length === 0}
@@ -114,8 +121,12 @@
 	</div>
 {/if}
 
-<!-- CTA -->
-<section class="cta-block">
+<!-- ══ CTA — inverse closer ════════════════════════════════════════════ -->
+<section class="band band--inverse cta-block">
+	<div class="bleeds" aria-hidden="true">
+		<span class="b-shape b-circle gl-cta-disc"></span>
+		<span class="b-shape gl-cta-bar"></span>
+	</div>
 	<div class="wrap">
 		<p class="cta-pre">Want me at your event?</p>
 		<a href="/contact" class="cta-main">Get in touch <ArrowUpRight class="cta-ico" /></a>
@@ -124,18 +135,24 @@
 </section>
 
 <style>
-	.wrap { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3.5rem); }
+	/* .wrap, .ico, the field system, bleeds, and the CTA pattern live in
+	   app.css (Bauhaus poster kit). The photo grid stays field-neutral —
+	   real photos carry this page, not geometry. */
 
-	/* Hero */
-	.page-hero {
-		padding: clamp(3rem, 7vw, 6rem) 0 clamp(1.5rem, 3vw, 2.5rem);
-		border-bottom: 3px solid var(--color-accent3);
+	/* ══ HERO ═══════════════════════════════════════════════════════ */
+	.gl-hero { padding-top: clamp(3.5rem, 8vw, 6.5rem); padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+	.gl-hero-disc {
+		width: clamp(16rem, 34vw, 30rem); height: clamp(16rem, 34vw, 30rem);
+		background: var(--color-accent); opacity: 0.14;
+		top: clamp(-11rem, -13vw, -6rem); right: clamp(-11rem, -11vw, -5rem);
 	}
+	.gl-hero-bar { width: clamp(5rem, 15vw, 11rem); height: 0.85rem; background: var(--color-bauhaus); bottom: 0; left: 0; }
+	.modules { margin-bottom: clamp(1.25rem, 3vw, 2rem); }
 	.eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.75rem; }
 	.page-title { font-size: clamp(3rem, 10vw, 9rem); font-weight: 900; letter-spacing: -0.04em; line-height: 0.9; color: var(--color-text); margin: 0 0 clamp(1rem, 2vw, 2rem); }
 	.page-sub { font-size: clamp(1rem, 1.8vw, 1.2rem); color: var(--color-muted); max-width: 52ch; margin: 0; }
 
-	/* Gallery */
+	/* ══ GALLERY ════════════════════════════════════════════════════ */
 	.gallery-section { padding: clamp(2.5rem, 5vw, 4rem) 0 clamp(4rem, 8vw, 7rem); }
 	.msg-empty { padding: 3rem 0; color: var(--color-muted); font-size: 1rem; }
 
@@ -164,7 +181,7 @@
 	.tile:hover img { transform: scale(1.04); }
 	.tile:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 
-	/* Lightbox */
+	/* Lightbox — cinematic exception, stays dark regardless of page field */
 	.lightbox {
 		position: fixed; inset: 0; z-index: 100;
 		display: flex; align-items: center; justify-content: center;
@@ -189,11 +206,11 @@
 	.lb-next { right: clamp(0.5rem, 2vw, 1.5rem); }
 	:global(.lb-ico) { width: 1.4rem; height: 1.4rem; }
 
-	/* CTA */
-	.cta-block { padding: clamp(5rem, 10vw, 9rem) 0; border-top: 1px solid var(--color-border); }
-	.cta-pre { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-muted); margin: 0 0 1.25rem; }
-	.cta-main { display: inline-flex; align-items: center; gap: 0.5rem; font-size: clamp(2.5rem, 8vw, 7rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: var(--color-text); text-decoration: none; transition: color 0.3s; }
-	.cta-main:hover { color: var(--color-accent2); }
-	.cta-ico { width: clamp(2rem, 5vw, 4.5rem); height: clamp(2rem, 5vw, 4.5rem); }
-	.cta-sub { margin: 1.25rem 0 0; font-size: 0.875rem; color: var(--color-muted); max-width: 48ch; }
+	/* ══ CTA ════════════════════════════════════════════════════════ */
+	.gl-cta-disc {
+		width: clamp(11rem, 26vw, 20rem); height: clamp(11rem, 26vw, 20rem);
+		background: var(--color-accent); opacity: 0.9;
+		top: clamp(-6rem, -10vw, -3rem); right: clamp(-6rem, -8vw, -2rem);
+	}
+	.gl-cta-bar { width: clamp(4rem, 12vw, 9rem); height: 0.9rem; background: var(--color-bauhaus); bottom: 0; left: 0; }
 </style>

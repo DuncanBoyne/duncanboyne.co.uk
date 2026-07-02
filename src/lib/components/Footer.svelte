@@ -11,7 +11,7 @@
 		{ href: 'https://github.com/DuncanBoyne', icon: Github, label: 'GitHub' },
 		{ href: 'https://linkedin.com/in/duncanboyne', icon: Linkedin, label: 'LinkedIn' },
 		{ href: 'https://youtube.com/@PowerBIKindaGuy', icon: Youtube, label: 'YouTube' },
-		{ href: 'mailto:duncanboyne@hotmail.co.uk', icon: Mail, label: 'Email' }
+		{ href: 'mailto:duncan@duncanboyne.co.uk', icon: Mail, label: 'Email' }
 	];
 
 	let isDark = false;

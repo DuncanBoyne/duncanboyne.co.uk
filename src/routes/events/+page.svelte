@@ -1,13 +1,18 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getEvents } from '$lib/supabase';
-	import { ArrowUpRight, ExternalLink } from 'lucide-svelte';
+	import { ArrowUpRight, ExternalLink, ChevronDown } from 'lucide-svelte';
 	import type { Event } from '$lib/types';
 
 	let upcomingEvents: Event[] = [];
 	let pastEvents: Event[] = [];
 	let loading = true;
 	let error: string | null = null;
+	let openId: number | null = null;
+
+	function toggle(id: number) {
+		openId = openId === id ? null : id;
+	}
 
 	onMount(async () => {
 		try {
@@ -32,24 +37,33 @@
 	<meta name="description" content="Upcoming and past speaking engagements, workshops, and community events by Duncan Boyne." />
 </svelte:head>
 
-<!-- Hero -->
-<section class="page-hero">
+<!-- ══ HERO — poster cover ═════════════════════════════════════════════ -->
+<section class="band band--cream ev-hero">
+	<div class="bleeds" aria-hidden="true">
+		<span class="b-shape b-circle ev-hero-disc"></span>
+		<span class="b-shape ev-hero-bar"></span>
+	</div>
 	<div class="wrap">
+		<div class="modules" aria-hidden="true">
+			<span class="mod mod-ink"></span><span class="mod mod-gold"></span><span class="mod mod-red"></span>
+		</div>
 		<p class="eyebrow">On the Road</p>
 		<h1 class="page-title">Events</h1>
 		<p class="page-sub">Conferences, user groups, and community events — places you can catch me in person or online.</p>
 	</div>
 </section>
 
-<!-- Main content -->
-<section class="events-section">
+<!-- ══ EVENTS — cream field ═════════════════════════════════════════════ -->
+<section class="band band--cream events-section">
+	<div class="bleeds" aria-hidden="true">
+		<span class="b-shape b-circle ev-list-disc"></span>
+	</div>
 	<div class="wrap">
 		{#if loading}
-			<ul class="row-list">
+			<ul class="acc-list">
 				{#each [1,2,3,4] as _}
-					<li class="row-item skeleton">
-						<div class="sk-date"></div>
-						<div class="sk-title"></div>
+					<li class="acc-item skeleton">
+						<span class="sk-date"></span><span class="sk-title"></span>
 					</li>
 				{/each}
 			</ul>
@@ -62,30 +76,27 @@
 				{#if upcomingEvents.length === 0}
 					<p class="msg-empty">No upcoming events scheduled right now. Check back soon.</p>
 				{:else}
-					<ul class="row-list">
+					<ul class="acc-list">
 						{#each upcomingEvents as event}
-							<li class="row-item">
-								<div class="row-inner">
-									<div class="row-top">
-										<span class="row-date">{formatDate(event.event_date)}</span>
-										<span class="row-title">{event.title}</span>
-										{#if event.event_type}
-											<span class="row-type">{event.event_type}</span>
-										{/if}
-										<ArrowUpRight class="row-arrow ico" />
-									</div>
-									<div class="row-expand"><div class="row-expand-in">
-										<div class="row-detail">
-											{#if event.location}
-												<span class="detail-location">{event.location}</span>
-											{/if}
-											{#if event.description}
-												<p class="row-desc">{event.description}</p>
-											{/if}
+							{@const isOpen = openId === event.id}
+							<li class="acc-item" class:is-open={isOpen}>
+								<button class="acc-btn" on:click={() => toggle(event.id)} aria-expanded={isOpen}>
+									<span class="acc-marker" aria-hidden="true"></span>
+									<span class="acc-date">{formatDate(event.event_date)}</span>
+									<span class="acc-title">{event.title}</span>
+									{#if event.event_type}<span class="ev-type">{event.event_type}</span>{/if}
+									<ChevronDown class="acc-chevron" aria-hidden="true" />
+								</button>
+
+								<div class="acc-expand" aria-hidden={!isOpen}>
+									<div class="acc-expand-in">
+										<div class="acc-body">
+											{#if event.location}<span class="detail-location">{event.location}</span>{/if}
+											{#if event.description}<p class="row-desc">{event.description}</p>{/if}
 											<div class="row-actions">
 												{#if event.event_url}
 													<a href={event.event_url} target="_blank" rel="noopener noreferrer" class="btn-primary">
-														Register <ExternalLink class="w-3.5 h-3.5" />
+														Register <ExternalLink class="ico" />
 													</a>
 												{/if}
 												{#if event.talk_slug}
@@ -93,7 +104,7 @@
 												{/if}
 											</div>
 										</div>
-									</div></div>
+									</div>
 								</div>
 							</li>
 						{/each}
@@ -105,26 +116,26 @@
 			{#if pastEvents.length > 0}
 				<div class="events-group past-group">
 					<p class="group-label">Past Events</p>
-					<ul class="row-list">
+					<ul class="acc-list">
 						{#each pastEvents as event}
-							<li class="row-item past">
-								<div class="row-inner">
-									<div class="row-top">
-										<span class="row-date">{formatDate(event.event_date)}</span>
-										<span class="row-title">{event.title}</span>
-										{#if event.event_type}
-											<span class="row-type">{event.event_type}</span>
-										{/if}
-									</div>
-									<div class="row-expand"><div class="row-expand-in">
-										<div class="row-detail">
-											{#if event.location}
-												<span class="detail-location">{event.location}</span>
-											{/if}
+							{@const isOpen = openId === event.id}
+							<li class="acc-item" class:is-open={isOpen}>
+								<button class="acc-btn" on:click={() => toggle(event.id)} aria-expanded={isOpen}>
+									<span class="acc-marker" aria-hidden="true"></span>
+									<span class="acc-date">{formatDate(event.event_date)}</span>
+									<span class="acc-title">{event.title}</span>
+									{#if event.event_type}<span class="ev-type">{event.event_type}</span>{/if}
+									<ChevronDown class="acc-chevron" aria-hidden="true" />
+								</button>
+
+								<div class="acc-expand" aria-hidden={!isOpen}>
+									<div class="acc-expand-in">
+										<div class="acc-body">
+											{#if event.location}<span class="detail-location">{event.location}</span>{/if}
 											<div class="row-actions">
 												{#if event.slide_deck_url}
 													<a href={event.slide_deck_url} target="_blank" rel="noopener noreferrer" class="btn-secondary">
-														Slides <ExternalLink class="w-3.5 h-3.5" />
+														Slides <ExternalLink class="ico" />
 													</a>
 												{/if}
 												{#if event.talk_slug}
@@ -132,7 +143,7 @@
 												{/if}
 											</div>
 										</div>
-									</div></div>
+									</div>
 								</div>
 							</li>
 						{/each}
@@ -143,8 +154,12 @@
 	</div>
 </section>
 
-<!-- CTA -->
-<section class="cta-block">
+<!-- ══ CTA — inverse closer ════════════════════════════════════════════ -->
+<section class="band band--inverse cta-block">
+	<div class="bleeds" aria-hidden="true">
+		<span class="b-shape b-circle ev-cta-disc"></span>
+		<span class="b-shape ev-cta-bar"></span>
+	</div>
 	<div class="wrap">
 		<p class="cta-pre">Want me at your event?</p>
 		<a href="/contact" class="cta-main">Get in touch <ArrowUpRight class="cta-ico" /></a>
@@ -153,86 +168,63 @@
 </section>
 
 <style>
-	.wrap { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3.5rem); }
+	/* .wrap, .ico, the field system, bleeds, the accordion row list, and
+	   the CTA pattern live in app.css (Bauhaus poster kit). This block
+	   keeps only what's specific to Events' own layout and bleed shapes.
+	   Register/Slides/View Talk sit inside the click-driven accordion body,
+	   so they're reachable by keyboard and touch, not hover-only. */
 
-	/* Hero */
-	.page-hero {
-		padding: clamp(3rem, 7vw, 6rem) 0 clamp(1.5rem, 3vw, 2.5rem);
-		border-bottom: 3px solid var(--color-accent3);
+	/* ══ HERO ═══════════════════════════════════════════════════════ */
+	.ev-hero { padding-top: clamp(3.5rem, 8vw, 6.5rem); padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+	.ev-hero-disc {
+		width: clamp(16rem, 34vw, 30rem); height: clamp(16rem, 34vw, 30rem);
+		background: var(--color-accent); opacity: 0.14;
+		top: clamp(-11rem, -13vw, -6rem); right: clamp(-11rem, -11vw, -5rem);
 	}
+	.ev-hero-bar { width: clamp(5rem, 15vw, 11rem); height: 0.85rem; background: var(--color-bauhaus); bottom: 0; left: 0; }
+	.modules { margin-bottom: clamp(1.25rem, 3vw, 2rem); }
 	.eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.75rem; }
 	.page-title { font-size: clamp(3rem, 10vw, 9rem); font-weight: 900; letter-spacing: -0.04em; line-height: 0.9; color: var(--color-text); margin: 0 0 clamp(1rem, 2vw, 2rem); }
 	.page-sub { font-size: clamp(1rem, 1.8vw, 1.2rem); color: var(--color-muted); max-width: 52ch; margin: 0; }
 
-	/* Events section */
-	.events-section { padding: 0 0 clamp(4rem, 8vw, 7rem); }
+	/* ══ EVENTS ═════════════════════════════════════════════════════ */
+	.ev-list-disc {
+		width: clamp(14rem, 30vw, 26rem); height: clamp(14rem, 30vw, 26rem);
+		background: var(--color-text); opacity: 0.06;
+		bottom: clamp(-9rem, -12vw, -5rem); left: clamp(-8rem, -9vw, -4rem);
+	}
 	.events-group { padding-top: clamp(2.5rem, 5vw, 4rem); }
-	.past-group { opacity: 0.65; }
+	.events-group:first-child { padding-top: 0; }
+	.past-group { opacity: 0.7; }
 	.group-label {
 		font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-		color: var(--color-accent); margin: 0 0 1.5rem;
-		border-bottom: 1px solid var(--color-border); padding-bottom: 0.75rem;
+		color: var(--field-accent); margin: 0 0 1.5rem;
+		border-bottom: 1.5px solid var(--rule-soft); padding-bottom: 0.75rem;
 	}
 
-	/* Rows */
-	.row-list { list-style: none; margin: 0; padding: 0; }
-	.row-item { border-bottom: 1px solid var(--color-border); }
-	.row-item:first-child { border-top: 1px solid var(--color-border); }
-	.row-inner { padding: 1.25rem 0; }
-	.row-top { display: flex; align-items: center; gap: 1.25rem; }
-
-	.row-item:not(.past) .row-inner:hover .row-expand { grid-template-rows: 1fr; }
-	.row-item:not(.past) .row-inner:hover .row-arrow { opacity: 1; transform: translate(2px,-2px); }
-	.row-item:not(.past) .row-inner:hover .row-title { color: var(--color-accent2); }
-
-	.row-date {
-		font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
-		color: var(--color-muted); white-space: nowrap; width: 7rem; flex-shrink: 0;
-	}
-	.row-title {
-		font-size: clamp(0.95rem, 2vw, 1.15rem); font-weight: 600; color: var(--color-text);
-		flex: 1; transition: color 0.6s ease;
-	}
-	.row-type {
+	.acc-date { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; color: var(--fg-muted); white-space: nowrap; width: 6.5rem; flex-shrink: 0; }
+	.ev-type {
 		font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-		color: var(--color-muted); border: 1.5px solid var(--color-border);
+		color: var(--fg-muted); border: 1.5px solid var(--rule-soft);
 		padding: 0.2rem 0.5rem; white-space: nowrap; display: none;
 	}
-	@media (min-width: 640px) { .row-type { display: block; } }
-	:global(.ico) { width: 0.9em; height: 0.9em; flex-shrink: 0; display: inline-block; }
-	.row-arrow {
-		color: var(--color-muted); flex-shrink: 0;
-		transition: color 0.6s ease, transform 0.6s ease; opacity: 0.4;
-	}
-
-	.row-expand { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.9s ease; }
-	.row-expand-in { overflow: hidden; }
-
-	.row-detail {
-		padding: 0.75rem 0 0.5rem 8.25rem;
-		opacity: 0; transform: translateY(3px);
-		transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
-	}
-	.row-item .row-inner:hover .row-detail { opacity: 1; transform: translateY(0); }
+	@media (min-width: 640px) { .ev-type { display: block; } }
 
 	.detail-location {
 		display: inline-block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em;
-		text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.6rem;
+		text-transform: uppercase; color: var(--field-accent); margin-bottom: 0.6rem;
 	}
-	.row-desc { font-size: 0.875rem; color: var(--color-muted); line-height: 1.6; max-width: 60ch; margin: 0.25rem 0 0.75rem; }
-	.row-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.25rem; margin-bottom: 0.5rem; }
+	.row-desc { font-size: 0.875rem; color: var(--fg-muted); line-height: 1.6; max-width: 60ch; margin: 0.25rem 0 0.75rem; }
+	.row-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.25rem; }
 
-	/* CTA */
-	.cta-block { padding: clamp(5rem, 10vw, 9rem) 0; border-top: 1px solid var(--color-border); }
-	.cta-pre { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-muted); margin: 0 0 1.25rem; }
-	.cta-main { display: inline-flex; align-items: center; gap: 0.5rem; font-size: clamp(2.5rem, 8vw, 7rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: var(--color-text); text-decoration: none; transition: color 0.3s; }
-	.cta-main:hover { color: var(--color-accent2); }
-	.cta-ico { width: clamp(2rem, 5vw, 4.5rem); height: clamp(2rem, 5vw, 4.5rem); }
-	.cta-sub { margin: 1.25rem 0 0; font-size: 0.875rem; color: var(--color-muted); max-width: 48ch; }
-
-	/* Skeleton */
 	.skeleton { padding: 1.25rem 0; display: flex; gap: 1.5rem; align-items: center; }
-	.sk-date { width: 7rem; height: 0.75rem; background: var(--color-border); flex-shrink: 0; }
-	.sk-title { flex: 1; height: 1rem; background: var(--color-border); }
-	.msg-empty { padding: 3rem 0; color: var(--color-muted); font-size: 1rem; }
+	.msg-empty { padding: 3rem 0; color: var(--fg-muted); font-size: 1rem; }
+
+	/* ══ CTA ════════════════════════════════════════════════════════ */
+	.ev-cta-disc {
+		width: clamp(11rem, 26vw, 20rem); height: clamp(11rem, 26vw, 20rem);
+		background: var(--color-accent); opacity: 0.9;
+		top: clamp(-6rem, -10vw, -3rem); right: clamp(-6rem, -8vw, -2rem);
+	}
+	.ev-cta-bar { width: clamp(4rem, 12vw, 9rem); height: 0.9rem; background: var(--color-bauhaus); bottom: 0; left: 0; }
 </style>

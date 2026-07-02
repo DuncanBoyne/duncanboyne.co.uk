@@ -19,7 +19,7 @@
 			'Power BI consultant serving Norfolk, Norwich and Great Yarmouth. Dashboards, automation and data & AI readiness for finance and manufacturing teams.',
 		url: 'https://www.duncanboyne.co.uk',
 		image: 'https://www.duncanboyne.co.uk/headshot.png',
-		email: 'duncanboyne@hotmail.co.uk',
+		email: 'duncan@duncanboyne.co.uk',
 		slogan: 'A dashboard nobody opens is just an expensive screenshot.',
 		founder: {
 			'@type': 'Person',

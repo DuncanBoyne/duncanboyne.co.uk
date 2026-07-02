@@ -112,18 +112,25 @@
 	{@html faqLdScript}
 </svelte:head>
 
-<!-- Hero -->
-<section class="page-hero">
+<!-- ══ HERO — poster cover ═════════════════════════════════════════════ -->
+<section class="band band--cream fq-hero">
+	<div class="bleeds" aria-hidden="true">
+		<span class="b-shape b-circle fq-hero-disc"></span>
+		<span class="b-shape fq-hero-bar"></span>
+	</div>
 	<div class="wrap">
-		<p class="eyebrow">Questions & Answers</p>
+		<div class="modules" aria-hidden="true">
+			<span class="mod mod-ink"></span><span class="mod mod-gold"></span><span class="mod mod-red"></span>
+		</div>
+		<p class="eyebrow">Questions &amp; Answers</p>
 		<h1 class="page-title">FAQ</h1>
 		<p class="page-sub">Straight answers about working with a freelance / fractional Power BI consultant in Norfolk — services, results, cost, and how to get started.</p>
 	</div>
 </section>
 
-<!-- FAQ list -->
-<section class="faq-section">
-	<div class="wrap">
+<!-- ══ FAQ LIST — surface field ═════════════════════════════════════════ -->
+<section class="band band--surface faq-section">
+	<div class="wrap wrap--narrow">
 		<dl class="faq-list">
 			{#each faqs as f}
 				<div class="faq-item">
@@ -144,8 +151,12 @@
 	</div>
 </section>
 
-<!-- CTA -->
-<section class="cta-block">
+<!-- ══ CTA — inverse closer ════════════════════════════════════════════ -->
+<section class="band band--inverse cta-block">
+	<div class="bleeds" aria-hidden="true">
+		<span class="b-shape b-circle fq-cta-disc"></span>
+		<span class="b-shape fq-cta-bar"></span>
+	</div>
 	<div class="wrap">
 		<p class="cta-pre">Didn't find your question?</p>
 		<a href="/contact" class="cta-main">Ask me directly <ArrowUpRight class="cta-ico" /></a>
@@ -154,67 +165,39 @@
 </section>
 
 <style>
-	.wrap { max-width: 900px; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3.5rem); }
+	/* .wrap, .ico, the field system, bleeds, and the CTA pattern live in
+	   app.css (Bauhaus poster kit). This block keeps only what's specific
+	   to FAQ's own layout and bleed shapes. */
+	.wrap--narrow { max-width: 900px; }
 
-	/* Hero */
-	.page-hero {
-		padding: clamp(3rem, 7vw, 6rem) 0 clamp(1.5rem, 3vw, 2.5rem);
-		border-bottom: 3px solid var(--color-accent3);
-		max-width: 1100px;
-		margin: 0 auto;
+	/* ══ HERO ═══════════════════════════════════════════════════════ */
+	.fq-hero { padding-top: clamp(3.5rem, 8vw, 6.5rem); padding-bottom: clamp(2rem, 4vw, 3rem); }
+	.fq-hero-disc {
+		width: clamp(16rem, 36vw, 32rem); height: clamp(16rem, 36vw, 32rem);
+		background: var(--color-accent); opacity: 0.14;
+		top: clamp(-10rem, -12vw, -5rem); right: clamp(-11rem, -12vw, -5rem);
 	}
+	.fq-hero-bar { width: clamp(5rem, 16vw, 12rem); height: 0.85rem; background: var(--color-bauhaus); bottom: 0; left: 0; }
+	.modules { margin-bottom: clamp(1.25rem, 3vw, 2rem); }
 	.eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.75rem; }
 	.page-title { font-size: clamp(3rem, 10vw, 9rem); font-weight: 900; letter-spacing: -0.04em; line-height: 0.9; color: var(--color-text); margin: 0 0 clamp(1rem, 2vw, 1.5rem); }
 	.page-sub { font-size: clamp(1rem, 1.8vw, 1.2rem); color: var(--color-muted); max-width: 56ch; margin: 0; }
 
-	/* FAQ */
-	.faq-section { padding: clamp(3rem, 6vw, 5rem) 0; }
-	.faq-list { margin: 0; padding: 0; }
-	.faq-item {
-		padding: clamp(1.5rem, 3vw, 2.25rem) 0;
-		border-bottom: 1px solid var(--color-border);
-	}
-	.faq-item:first-child { border-top: 1px solid var(--color-border); }
-	.faq-q {
-		font-size: clamp(1.15rem, 2.4vw, 1.55rem);
-		font-weight: 800;
-		letter-spacing: -0.02em;
-		line-height: 1.25;
-		color: var(--color-text);
-		margin: 0 0 0.85rem;
-	}
+	/* ══ FAQ LIST ═══════════════════════════════════════════════════ */
+	.faq-list { margin: 0; padding: 0; border-top: 2px solid var(--rule-strong); }
+	.faq-item { padding: clamp(1.5rem, 3vw, 2.25rem) 0; border-bottom: 1.5px solid var(--rule-soft); }
+	.faq-q { font-size: clamp(1.15rem, 2.4vw, 1.55rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.25; color: var(--fg); margin: 0 0 0.85rem; }
 	.faq-a { margin: 0; }
-	.faq-a p { font-size: 1rem; line-height: 1.75; color: var(--color-muted); margin: 0; max-width: 68ch; text-wrap: pretty; }
-	.faq-points {
-		list-style: none;
-		margin: 0.9rem 0 0;
-		padding: 0;
-		display: grid;
-		gap: 0.55rem;
-		max-width: 68ch;
-	}
-	.faq-points li {
-		position: relative;
-		padding-left: 1.25rem;
-		font-size: 0.95rem;
-		line-height: 1.6;
-		color: var(--color-muted);
-	}
-	.faq-points li::before {
-		content: '';
-		position: absolute;
-		left: 0;
-		top: 0.6rem;
-		width: 0.4rem;
-		height: 0.4rem;
-		background: var(--color-accent);
-	}
+	.faq-a p { font-size: 1rem; line-height: 1.75; color: var(--fg-muted); margin: 0; max-width: 68ch; text-wrap: pretty; }
+	.faq-points { list-style: none; margin: 0.9rem 0 0; padding: 0; display: grid; gap: 0.55rem; max-width: 68ch; }
+	.faq-points li { position: relative; padding-left: 1.25rem; font-size: 0.95rem; line-height: 1.6; color: var(--fg-muted); }
+	.faq-points li::before { content: ''; position: absolute; left: 0; top: 0.6rem; width: 0.4rem; height: 0.4rem; background: var(--field-accent); }
 
-	/* CTA */
-	.cta-block { padding: clamp(4rem, 9vw, 8rem) 0; max-width: 1100px; margin: 0 auto; }
-	.cta-pre { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-muted); margin: 0 0 1.25rem; }
-	.cta-main { display: inline-flex; align-items: center; gap: 0.5rem; font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: var(--color-text); text-decoration: none; transition: color 0.3s; }
-	.cta-main:hover { color: var(--color-accent2); }
-	.cta-ico { width: clamp(1.5rem, 4vw, 3rem); height: clamp(1.5rem, 4vw, 3rem); }
-	.cta-sub { margin: 1.25rem 0 0; font-size: 0.875rem; color: var(--color-muted); max-width: 48ch; }
+	/* ══ CTA ════════════════════════════════════════════════════════ */
+	.fq-cta-disc {
+		width: clamp(11rem, 26vw, 20rem); height: clamp(11rem, 26vw, 20rem);
+		background: var(--color-accent); opacity: 0.9;
+		top: clamp(-6rem, -10vw, -3rem); right: clamp(-6rem, -8vw, -2rem);
+	}
+	.fq-cta-bar { width: clamp(4rem, 12vw, 9rem); height: 0.9rem; background: var(--color-bauhaus); bottom: 0; left: 0; }
 </style>

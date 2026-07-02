@@ -96,7 +96,7 @@
 					{#if post.published_at}
 						<time datetime={post.published_at}>{formatDate(post.published_at)}</time>
 					{/if}
-					<span class="meta-sep">·</span>
+					<span class="meta-sep" aria-hidden="true"></span>
 					<span>{estimateReadingTime(post.content)} min read</span>
 				</p>
 				<h1 class="post-title">{post.title}</h1>
@@ -177,7 +177,7 @@
 		align-items: center;
 		gap: 0.5rem;
 	}
-	.meta-sep { opacity: 0.4; }
+	.meta-sep { display: inline-block; width: 0.4rem; height: 0.4rem; background: var(--color-bauhaus); }
 
 	.post-title {
 		font-size: clamp(1.8rem, 5vw, 3.5rem);

@@ -78,7 +78,7 @@
 		{:else}
 			<header class="post-header">
 				<p class="post-eyebrow">
-					<span class="post-type">{talk.type === 'workshop' ? 'Workshop' : 'Talk'}</span>
+					<span class="post-type"><span class="type-mark" aria-hidden="true"></span>{talk.type === 'workshop' ? 'Workshop' : 'Talk'}</span>
 				</p>
 				<h1 class="post-title">{talk.title}</h1>
 				{#if talk.co_host_name}
@@ -116,6 +116,7 @@
 					<ul class="events-list">
 						{#each upcomingEvents as event}
 							<li class="event-row">
+								<span class="event-marker" aria-hidden="true"></span>
 								<div class="event-info">
 									<span class="event-title">{event.title}</span>
 									<span class="event-meta">
@@ -143,6 +144,7 @@
 					<ul class="events-list">
 						{#each pastEvents as event}
 							<li class="event-row past">
+								<span class="event-marker" aria-hidden="true"></span>
 								<div class="event-info">
 									<span class="event-title">{event.title}</span>
 									<span class="event-meta">
@@ -210,10 +212,12 @@
 	.post-header { padding: clamp(2.5rem, 5vw, 4rem) 0 2rem; border-bottom: 1px solid var(--color-border); margin-bottom: 2.5rem; }
 	.post-eyebrow { margin: 0 0 1rem; }
 	.post-type {
+		display: inline-flex; align-items: center; gap: 0.45rem;
 		font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
 		border: 1.5px solid var(--color-accent); color: var(--color-accent);
 		padding: 0.25rem 0.6rem;
 	}
+	.type-mark { width: 0.5rem; height: 0.5rem; flex-shrink: 0; background: var(--color-bauhaus); }
 	.post-title { font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; color: var(--color-text); margin: 0 0 1.25rem; }
 
 	.cohost-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
@@ -239,6 +243,7 @@
 		gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--color-border);
 	}
 	.event-row:first-child { border-top: 1px solid var(--color-border); }
+	.event-marker { width: 0.6rem; height: 0.6rem; flex-shrink: 0; background: var(--color-bauhaus); }
 	.event-info { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 0; }
 	.event-title { font-size: 0.95rem; font-weight: 600; color: var(--color-text); }
 	.event-meta { font-size: 0.78rem; color: var(--color-muted); }

@@ -33,24 +33,33 @@
 	<meta name="description" content="Power BI tutorials, tips, and walkthroughs from Duncan Boyne." />
 </svelte:head>
 
-<!-- Hero -->
-<section class="page-hero">
+<!-- ══ HERO — poster cover ═════════════════════════════════════════════ -->
+<section class="band band--cream vd-hero">
+	<div class="bleeds" aria-hidden="true">
+		<span class="b-shape b-circle vd-hero-disc"></span>
+		<span class="b-shape vd-hero-bar"></span>
+	</div>
 	<div class="wrap">
+		<div class="modules" aria-hidden="true">
+			<span class="mod mod-ink"></span><span class="mod mod-gold"></span><span class="mod mod-red"></span>
+		</div>
 		<p class="eyebrow">Content</p>
 		<h1 class="page-title">Videos</h1>
 		<p class="page-sub">Power BI tutorials, tips, and walkthroughs — on YouTube.</p>
 	</div>
 </section>
 
-<!-- List -->
-<section class="videos-section">
+<!-- ══ VIDEOS — surface field ═══════════════════════════════════════════ -->
+<section class="band band--surface videos-section">
+	<div class="bleeds" aria-hidden="true">
+		<span class="b-shape b-circle vd-list-disc"></span>
+	</div>
 	<div class="wrap">
 		{#if loading}
 			<ul class="row-list">
 				{#each [1,2,3,4,5] as _}
 					<li class="row-item skeleton">
-						<div class="sk-date"></div>
-						<div class="sk-title"></div>
+						<span class="sk-date"></span><span class="sk-title"></span>
 					</li>
 				{/each}
 			</ul>
@@ -69,6 +78,7 @@
 							class="row-link"
 						>
 							<div class="row-top">
+								<span class="row-marker" aria-hidden="true"></span>
 								{#if video.published_at}
 									<span class="row-date">{formatDate(video.published_at)}</span>
 								{/if}
@@ -77,7 +87,7 @@
 								<ArrowUpRight class="row-arrow ico" />
 							</div>
 							<div class="row-expand"><div class="row-expand-in">
-								<div class="row-thumb-wrap">
+								<div class="row-thumb-wrap vd-thumb-wrap">
 									<img
 										src={ytThumb(video.youtube_id)}
 										alt={video.title}
@@ -89,7 +99,7 @@
 									</div>
 								</div>
 								{#if video.description}
-									<p class="row-desc">{video.description}</p>
+									<p class="row-excerpt">{video.description}</p>
 								{/if}
 							</div></div>
 						</a>
@@ -100,8 +110,12 @@
 	</div>
 </section>
 
-<!-- CTA -->
-<section class="cta-block">
+<!-- ══ CTA — inverse closer ════════════════════════════════════════════ -->
+<section class="band band--inverse cta-block">
+	<div class="bleeds" aria-hidden="true">
+		<span class="b-shape b-circle vd-cta-disc"></span>
+		<span class="b-shape vd-cta-bar"></span>
+	</div>
 	<div class="wrap">
 		<p class="cta-pre">Want more?</p>
 		<a href="https://youtube.com/@PowerBIKindaGuy" target="_blank" rel="noopener noreferrer" class="cta-main">
@@ -112,56 +126,32 @@
 </section>
 
 <style>
-	.wrap { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3.5rem); }
+	/* .wrap, .ico, the field system, bleeds, and .row-list live in app.css
+	   (Bauhaus poster kit). This block keeps only what's specific to
+	   Videos' own hero, YouTube thumb overlay, and bleed shapes. */
 
-	/* Hero */
-	.page-hero {
-		padding: clamp(3rem, 7vw, 6rem) 0 clamp(1.5rem, 3vw, 2.5rem);
-		border-bottom: 3px solid var(--color-accent3);
+	/* ══ HERO ═══════════════════════════════════════════════════════ */
+	.vd-hero { padding-top: clamp(3.5rem, 8vw, 6.5rem); padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+	.vd-hero-disc {
+		width: clamp(16rem, 34vw, 30rem); height: clamp(16rem, 34vw, 30rem);
+		background: var(--color-accent); opacity: 0.14;
+		top: clamp(-11rem, -13vw, -6rem); right: clamp(-11rem, -11vw, -5rem);
 	}
+	.vd-hero-bar { width: clamp(5rem, 15vw, 11rem); height: 0.85rem; background: var(--color-bauhaus); bottom: 0; left: 0; }
+	.modules { margin-bottom: clamp(1.25rem, 3vw, 2rem); }
 	.eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.75rem; }
 	.page-title { font-size: clamp(3rem, 10vw, 9rem); font-weight: 900; letter-spacing: -0.04em; line-height: 0.9; color: var(--color-text); margin: 0 0 clamp(1rem, 2vw, 2rem); }
 	.page-sub { font-size: clamp(1rem, 1.8vw, 1.2rem); color: var(--color-muted); max-width: 52ch; margin: 0; }
 
-	/* Videos */
-	.videos-section { padding: 0 0 clamp(4rem, 8vw, 7rem); }
-	.row-list { list-style: none; margin: 0; padding: 0; }
-	.row-item { border-bottom: 1px solid var(--color-border); }
-	.row-item:first-child { border-top: 1px solid var(--color-border); }
-
-	.row-link { display: block; padding: 1.25rem 0; text-decoration: none; }
-	.row-top { display: flex; align-items: center; gap: 1rem; }
-
-	.row-date {
-		font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
-		color: var(--color-muted); white-space: nowrap; width: 7rem; flex-shrink: 0;
+	/* ══ VIDEOS ═════════════════════════════════════════════════════ */
+	.vd-list-disc {
+		width: clamp(14rem, 30vw, 26rem); height: clamp(14rem, 30vw, 26rem);
+		background: var(--color-text); opacity: 0.06;
+		bottom: clamp(-9rem, -12vw, -5rem); left: clamp(-8rem, -9vw, -4rem);
 	}
-	.row-title {
-		font-size: clamp(0.95rem, 2vw, 1.15rem); font-weight: 600; color: var(--color-text);
-		flex: 1; transition: color 0.6s ease;
-	}
-	.row-link:hover .row-title { color: var(--color-accent2); }
-	:global(.ico) { width: 0.9em; height: 0.9em; flex-shrink: 0; display: inline-block; }
-	.row-play { color: var(--color-accent); opacity: 0.6; transition: opacity 0.4s; }
+	.row-play { color: var(--field-accent); opacity: 0.6; transition: opacity 0.4s; }
 	.row-link:hover .row-play { opacity: 1; }
-	.row-arrow {
-		color: var(--color-muted); flex-shrink: 0;
-		transition: color 0.6s ease, transform 0.6s ease;
-	}
-	.row-link:hover .row-arrow { color: var(--color-accent2); transform: translate(2px,-2px); }
-
-	.row-expand { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.9s ease; }
-	.row-link:hover .row-expand { grid-template-rows: 1fr; }
-	.row-expand-in { overflow: hidden; }
-
-	.row-thumb-wrap {
-		position: relative; width: 100%;
-		margin: 0.75rem 0 0.25rem;
-		opacity: 0; transform: translateY(3px);
-		transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
-	}
-	.row-link:hover .row-thumb-wrap { opacity: 1; transform: translateY(0); }
-	.row-thumb { width: 100%; height: auto; display: block; }
+	.vd-thumb-wrap { position: relative; aspect-ratio: auto; }
 	.thumb-overlay {
 		position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
 		background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s;
@@ -169,25 +159,11 @@
 	.row-link:hover .thumb-overlay { opacity: 1; }
 	.play-icon { width: 2.5rem; height: 2.5rem; color: white; }
 
-	.row-desc {
-		margin: 0.5rem 0 0.25rem; font-size: 0.875rem; color: var(--color-muted);
-		line-height: 1.6; max-width: 70ch;
-		opacity: 0; transform: translateY(3px);
-		transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
+	/* ══ CTA ════════════════════════════════════════════════════════ */
+	.vd-cta-disc {
+		width: clamp(11rem, 26vw, 20rem); height: clamp(11rem, 26vw, 20rem);
+		background: var(--color-accent); opacity: 0.9;
+		top: clamp(-6rem, -10vw, -3rem); right: clamp(-6rem, -8vw, -2rem);
 	}
-	.row-link:hover .row-desc { opacity: 1; transform: translateY(0); }
-
-	/* CTA */
-	.cta-block { padding: clamp(5rem, 10vw, 9rem) 0; border-top: 1px solid var(--color-border); }
-	.cta-pre { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-muted); margin: 0 0 1.25rem; }
-	.cta-main { display: inline-flex; align-items: center; gap: 0.5rem; font-size: clamp(2.5rem, 8vw, 7rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: var(--color-text); text-decoration: none; transition: color 0.3s; }
-	.cta-main:hover { color: var(--color-accent2); }
-	.cta-ico { width: clamp(2rem, 5vw, 4.5rem); height: clamp(2rem, 5vw, 4.5rem); }
-	.cta-sub { margin: 1.25rem 0 0; font-size: 0.875rem; color: var(--color-muted); max-width: 48ch; }
-
-	/* Skeleton */
-	.skeleton { padding: 1.25rem 0; display: flex; gap: 1.5rem; align-items: center; }
-	.sk-date { width: 7rem; height: 0.75rem; background: var(--color-border); flex-shrink: 0; }
-	.sk-title { flex: 1; height: 1rem; background: var(--color-border); }
-	.msg-empty { padding: 4rem 0; color: var(--color-muted); font-size: 1rem; }
+	.vd-cta-bar { width: clamp(4rem, 12vw, 9rem); height: 0.9rem; background: var(--color-bauhaus); bottom: 0; left: 0; }
 </style>
