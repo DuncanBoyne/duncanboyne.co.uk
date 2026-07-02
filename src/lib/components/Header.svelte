@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { page } from '$app/stores';
-	import { Menu, X, Home, FileText, Video, Calendar, Mic, User, Mail, Sparkles, Users, ChevronDown, BarChart3, Image, Code2 } from 'lucide-svelte';
+	import { Menu, X, Home, FileText, Video, Calendar, Mic, User, Mail, Sparkles, Users, ChevronDown, BarChart3, Image, Code2, HelpCircle } from 'lucide-svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
 
 	let mobileMenuOpen = false;
@@ -36,6 +36,7 @@
 			label: 'Content',
 			icon: FileText,
 			children: [
+				{ href: '/faq', label: 'FAQ', icon: HelpCircle },
 				{ href: '/blog', label: 'Blog', icon: FileText },
 				{ href: '/videos', label: 'Videos', icon: Video },
 				{ href: '/open-source', label: 'Open Source', icon: Code2 }
