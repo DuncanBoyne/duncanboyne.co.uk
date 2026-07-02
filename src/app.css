@@ -17,6 +17,9 @@
 		--color-accent3: #B46304;
 		/* White text on dark-gold button passes 5.1:1 (#fix-1) */
 		--color-on-accent: #FFFFFF;
+		/* Bauhaus Red — compositional geometry only (blocks/bars/shapes), never the action signal. White-on-red 4.6:1 */
+		--color-bauhaus: #D72515;
+		--color-on-bauhaus: #FFFFFF;
 		--color-success: #107C10;
 		--color-info: #0078D4;
 		--color-warning: #FFB900;
@@ -33,6 +36,8 @@
 		--color-accent2: #E2A414;
 		--color-accent3: #B46304;
 		--color-on-accent: #1A1A1A;
+		--color-bauhaus: #F2402E;
+		--color-on-bauhaus: #1A1A1A;
 		--color-success: #6CCB5F;
 		--color-info: #4F9DDE;
 		--color-warning: #FFD966;

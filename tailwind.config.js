@@ -16,6 +16,7 @@ export default {
 				border: 'var(--color-border)',
 				accent: 'var(--color-accent)',
 				accent2: 'var(--color-accent2)',
+				bauhaus: 'var(--color-bauhaus)',
 				success: 'var(--color-success)',
 				info: 'var(--color-info)',
 				warning: 'var(--color-warning)',
