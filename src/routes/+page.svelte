@@ -441,8 +441,10 @@
 		color: var(--color-accent); margin: 0 0 clamp(0.75rem, 1.5vw, 1.25rem);
 	}
 	h1 { margin: 0; line-height: 0.82; letter-spacing: -0.04em; }
-	.n-duncan { display: block; font-size: clamp(3rem, 13vw, 13rem); font-weight: 200; color: var(--color-text); }
-	.n-boyne { display: block; font-size: clamp(3rem, 13vw, 13rem); font-weight: 900; color: var(--color-accent); }
+	/* Cap tuned so "Duncan" (the wider word at this weight) never exceeds the
+	   3-column name cell once the 1100px wrap maxes out (~667px usable). */
+	.n-duncan { display: block; font-size: clamp(3rem, 13vw, 11rem); font-weight: 200; color: var(--color-text); }
+	.n-boyne { display: block; font-size: clamp(3rem, 13vw, 11rem); font-weight: 900; color: var(--color-accent); }
 
 	.cell--geo { min-height: 88px; overflow: hidden; }
 	.geo-cell-1 { grid-area: geo1; }
