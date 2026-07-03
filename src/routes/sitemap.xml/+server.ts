@@ -1,5 +1,6 @@
 import type { RequestHandler } from './$types';
 import { getPosts, getTalks } from '$lib/supabase';
+import { reports } from '$lib/reports';
 
 export const prerender = true;
 
@@ -10,6 +11,7 @@ const SITE = 'https://www.duncanboyne.co.uk';
 const staticRoutes: { path: string; priority: number; changefreq: string }[] = [
 	{ path: '/', priority: 1.0, changefreq: 'weekly' },
 	{ path: '/services', priority: 0.9, changefreq: 'monthly' },
+	{ path: '/reports', priority: 0.7, changefreq: 'monthly' },
 	{ path: '/faq', priority: 0.8, changefreq: 'monthly' },
 	{ path: '/about', priority: 0.8, changefreq: 'monthly' },
 	{ path: '/contact', priority: 0.8, changefreq: 'yearly' },
@@ -46,8 +48,12 @@ export const GET: RequestHandler = async () => {
 
 	const talkUrls = (talks || []).map((t) => url(`/talks/${t.slug}`, 0.5, 'monthly')).join('');
 
+	const reportUrls = reports
+		.map((r) => url(`/reports/${r.slug}`, 0.6, 'monthly', r.published))
+		.join('');
+
 	const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${staticUrls}${postUrls}${talkUrls}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${staticUrls}${postUrls}${talkUrls}${reportUrls}
 </urlset>`;
 
 	return new Response(xml.trim(), {

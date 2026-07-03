@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { page } from '$app/stores';
-	import { Menu, X, Home, FileText, Video, Calendar, Mic, User, Mail, Sparkles, Users, ChevronDown, BarChart3, Image, Code2, HelpCircle } from 'lucide-svelte';
+	import { Menu, X, Home, FileText, Video, Calendar, Mic, User, Mail, Sparkles, Users, ChevronDown, BarChart3, Image, Code2, HelpCircle, LayoutDashboard } from 'lucide-svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
 
 	let mobileMenuOpen = false;
@@ -32,6 +32,7 @@
 	const navItems: NavItem[] = [
 		{ href: '/', label: 'Home', icon: Home },
 		{ href: '/services', label: 'Services', icon: BarChart3 },
+		{ href: '/reports', label: 'Reports', icon: LayoutDashboard },
 		{
 			label: 'Content',
 			icon: FileText,

@@ -53,6 +53,7 @@
 			<!-- Quick links (internal linking for crawlers + LLMs) -->
 			<nav class="footer-links" aria-label="Footer">
 				<a href="/services">Services</a>
+				<a href="/reports">Reports</a>
 				<a href="/faq">FAQ</a>
 				<a href="/blog">Blog</a>
 				<a href="/about">About</a>
