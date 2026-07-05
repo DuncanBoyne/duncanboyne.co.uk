@@ -1,5 +1,6 @@
 import type { RequestHandler } from './$types';
 import { getPosts } from '$lib/supabase';
+import { SITE_URL } from '$lib/site';
 
 export const prerender = true;
 
@@ -14,7 +15,7 @@ function escapeXml(str: string): string {
 
 export const GET: RequestHandler = async () => {
 	const posts = await getPosts();
-	const siteUrl = 'https://www.duncanboyne.co.uk';
+	const siteUrl = SITE_URL;
 
 	const items = (posts || [])
 		.filter((post) => post.published_at)

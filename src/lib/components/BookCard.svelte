@@ -1,20 +1,9 @@
 <script lang="ts">
 	import { Star, ArrowRight, BookOpen } from 'lucide-svelte';
+	import { bookStatusLabels as statusLabels, bookStatusColors as statusColors } from '$lib/labels';
 	import type { Book } from '$lib/types';
 
 	export let book: Book;
-
-	const statusLabels: Record<string, string> = {
-		want_to_read: 'Want to Read',
-		reading: 'Reading',
-		completed: 'Completed'
-	};
-
-	const statusColors: Record<string, string> = {
-		want_to_read: 'bg-info/20 text-info',
-		reading: 'bg-warning/20 text-warning',
-		completed: 'bg-success/20 text-success'
-	};
 
 	let imageFailed = false;
 </script>

@@ -5,6 +5,10 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
+  # Daily rebuild so content published straight to Supabase (posts, events)
+  # reaches the prerendered pages, rss.xml and sitemap.xml without a push.
+  schedule:
+    - cron: "0 5 * * *"
 
 permissions:
   contents: read

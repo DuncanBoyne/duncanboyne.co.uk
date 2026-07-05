@@ -1,13 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { BookOpen } from 'lucide-svelte';
 	import BookCard from '$lib/components/BookCard.svelte';
-	import { getBooks } from '$lib/supabase';
-	import type { Book } from '$lib/types';
+	import Seo from '$lib/components/Seo.svelte';
+	import type { PageData } from './$types';
 
-	let books: Book[] = [];
-	let loading = true;
-	let error: string | null = null;
+	export let data: PageData;
+	$: books = data.books;
+
 	let activeFilter = 'all';
 	let sortBy = 'recent';
 
@@ -23,17 +22,6 @@
 		{ value: 'rating', label: 'Rating' },
 		{ value: 'title', label: 'Title' }
 	];
-
-	onMount(async () => {
-		try {
-			books = (await getBooks()) || [];
-		} catch (e) {
-			error = 'Failed to load reading list. Please try again later.';
-			console.error(e);
-		} finally {
-			loading = false;
-		}
-	});
 
 	$: currentlyReading = books.filter(b => b.status === 'reading');
 
@@ -54,10 +42,11 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Reading List - Duncan Boyne</title>
-	<meta name="description" content="Books I've read, am reading, and want to read — with reviews and ratings." />
-</svelte:head>
+<Seo
+	title="Reading List — Duncan Boyne"
+	description="Books I've read, am reading, and want to read — with reviews and ratings."
+	path="/reading"
+/>
 
 <section class="py-16">
 	<div class="container-custom">
@@ -68,25 +57,6 @@
 			</p>
 		</div>
 
-		{#if loading}
-			<div role="status" aria-live="polite">
-				<span class="sr-only">Loading reading list...</span>
-			</div>
-			<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-				{#each [1, 2, 3] as _}
-					<div class="card animate-pulse">
-						<div class="aspect-video bg-border" />
-						<div class="p-6 space-y-3">
-							<div class="h-4 bg-border rounded w-1/3" />
-							<div class="h-6 bg-border rounded" />
-							<div class="h-4 bg-border rounded w-2/3" />
-						</div>
-					</div>
-				{/each}
-			</div>
-		{:else if error}
-			<p class="text-center text-muted py-12">{error}</p>
-		{:else}
 			<!-- Currently Reading Highlight -->
 			{#if currentlyReading.length > 0 && (activeFilter === 'all' || activeFilter === 'reading')}
 				<div class="mb-12">
@@ -147,6 +117,5 @@
 					{/each}
 				</div>
 			{/if}
-		{/if}
 	</div>
 </section>

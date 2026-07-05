@@ -1,17 +1,30 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database, Post, Event, Talk, Video, Book, Anime, GamingAchievement, TalkFeedback } from './types';
+import type { Database, Post, PostSummary, Event, Talk, Video, Book, Anime, GamingAchievement, TalkFeedback } from './types';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
-export const supabase = createClient<Database>(supabaseUrl || '', supabaseAnonKey || '');
+// Fail fast with a clear message: supabase-js throws a cryptic error on an
+// empty URL at module load, which otherwise surfaces mid-prerender.
+if (!supabaseUrl || !supabaseAnonKey) {
+	throw new Error(
+		'Missing VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY. Copy .env.example to .env and fill in the Supabase project keys.'
+	);
+}
+
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
 // Helper functions for data fetching
 
-export async function getPosts(limit?: number): Promise<Post[]> {
+// Everything list views, feeds and the sitemap need — without `content`,
+// so the full markdown body of every post is never shipped to index pages.
+const POST_SUMMARY_COLUMNS =
+	'id,slug,title,excerpt,published_at,featured_image,tags,created_at,updated_at';
+
+export async function getPosts(limit?: number): Promise<PostSummary[]> {
 	let query = supabase
 		.from('posts')
-		.select('*')
+		.select(POST_SUMMARY_COLUMNS)
 		.order('published_at', { ascending: false });
 
 	if (limit) {
@@ -20,7 +33,7 @@ export async function getPosts(limit?: number): Promise<Post[]> {
 
 	const { data, error } = await query;
 	if (error) throw error;
-	return (data ?? []) as Post[];
+	return (data ?? []) as PostSummary[];
 }
 
 export async function getPostBySlug(slug: string): Promise<Post> {
@@ -34,7 +47,7 @@ export async function getPostBySlug(slug: string): Promise<Post> {
 	return data as Post;
 }
 
-export async function getEvents(upcoming = true): Promise<Event[]> {
+export async function getEvents(upcoming = true, limit?: number): Promise<Event[]> {
 	const now = new Date().toISOString();
 	let query = supabase.from('events').select('*');
 
@@ -42,6 +55,10 @@ export async function getEvents(upcoming = true): Promise<Event[]> {
 		query = query.gte('event_date', now).order('event_date', { ascending: true });
 	} else {
 		query = query.lt('event_date', now).order('event_date', { ascending: false });
+	}
+
+	if (limit) {
+		query = query.limit(limit);
 	}
 
 	const { data, error } = await query;
@@ -138,40 +155,35 @@ export async function getAnimeBySlug(slug: string): Promise<Anime> {
 	return data as Anime;
 }
 
-export async function getYearInNumbers() {
-	const year = new Date().getFullYear();
-	const yearStart = `${year}-01-01T00:00:00.000Z`;
-	const now = new Date().toISOString();
+// Related-item lookups: one filtered query instead of fetching the whole
+// table client-side and discarding everything but three rows.
 
-	const [postsRes, eventsRes, talksRes, booksRes] = await Promise.all([
-		supabase
-			.from('posts')
-			.select('*', { count: 'exact', head: true })
-			.gte('published_at', yearStart),
-		supabase
-			.from('events')
-			.select('*', { count: 'exact', head: true })
-			.gte('event_date', yearStart)
-			.lt('event_date', now),
-		supabase
-			.from('events')
-			.select('*', { count: 'exact', head: true })
-			.gte('event_date', yearStart)
-			.lt('event_date', now)
-			.not('talk_slug', 'is', null),
-		supabase
-			.from('books')
-			.select('*', { count: 'exact', head: true })
-			.eq('status', 'completed')
-			.gte('finished_at', yearStart)
-	]);
+export async function getRelatedAnime(current: Anime, count = 3): Promise<Anime[]> {
+	if (!current.tags?.length) return [];
+	const { data, error } = await supabase
+		.from('anime')
+		.select('*')
+		.neq('id', current.id)
+		.overlaps('tags', current.tags)
+		.order('created_at', { ascending: false })
+		.limit(count);
 
-	return {
-		posts: postsRes.count ?? 0,
-		events: eventsRes.count ?? 0,
-		talks: talksRes.count ?? 0,
-		books: booksRes.count ?? 0
-	};
+	if (error) throw error;
+	return (data ?? []) as Anime[];
+}
+
+export async function getRelatedBooks(current: Book, count = 3): Promise<Book[]> {
+	if (!current.tags?.length) return [];
+	const { data, error } = await supabase
+		.from('books')
+		.select('*')
+		.neq('id', current.id)
+		.overlaps('tags', current.tags)
+		.order('created_at', { ascending: false })
+		.limit(count);
+
+	if (error) throw error;
+	return (data ?? []) as Book[];
 }
 
 export async function getGamingAchievements(): Promise<GamingAchievement[]> {
@@ -204,14 +216,4 @@ export async function getFeedbackByTalkSlug(talkSlug: string): Promise<TalkFeedb
 
 	if (error) throw error;
 	return (data ?? []) as TalkFeedback[];
-}
-
-export async function submitGirlfriendApplication(
-	application: Database['public']['Tables']['girlfriend_applications']['Insert']
-) {
-	const { error } = await supabase
-		.from('girlfriend_applications' as never)
-		.insert(application as never);
-
-	if (error) throw error;
 }

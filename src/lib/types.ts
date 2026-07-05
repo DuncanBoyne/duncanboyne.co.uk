@@ -11,6 +11,9 @@ export type Post = {
 	updated_at: string;
 }
 
+// List views, feeds and the sitemap never need the markdown body.
+export type PostSummary = Omit<Post, 'content'>;
+
 export type Event = {
 	id: number;
 	title: string;
@@ -103,31 +106,6 @@ export type GamingAchievement = {
 	updated_at: string;
 }
 
-export type GirlfriendApplication = {
-	id: number;
-	name: string | null;
-	nickname: string | null;
-	favourite_snack: string | null;
-	sass_line: string | null;
-	assets: string[];
-	relationship_mode: string | null;
-	dog_compatibility_plan: string | null;
-	dogs_board_members: 'yes' | 'no';
-	dog_favourite_plan: string | null;
-	chicken_authority: number;
-	named_chicken_legal: 'yes' | 'no' | null;
-	building_type: string | null;
-	traits: string[];
-	roast_when_needed: boolean;
-	protect_when_needed: boolean;
-	eye_roll_sometimes: boolean;
-	love_wiser: boolean;
-	believe_again: string;
-	five_year_vision: string;
-	final_answer: string;
-	created_at: string;
-}
-
 export type TalkFeedback = {
 	id: number;
 	quote: string;
@@ -163,7 +141,6 @@ export type Database = {
 			anime: TableDef<Anime, 'id' | 'created_at' | 'updated_at'>;
 			gaming_achievements: TableDef<GamingAchievement, 'id' | 'created_at' | 'updated_at'>;
 			talk_feedback: TableDef<TalkFeedback, 'id' | 'created_at'>;
-			girlfriend_applications: TableDef<GirlfriendApplication, 'id' | 'created_at'>;
 		};
 		Views: Record<string, never>;
 		Functions: Record<string, never>;

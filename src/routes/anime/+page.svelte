@@ -1,13 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { Tv } from 'lucide-svelte';
 	import AnimeCard from '$lib/components/AnimeCard.svelte';
-	import { getAnime } from '$lib/supabase';
-	import type { Anime } from '$lib/types';
+	import Seo from '$lib/components/Seo.svelte';
+	import type { PageData } from './$types';
 
-	let animeList: Anime[] = [];
-	let loading = true;
-	let error: string | null = null;
+	export let data: PageData;
+	$: animeList = data.animeList;
+
 	let activeFilter = 'all';
 	let sortBy = 'recent';
 
@@ -26,17 +25,6 @@
 		{ value: 'title', label: 'Title' }
 	];
 
-	onMount(async () => {
-		try {
-			animeList = (await getAnime()) || [];
-		} catch (e) {
-			error = 'Failed to load anime list. Please try again later.';
-			console.error(e);
-		} finally {
-			loading = false;
-		}
-	});
-
 	$: currentlyWatching = animeList.filter(a => a.status === 'watching');
 
 	$: filteredAnime = animeList.filter(a => activeFilter === 'all' || a.status === activeFilter);
@@ -54,10 +42,11 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Anime List - Duncan Boyne</title>
-	<meta name="description" content="My anime watch list with ratings and reviews." />
-</svelte:head>
+<Seo
+	title="Anime List — Duncan Boyne"
+	description="My anime watch list with ratings and reviews."
+	path="/anime"
+/>
 
 <section class="py-16">
 	<div class="container-custom">
@@ -68,25 +57,6 @@
 			</p>
 		</div>
 
-		{#if loading}
-			<div role="status" aria-live="polite">
-				<span class="sr-only">Loading anime list...</span>
-			</div>
-			<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-				{#each [1, 2, 3] as _}
-					<div class="card animate-pulse">
-						<div class="aspect-video bg-border" />
-						<div class="p-6 space-y-3">
-							<div class="h-4 bg-border rounded w-1/3" />
-							<div class="h-6 bg-border rounded" />
-							<div class="h-4 bg-border rounded w-2/3" />
-						</div>
-					</div>
-				{/each}
-			</div>
-		{:else if error}
-			<p class="text-center text-muted py-12">{error}</p>
-		{:else}
 			<!-- Currently Watching Highlight -->
 			{#if currentlyWatching.length > 0}
 				<div class="mb-12">
@@ -147,6 +117,5 @@
 					{/each}
 				</div>
 			{/if}
-		{/if}
 	</div>
 </section>

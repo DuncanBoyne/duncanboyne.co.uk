@@ -1,24 +1,9 @@
 <script lang="ts">
 	import { Star, ArrowRight, Tv } from 'lucide-svelte';
+	import { animeStatusLabels as statusLabels, animeStatusColors as statusColors } from '$lib/labels';
 	import type { Anime } from '$lib/types';
 
 	export let anime: Anime;
-
-	const statusLabels: Record<string, string> = {
-		watching: 'Watching',
-		completed: 'Completed',
-		on_hold: 'On Hold',
-		dropped: 'Dropped',
-		plan_to_watch: 'Plan to Watch'
-	};
-
-	const statusColors: Record<string, string> = {
-		watching: 'bg-warning/20 text-warning',
-		completed: 'bg-success/20 text-success',
-		on_hold: 'bg-info/20 text-info',
-		dropped: 'bg-error/20 text-error',
-		plan_to_watch: 'bg-muted/20 text-muted'
-	};
 </script>
 
 <article class="group cursor-pointer h-full">

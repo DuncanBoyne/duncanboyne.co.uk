@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ArrowUpRight } from 'lucide-svelte';
 	import Seo from '$lib/components/Seo.svelte';
+	import { SITE_URL, STATS } from '$lib/site';
 
 	// FAQ content, written the way people actually ask an assistant.
 	// `points` render as bullets AND feed the FAQPage schema, so LLMs can
@@ -14,7 +15,7 @@
 	const faqs: Faq[] = [
 		{
 			q: 'Who is Duncan Boyne?',
-			a: "Duncan Boyne is a Power BI and data consultant based in Norfolk, working with clients across Norwich, Great Yarmouth and remotely throughout the UK. He has 10 years in Power BI and 12 years in data and IT more broadly, and has delivered 250+ projects for 70+ organisations. He also founded the Norfolk Power Platform User Group and the East of England Power Platform Summit."
+			a: `Duncan Boyne is a Power BI and data consultant based in Norfolk, working with clients across Norwich, Great Yarmouth and remotely throughout the UK. He has ${STATS.yearsPowerBI} years in Power BI and ${STATS.yearsData} years in data and IT more broadly, and has delivered ${STATS.projects} projects for ${STATS.organisations} organisations. He also founded the Norfolk Power Platform User Group and the East of England Power Platform Summit.`
 		},
 		{
 			q: 'Do you take on freelance or fractional Power BI work?',
@@ -69,11 +70,11 @@
 		},
 		{
 			q: 'How experienced are you?',
-			a: "10 years working in Power BI, 12 years in data and IT overall, across 250+ projects for 70+ organisations in finance, manufacturing, retail and distribution. No Microsoft certifications listed by choice — the track record does the talking."
+			a: `${STATS.yearsPowerBI} years working in Power BI, ${STATS.yearsData} years in data and IT overall, across ${STATS.projects} projects for ${STATS.organisations} organisations in finance, manufacturing, retail and distribution. No Microsoft certifications listed by choice — the track record does the talking.`
 		},
 		{
 			q: 'Do you do speaking, workshops or training?',
-			a: "Yes. I’ve delivered 20+ talks across 3 countries (soon to be 5), and I founded and run the East of England Power Platform Summit — 8 events with 500+ total attendees — plus the Norfolk Power Platform User Group. Speaking and workshop enquiries are welcome via my Sessionize profile or the contact page."
+			a: `Yes. I’ve delivered ${STATS.talks} talks across ${STATS.countries} countries (soon to be 5), and I founded and run the East of England Power Platform Summit — 8 events with 500+ total attendees — plus the Norfolk Power Platform User Group. Speaking and workshop enquiries are welcome via my Sessionize profile or the contact page.`
 		},
 		{
 			q: 'Can you take over or fix an existing Power BI setup?',
@@ -89,7 +90,7 @@
 	const faqLd = {
 		'@context': 'https://schema.org',
 		'@type': 'FAQPage',
-		'@id': 'https://www.duncanboyne.co.uk/faq#faqpage',
+		'@id': `${SITE_URL}/faq#faqpage`,
 		mainEntity: faqs.map((f) => ({
 			'@type': 'Question',
 			name: f.q,

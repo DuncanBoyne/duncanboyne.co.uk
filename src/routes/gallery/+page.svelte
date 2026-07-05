@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 	import { ArrowUpRight, X, ChevronLeft, ChevronRight } from 'lucide-svelte';
+	import Seo from '$lib/components/Seo.svelte';
 	import { galleryEvents, galleryPhotos } from '$lib/gallery';
 
 	let lightboxIndex: number | null = null;
@@ -43,10 +44,11 @@
 	}, 0);
 </script>
 
-<svelte:head>
-	<title>Gallery — Duncan Boyne</title>
-	<meta name="description" content="Photos from conferences, user groups, and speaking engagements with Duncan Boyne." />
-</svelte:head>
+<Seo
+	title="Gallery — Duncan Boyne"
+	description="Photos from conferences, user groups, and speaking engagements with Duncan Boyne."
+	path="/gallery"
+/>
 
 <svelte:window on:keydown={onKeydown} />
 

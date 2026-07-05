@@ -1,10 +1,9 @@
 import type { RequestHandler } from './$types';
 import { getPosts, getTalks } from '$lib/supabase';
 import { reports } from '$lib/reports';
+import { SITE_URL as SITE } from '$lib/site';
 
 export const prerender = true;
-
-const SITE = 'https://www.duncanboyne.co.uk';
 
 // Static routes with rough priorities. Home/services/about/contact lead
 // because they carry the local-SEO intent.
@@ -22,7 +21,10 @@ const staticRoutes: { path: string; priority: number; changefreq: string }[] = [
 	{ path: '/summit', priority: 0.6, changefreq: 'monthly' },
 	{ path: '/user-group', priority: 0.5, changefreq: 'monthly' },
 	{ path: '/videos', priority: 0.5, changefreq: 'monthly' },
-	{ path: '/reading', priority: 0.3, changefreq: 'monthly' }
+	{ path: '/gallery', priority: 0.4, changefreq: 'monthly' },
+	{ path: '/reading', priority: 0.3, changefreq: 'monthly' },
+	{ path: '/anime', priority: 0.2, changefreq: 'monthly' },
+	{ path: '/gaming', priority: 0.2, changefreq: 'monthly' }
 ];
 
 function url(path: string, priority: number, changefreq: string, lastmod?: string) {

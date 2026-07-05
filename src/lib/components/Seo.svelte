@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { SITE_URL } from '$lib/site';
+
 	/** Per-page SEO. Sensible defaults; override what you need. */
 	export let title = 'Duncan Boyne | Power BI Consultant in Norfolk';
 	export let description =
@@ -7,9 +9,8 @@
 	export let image = '/headshot.png';
 	export let type: 'website' | 'article' | 'profile' = 'website';
 
-	const SITE = 'https://www.duncanboyne.co.uk';
-	$: canonical = SITE + path;
-	$: absoluteImage = image.startsWith('http') ? image : SITE + image;
+	$: canonical = SITE_URL + path;
+	$: absoluteImage = image.startsWith('http') ? image : SITE_URL + image;
 </script>
 
 <svelte:head>

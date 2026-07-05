@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Calendar, MapPin, Users, Clock, Sparkles, ExternalLink, Pizza, Mic, ArrowUpRight } from 'lucide-svelte';
 	import Linkedin from '$lib/components/icons/Linkedin.svelte';
+	import Seo from '$lib/components/Seo.svelte';
 
 	const meetingInfo = [
 		{ icon: Clock, title: 'First Thursday', description: 'Of most months, 6:15 PM - 8:45 PM' },
@@ -51,10 +52,11 @@
 	];
 </script>
 
-<svelte:head>
-	<title>Norfolk Power Platform User Group - Duncan Boyne</title>
-	<meta name="description" content="The Norfolk Power Platform User Group - a community founded by Duncan Boyne for Power Platform enthusiasts in Norwich and the surrounding area." />
-</svelte:head>
+<Seo
+	title="Norfolk Power Platform User Group — Duncan Boyne"
+	description="The Norfolk Power Platform User Group - a community founded by Duncan Boyne for Power Platform enthusiasts in Norwich and the surrounding area."
+	path="/user-group"
+/>
 
 <!-- ══ HERO — poster cover ═════════════════════════════════════════════ -->
 <section class="band band--cream ug-hero">

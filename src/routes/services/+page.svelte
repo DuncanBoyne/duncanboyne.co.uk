@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ArrowUpRight, CheckCircle } from 'lucide-svelte';
 	import Seo from '$lib/components/Seo.svelte';
+	import { STATS } from '$lib/site';
 
 	const services = [
 		{
@@ -53,12 +54,13 @@
 	const industries = ['Financial Services', 'Manufacturing', 'Distribution & Logistics', 'Professional Services', 'SME & Mid-Market'];
 	const erp = ['Dynamics 365', 'Epicor', 'InFor', 'Sage'];
 
-	// Trust signals — real, honest figures. Feed the "Evidence" and "Trust" GEO levers.
+	// Trust signals — real, honest figures (single source: $lib/site STATS).
+	// Feed the "Evidence" and "Trust" GEO levers.
 	const stats = [
-		{ value: '10 yrs', label: 'in Power BI (12 in data & IT)' },
-		{ value: '70+', label: 'organisations helped' },
-		{ value: '250+', label: 'projects delivered' },
-		{ value: '20+', label: 'talks across 3 countries' }
+		{ value: `${STATS.yearsPowerBI} yrs`, label: `in Power BI (${STATS.yearsData} in data & IT)` },
+		{ value: STATS.organisations, label: 'organisations helped' },
+		{ value: STATS.projects, label: 'projects delivered' },
+		{ value: STATS.talks, label: `talks across ${STATS.countries} countries` }
 	];
 
 	// Anonymised client outcomes — scannable, number-led, LLM-liftable.

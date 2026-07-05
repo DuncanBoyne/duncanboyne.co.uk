@@ -17,18 +17,29 @@
 	function goTo(index: number) {
 		current = index;
 	}
+
+	// Only the current slide and its neighbours are mounted, so opening a
+	// post fetches ~3 images instead of the whole slide folder (1.7–2.3 MB).
+	function isNear(i: number, cur: number, count: number) {
+		const d = Math.abs(i - cur);
+		return Math.min(d, count - d) <= 1;
+	}
 </script>
 
 <div class="carousel relative w-full rounded-xl overflow-hidden select-none" role="region" aria-label="Image carousel">
 	<div class="aspect-[4/5] bg-black">
 		{#each images as src, i}
-			<img
-				{src}
-				alt="{alt} {i + 1} of {images.length}"
-				class="absolute inset-0 w-full h-full object-contain transition-opacity duration-300"
-				class:opacity-100={i === current}
-				class:opacity-0={i !== current}
-			/>
+			{#if isNear(i, current, images.length)}
+				<img
+					{src}
+					alt="{alt} {i + 1} of {images.length}"
+					class="absolute inset-0 w-full h-full object-contain transition-opacity duration-300"
+					class:opacity-100={i === current}
+					class:opacity-0={i !== current}
+					loading={i === 0 ? 'eager' : 'lazy'}
+					decoding="async"
+				/>
+			{/if}
 		{/each}
 	</div>
 
@@ -57,7 +68,7 @@
 					class="w-2 h-2 rounded-full transition-colors {i === current ? 'bg-white' : 'bg-white/40'}"
 					on:click={() => goTo(i)}
 					aria-label="Go to slide {i + 1}"
-				/>
+				></button>
 			{/each}
 		</div>
 	{/if}

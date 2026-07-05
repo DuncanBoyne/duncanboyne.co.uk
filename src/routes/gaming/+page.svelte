@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { Gamepad2, Trophy, ChevronDown, ChevronUp } from 'lucide-svelte';
-	import { getGamingAchievements } from '$lib/supabase';
+	import Seo from '$lib/components/Seo.svelte';
 	import type { GamingAchievement } from '$lib/types';
+	import type { PageData } from './$types';
 
-	let achievements: GamingAchievement[] = [];
-	let loading = true;
-	let error: string | null = null;
+	export let data: PageData;
+	$: achievements = data.achievements;
+
 	let expandedGames: Record<string, boolean> = {};
 
 	interface GameGroup {
@@ -76,22 +76,13 @@
 		return group.achievements.slice(0, 3);
 	}
 
-	onMount(async () => {
-		try {
-			achievements = (await getGamingAchievements()) || [];
-		} catch (e) {
-			error = 'Failed to load gaming achievements. Please try again later.';
-			console.error(e);
-		} finally {
-			loading = false;
-		}
-	});
 </script>
 
-<svelte:head>
-	<title>Gaming Achievements - Duncan Boyne</title>
-	<meta name="description" content="Gaming achievements, peak ratings, and milestones from Duncan Boyne." />
-</svelte:head>
+<Seo
+	title="Gaming Achievements — Duncan Boyne"
+	description="Gaming achievements, peak ratings, and milestones from Duncan Boyne."
+	path="/gaming"
+/>
 
 <section class="py-16">
 	<div class="container-custom">
@@ -102,21 +93,7 @@
 			</p>
 		</div>
 
-		{#if loading}
-			<div role="status" aria-live="polite">
-				<span class="sr-only">Loading gaming achievements...</span>
-			</div>
-			<div class="space-y-4">
-				{#each [1, 2, 3] as _}
-					<div class="card animate-pulse p-6 space-y-3">
-						<div class="h-6 bg-border rounded w-1/4" />
-						<div class="h-4 bg-border rounded w-1/2" />
-					</div>
-				{/each}
-			</div>
-		{:else if error}
-			<p class="text-center text-muted py-12">{error}</p>
-		{:else if achievements.length === 0}
+		{#if achievements.length === 0}
 			<div class="text-center py-12 bg-surface rounded-xl border border-border">
 				<Gamepad2 class="w-12 h-12 text-accent/30 mx-auto mb-4" aria-hidden="true" />
 				<p class="text-muted">No gaming achievements yet.</p>

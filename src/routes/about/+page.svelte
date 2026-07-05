@@ -59,7 +59,7 @@
 			<div class="portrait-col">
 				<div class="portrait-wrap">
 					<div class="portrait-accent"></div>
-					<img src="/headshot.png" alt="Duncan Boyne" class="portrait-img" />
+					<img src="/headshot.webp" alt="Duncan Boyne" class="portrait-img" width="660" height="702" fetchpriority="high" />
 				</div>
 				<div class="social-links">
 					{#each social as { href, icon: Icon, label, handle }}

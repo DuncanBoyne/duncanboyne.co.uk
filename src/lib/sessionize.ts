@@ -49,11 +49,15 @@ export async function getSessionizeData(): Promise<SessionizeResponse> {
 
 export async function getSessionizeEvents(): Promise<{ upcoming: SessionizeEvent[]; past: SessionizeEvent[] }> {
 	const data = await getSessionizeData();
-	const now = new Date().toISOString();
+	// Sessionize dates are zone-less midnights ('2026-07-05T00:00:00'), so an
+	// event must stay "upcoming" until the end of its last day, not its start.
+	const DAY_MS = 24 * 60 * 60 * 1000;
+	const now = Date.now();
+	const endOfEvent = (e: SessionizeEvent) => new Date(e.eventEndDate).getTime() + DAY_MS;
 	const sorted = [...data.events].sort((a, b) => a.eventStartDate.localeCompare(b.eventStartDate));
 	return {
-		upcoming: sorted.filter(e => e.eventEndDate >= now || e.eventStartDate >= now),
-		past: sorted.filter(e => e.eventEndDate < now && e.eventStartDate < now).reverse()
+		upcoming: sorted.filter(e => endOfEvent(e) > now),
+		past: sorted.filter(e => endOfEvent(e) <= now).reverse()
 	};
 }
 

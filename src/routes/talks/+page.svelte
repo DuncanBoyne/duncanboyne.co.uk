@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { getSessionizeSessions } from '$lib/sessionize';
-	import { getTalks, getFeaturedFeedback } from '$lib/supabase';
+	import { onMount } from 'svelte';
 	import { ArrowUpRight, ChevronDown } from 'lucide-svelte';
-	import { marked } from 'marked';
+	import Seo from '$lib/components/Seo.svelte';
+	import { renderMarkdown } from '$lib/markdown';
 	import type { SessionizeSession } from '$lib/sessionize';
-	import type { Talk, TalkFeedback } from '$lib/types';
+	import type { Talk } from '$lib/types';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 
 	const filterOptions = [
 		{ id: 'power-bi', label: 'Power BI', terms: ['power bi', 'dashboard', 'dax', 'deneb', 'semantic model'] },
@@ -50,20 +52,46 @@
 		openId = null;
 	}
 
-	let sessions: SessionizeSession[] = [];
-	let workshops: Talk[] = [];
-	let featuredFeedback: TalkFeedback[] = [];
 	let imageMap: Record<number, string> = {};
 	let slugMap: Record<number, string> = {};
 	let activeFilters: string[] = [];
-	let loading = true;
-	let error: string | null = null;
 	let openId: number | null = null;
 	let carouselIndex = 0;
 	let carouselTimer: ReturnType<typeof setInterval>;
+
+	$: sessions = data.sessions;
+	$: workshops = data.talks.filter((t) => t.type === 'workshop');
+	$: featuredFeedback = data.feedback;
+	$: ({ imageMap, slugMap } = buildTalkMaps(data.sessions, data.talks));
 	$: filteredSessions = activeFilters.length === 0 ? sessions : sessions.filter(sessionMatches);
 	$: filteredWorkshops = activeFilters.length === 0 ? workshops : workshops.filter(workshopMatches);
 	$: filteredTotal = filteredSessions.length + filteredWorkshops.length;
+
+	// Match Sessionize sessions to Supabase talk rows by normalized title so
+	// sessions can link to their talk page and reuse its image.
+	function buildTalkMaps(allSessions: SessionizeSession[], talks: Talk[]) {
+		const titleToImage: Record<string, string> = {};
+		const titleToSlug: Record<string, string> = {};
+		for (const t of talks) {
+			if (t.image) titleToImage[normalize(t.title)] = t.image;
+			titleToSlug[normalize(t.title)] = t.slug;
+		}
+
+		const images: Record<number, string> = {};
+		const slugs: Record<number, string> = {};
+		for (const s of allSessions) {
+			const szNorm = normalize(s.title);
+			const match = Object.entries(titleToSlug).find(([dbNorm]) =>
+				szNorm === dbNorm || szNorm.startsWith(dbNorm) || dbNorm.startsWith(szNorm)
+			);
+			if (match) slugs[s.id] = match[1];
+			const imgMatch = Object.entries(titleToImage).find(([dbNorm]) =>
+				szNorm === dbNorm || szNorm.startsWith(dbNorm) || dbNorm.startsWith(szNorm)
+			);
+			if (imgMatch) images[s.id] = imgMatch[1];
+		}
+		return { imageMap: images, slugMap: slugs };
+	}
 
 	function toggle(id: number) {
 		openId = openId === id ? null : id;
@@ -83,53 +111,19 @@
 		carouselTimer = setInterval(carouselNext, 6000);
 	}
 
-	onMount(async () => {
-		try {
-			const [sz, supabaseTalks, feedback] = await Promise.all([
-				getSessionizeSessions(),
-				getTalks(),
-				getFeaturedFeedback()
-			]);
-			featuredFeedback = feedback || [];
-			if (featuredFeedback.length > 1) {
-				carouselTimer = setInterval(carouselNext, 6000);
-			}
-			sessions = sz;
-			workshops = (supabaseTalks || []).filter(t => t.type === 'workshop');
-
-			const titleToImage: Record<string, string> = {};
-			const titleToSlug: Record<string, string> = {};
-			for (const t of (supabaseTalks || []) as Talk[]) {
-				if (t.image) titleToImage[normalize(t.title)] = t.image;
-				titleToSlug[normalize(t.title)] = t.slug;
-			}
-
-			for (const s of sessions) {
-				const szNorm = normalize(s.title);
-				const match = Object.entries(titleToSlug).find(([dbNorm]) =>
-					szNorm === dbNorm || szNorm.startsWith(dbNorm) || dbNorm.startsWith(szNorm)
-				);
-				if (match) slugMap[s.id] = match[1];
-				const imgMatch = Object.entries(titleToImage).find(([dbNorm]) =>
-					szNorm === dbNorm || szNorm.startsWith(dbNorm) || dbNorm.startsWith(szNorm)
-				);
-				if (imgMatch) imageMap[s.id] = imgMatch[1];
-			}
-		} catch (e) {
-			error = 'Failed to load talks.';
-			console.error(e);
-		} finally {
-			loading = false;
+	onMount(() => {
+		if (featuredFeedback.length > 1) {
+			carouselTimer = setInterval(carouselNext, 6000);
 		}
+		return () => clearInterval(carouselTimer);
 	});
-
-	onDestroy(() => clearInterval(carouselTimer));
 </script>
 
-<svelte:head>
-	<title>Speaking — Duncan Boyne</title>
-	<meta name="description" content="Conference talks and workshops by Duncan Boyne on Power BI, data visualization, and the Power Platform." />
-</svelte:head>
+<Seo
+	title="Speaking — Duncan Boyne"
+	description="Conference talks and workshops by Duncan Boyne on Power BI, data visualization, and the Power Platform."
+	path="/talks"
+/>
 
 <!-- ══ HERO — poster cover ═════════════════════════════════════════════ -->
 <section class="band band--cream tk-hero">
@@ -195,17 +189,7 @@
 		<span class="b-shape b-circle tk-list-disc"></span>
 	</div>
 	<div class="wrap">
-		{#if loading}
-			<ul class="acc-list">
-				{#each [1,2,3,4] as _}
-					<li class="acc-item skeleton">
-						<div class="sk-title"></div>
-					</li>
-				{/each}
-			</ul>
-		{:else if error}
-			<p class="msg-empty">{error}</p>
-		{:else if sessions.length === 0 && workshops.length === 0}
+		{#if sessions.length === 0 && workshops.length === 0}
 			<p class="msg-empty">No sessions found.</p>
 		{:else}
 			<div class="filter-panel">
@@ -269,7 +253,7 @@
 											</div>
 										{/if}
 										{#if session.description}
-											<div class="row-desc">{@html marked(session.description)}</div>
+											<div class="row-desc">{@html renderMarkdown(session.description)}</div>
 										{/if}
 										<div class="row-links">
 											{#if slugMap[session.id]}
@@ -295,7 +279,7 @@
 </section>
 
 <!-- ══ WORKSHOPS — surface field ════════════════════════════════════════ -->
-{#if !loading && filteredWorkshops.length > 0}
+{#if filteredWorkshops.length > 0}
 	<section class="band band--surface talks-section">
 		<div class="wrap">
 			<h2 class="phead-title workshops-title">Workshops</h2>
@@ -323,10 +307,10 @@
 										</div>
 									{/if}
 									{#if workshop.excerpt}
-										<div class="row-desc">{@html marked(workshop.excerpt)}</div>
+										<div class="row-desc">{@html renderMarkdown(workshop.excerpt)}</div>
 									{/if}
 									{#if workshop.content}
-										<div class="row-desc">{@html marked(workshop.content)}</div>
+										<div class="row-desc">{@html renderMarkdown(workshop.content)}</div>
 									{/if}
 									{#if workshop.co_host_name}
 										<p class="row-host">
@@ -458,8 +442,6 @@
 	.row-host a { color: var(--field-accent); text-decoration: none; }
 	.row-host a:hover { text-decoration: underline; }
 
-	.skeleton { padding: 1.25rem 0; display: flex; gap: 1.5rem; align-items: center; }
-	.sk-title { flex: 1; height: 1rem; background: var(--rule-soft); }
 	.msg-empty { padding: 4rem 0; color: var(--fg-muted); font-size: 1rem; }
 
 	/* ══ CTA ════════════════════════════════════════════════════════ */

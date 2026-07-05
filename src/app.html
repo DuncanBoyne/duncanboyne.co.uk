@@ -21,6 +21,10 @@
 				try {
 					var p = new URLSearchParams(location.search);
 					if (p.has('skip')) return;
+					// The intro (and its shield release) only ever mounts on the
+					// homepage — never shield deep links. Keep in lockstep with
+					// src/lib/intro/gate.ts.
+					if (location.pathname !== '/') return;
 					if (!p.has('intro')) {
 						if (localStorage.getItem('intro:seen') === '1') return;
 						if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;

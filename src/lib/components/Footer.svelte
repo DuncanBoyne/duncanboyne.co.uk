@@ -58,7 +58,7 @@
 				<a href="/blog">Blog</a>
 				<a href="/about">About</a>
 				<a href="/contact">Contact</a>
-				<a href="/?intro">Replay intro</a>
+				<a href="/?intro" data-sveltekit-reload>Replay intro</a>
 			</nav>
 
 			<!-- Brand logo -->

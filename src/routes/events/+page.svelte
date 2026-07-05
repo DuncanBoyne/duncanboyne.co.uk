@@ -1,41 +1,25 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { getEvents } from '$lib/supabase';
 	import { ArrowUpRight, ExternalLink, ChevronDown } from 'lucide-svelte';
-	import type { Event } from '$lib/types';
+	import Seo from '$lib/components/Seo.svelte';
+	import { formatDate } from '$lib/format';
+	import type { PageData } from './$types';
 
-	let upcomingEvents: Event[] = [];
-	let pastEvents: Event[] = [];
-	let loading = true;
-	let error: string | null = null;
+	export let data: PageData;
+	$: upcomingEvents = data.upcomingEvents;
+	$: pastEvents = data.pastEvents;
+
 	let openId: number | null = null;
 
 	function toggle(id: number) {
 		openId = openId === id ? null : id;
 	}
-
-	onMount(async () => {
-		try {
-			const [upcoming, past] = await Promise.all([getEvents(true), getEvents(false)]);
-			upcomingEvents = upcoming || [];
-			pastEvents = past || [];
-		} catch (e) {
-			error = 'Failed to load events.';
-			console.error(e);
-		} finally {
-			loading = false;
-		}
-	});
-
-	function formatDate(d: string) {
-		return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-	}
 </script>
 
-<svelte:head>
-	<title>Events — Duncan Boyne</title>
-	<meta name="description" content="Upcoming and past speaking engagements, workshops, and community events by Duncan Boyne." />
-</svelte:head>
+<Seo
+	title="Events — Duncan Boyne"
+	description="Upcoming and past speaking engagements, workshops, and community events by Duncan Boyne."
+	path="/events"
+/>
 
 <!-- ══ HERO — poster cover ═════════════════════════════════════════════ -->
 <section class="band band--cream ev-hero">
@@ -59,17 +43,6 @@
 		<span class="b-shape b-circle ev-list-disc"></span>
 	</div>
 	<div class="wrap">
-		{#if loading}
-			<ul class="acc-list">
-				{#each [1,2,3,4] as _}
-					<li class="acc-item skeleton">
-						<span class="sk-date"></span><span class="sk-title"></span>
-					</li>
-				{/each}
-			</ul>
-		{:else if error}
-			<p class="msg-empty">{error}</p>
-		{:else}
 			<!-- Upcoming -->
 			<div class="events-group">
 				<p class="group-label">Upcoming</p>
@@ -150,7 +123,6 @@
 					</ul>
 				</div>
 			{/if}
-		{/if}
 	</div>
 </section>
 
@@ -217,7 +189,6 @@
 	.row-desc { font-size: 0.875rem; color: var(--fg-muted); line-height: 1.6; max-width: 60ch; margin: 0.25rem 0 0.75rem; }
 	.row-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.25rem; }
 
-	.skeleton { padding: 1.25rem 0; display: flex; gap: 1.5rem; align-items: center; }
 	.msg-empty { padding: 3rem 0; color: var(--fg-muted); font-size: 1rem; }
 
 	/* ══ CTA ════════════════════════════════════════════════════════ */

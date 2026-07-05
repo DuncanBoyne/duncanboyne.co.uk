@@ -1,37 +1,22 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { getVideos } from '$lib/supabase';
 	import { ArrowUpRight, Play } from 'lucide-svelte';
-	import type { Video } from '$lib/types';
+	import Seo from '$lib/components/Seo.svelte';
+	import { formatDate } from '$lib/format';
+	import type { PageData } from './$types';
 
-	let videos: Video[] = [];
-	let loading = true;
-	let error: string | null = null;
-
-	onMount(async () => {
-		try {
-			videos = (await getVideos()) || [];
-		} catch (e) {
-			error = 'Failed to load videos.';
-			console.error(e);
-		} finally {
-			loading = false;
-		}
-	});
-
-	function formatDate(d: string) {
-		return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-	}
+	export let data: PageData;
+	$: videos = data.videos;
 
 	function ytThumb(id: string) {
 		return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
 	}
 </script>
 
-<svelte:head>
-	<title>Videos — Duncan Boyne</title>
-	<meta name="description" content="Power BI tutorials, tips, and walkthroughs from Duncan Boyne." />
-</svelte:head>
+<Seo
+	title="Videos — Duncan Boyne"
+	description="Power BI tutorials, tips, and walkthroughs from Duncan Boyne."
+	path="/videos"
+/>
 
 <!-- ══ HERO — poster cover ═════════════════════════════════════════════ -->
 <section class="band band--cream vd-hero">
@@ -55,17 +40,7 @@
 		<span class="b-shape b-circle vd-list-disc"></span>
 	</div>
 	<div class="wrap">
-		{#if loading}
-			<ul class="row-list">
-				{#each [1,2,3,4,5] as _}
-					<li class="row-item skeleton">
-						<span class="sk-date"></span><span class="sk-title"></span>
-					</li>
-				{/each}
-			</ul>
-		{:else if error}
-			<p class="msg-empty">{error}</p>
-		{:else if videos.length === 0}
+		{#if videos.length === 0}
 			<p class="msg-empty">No videos yet. Check back soon.</p>
 		{:else}
 			<ul class="row-list">

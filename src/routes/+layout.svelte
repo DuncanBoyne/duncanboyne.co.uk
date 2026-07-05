@@ -5,6 +5,7 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import IntroLoader from '$lib/intro/IntroLoader.svelte';
 	import { introActive } from '$lib/intro/stores';
+	import { SITE_URL, STATS } from '$lib/site';
 
 	$: isHome = $page.url.pathname === '/';
 
@@ -13,22 +14,21 @@
 	const jsonLd = {
 		'@context': 'https://schema.org',
 		'@type': 'ProfessionalService',
-		'@id': 'https://www.duncanboyne.co.uk/#business',
+		'@id': `${SITE_URL}/#business`,
 		name: 'Duncan Boyne — Power BI Consultant',
 		description:
 			'Power BI consultant serving Norfolk, Norwich and Great Yarmouth. Dashboards, automation and data & AI readiness for finance and manufacturing teams.',
-		url: 'https://www.duncanboyne.co.uk',
-		image: 'https://www.duncanboyne.co.uk/headshot.png',
+		url: SITE_URL,
+		image: `${SITE_URL}/headshot.png`,
 		email: 'duncan@duncanboyne.co.uk',
 		slogan: 'A dashboard nobody opens is just an expensive screenshot.',
 		founder: {
 			'@type': 'Person',
 			name: 'Duncan Boyne',
 			jobTitle: 'Power BI & Data Consultant',
-			description:
-				'Freelance / fractional Power BI consultant with 10 years in Power BI and 12 in data and IT, across 250+ projects for 70+ organisations. Founder of the Norfolk Power Platform User Group and the East of England Power Platform Summit; 20+ talks delivered across 3 countries.',
-			url: 'https://www.duncanboyne.co.uk/about',
-			image: 'https://www.duncanboyne.co.uk/headshot.png',
+			description: `Freelance / fractional Power BI consultant with ${STATS.yearsPowerBI} years in Power BI and ${STATS.yearsData} in data and IT, across ${STATS.projects} projects for ${STATS.organisations} organisations. Founder of the Norfolk Power Platform User Group and the East of England Power Platform Summit; ${STATS.talks} talks delivered across ${STATS.countries} countries.`,
+			url: `${SITE_URL}/about`,
+			image: `${SITE_URL}/headshot.png`,
 			sameAs: [
 				'https://www.linkedin.com/in/duncanboyne',
 				'https://github.com/DuncanBoyne',

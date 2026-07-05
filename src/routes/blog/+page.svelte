@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { Rss, ArrowUpRight } from 'lucide-svelte';
-	import { getPosts } from '$lib/supabase';
-	import type { Post } from '$lib/types';
+	import Seo from '$lib/components/Seo.svelte';
+	import { formatDate } from '$lib/format';
+	import type { PageData } from './$types';
 
-	let posts: Post[] = [];
-	let loading = true;
-	let error: string | null = null;
+	export let data: PageData;
+	$: posts = data.posts;
+
 	let activeFilter = 'all';
 
 	const filters = [
@@ -21,30 +21,16 @@
 		{ value: 'Conferences', label: 'Conferences' }
 	];
 
-	onMount(async () => {
-		try {
-			posts = (await getPosts()) || [];
-		} catch (e) {
-			error = 'Failed to load blog posts.';
-			console.error(e);
-		} finally {
-			loading = false;
-		}
-	});
-
 	$: filteredPosts = activeFilter === 'all'
 		? posts
 		: posts.filter(p => p.tags?.includes(activeFilter));
-
-	function formatDate(d: string) {
-		return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-	}
 </script>
 
-<svelte:head>
-	<title>Writing — Duncan Boyne</title>
-	<meta name="description" content="Insights, tutorials, and thoughts on Power BI, data visualization, and business intelligence." />
-</svelte:head>
+<Seo
+	title="Writing — Duncan Boyne"
+	description="Insights, tutorials, and thoughts on Power BI, data visualization, and business intelligence."
+	path="/blog"
+/>
 
 <!-- ══ HERO — poster cover ═════════════════════════════════════════════ -->
 <section class="band band--cream bl-hero">
@@ -92,17 +78,7 @@
 		<span class="b-shape b-circle bl-posts-disc"></span>
 	</div>
 	<div class="wrap">
-		{#if loading}
-			<ul class="row-list">
-				{#each [1,2,3,4,5,6] as _}
-					<li class="row-item skeleton">
-						<span class="sk-date"></span><span class="sk-title"></span>
-					</li>
-				{/each}
-			</ul>
-		{:else if error}
-			<p class="msg-empty">{error}</p>
-		{:else if filteredPosts.length === 0}
+		{#if filteredPosts.length === 0}
 			<p class="msg-empty">No posts in this category.</p>
 		{:else}
 			<ul class="row-list">

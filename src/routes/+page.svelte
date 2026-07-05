@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { invalidateAll } from '$app/navigation';
 	import { ArrowUpRight } from 'lucide-svelte';
-	import { getPosts, getEvents } from '$lib/supabase';
-	import type { Post, Event } from '$lib/types';
 	import Seo from '$lib/components/Seo.svelte';
+	import { formatDate } from '$lib/format';
 	import { featuredProjects, projectKindLabel } from '$lib/projects';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 
 	const services = [
 		{ num: '01', title: 'Power BI & Data Visualisation', desc: 'Dashboards people actually open. Built around the two questions you really have, not the twelve an imagined power user might ask.' },
@@ -12,50 +15,18 @@
 		{ num: '03', title: 'AI Readiness', desc: "AI is only as good as the data under it. So before the shiny part, the unglamorous part: clean it, connect it, make it trustworthy. (Yes, that's the bit nobody sells you.)" }
 	];
 
-	let posts: Post[] = [];
-	let events: Event[] = [];
-	let postsLoading = true;
-	let eventsLoading = true;
-	let postsError = false;
-	let eventsError = false;
 	let ready = false;
 
-	// Fetched independently so one failing band never blanks the other.
-	async function loadPosts() {
-		postsLoading = true;
-		postsError = false;
-		try {
-			posts = (await getPosts(4)) || [];
-		} catch (e) {
-			postsError = true;
-			console.error('Failed to load posts', e);
-		} finally {
-			postsLoading = false;
-		}
-	}
-
-	async function loadEvents() {
-		eventsLoading = true;
-		eventsError = false;
-		try {
-			events = ((await getEvents(true)) || []).slice(0, 3);
-		} catch (e) {
-			eventsError = true;
-			console.error('Failed to load events', e);
-		} finally {
-			eventsLoading = false;
-		}
-	}
+	// A null band means its build/nav-time fetch failed; the band shows its
+	// error state with a retry that re-runs the load.
+	$: posts = data.posts ?? [];
+	$: postsError = data.posts === null;
+	$: events = data.events ?? [];
+	$: eventsError = data.events === null;
 
 	onMount(() => {
 		setTimeout(() => { ready = true; }, 60);
-		loadPosts();
-		loadEvents();
 	});
-
-	function formatDate(d: string) {
-		return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-	}
 </script>
 
 <Seo
@@ -83,7 +54,7 @@
 				</h1>
 			</div>
 			<div class="cell cell--geo geo-cell-1" aria-hidden="true"><span class="geo geo-quarter geo-gold"></span></div>
-			<div class="cell cell--portrait"><img src="/headshot.png" alt="Duncan Boyne" class="portrait-img" /></div>
+			<div class="cell cell--portrait"><img src="/headshot.webp" alt="Duncan Boyne" class="portrait-img" width="660" height="702" fetchpriority="high" /></div>
 			<div class="cell cell--geo geo-cell-2" aria-hidden="true"><span class="geo geo-tri geo-red"></span></div>
 			<div class="cell cell--tag">
 				<p class="tagline">Your data has a story.<br><strong>Let's tell it properly.</strong></p>
@@ -140,16 +111,10 @@
 			</div>
 		</header>
 
-		{#if postsLoading}
-			<ul class="row-list" aria-hidden="true">
-				{#each [1, 2, 3, 4] as n}
-					<li class="row-item skeleton"><span class="sk-date"></span><span class="sk-title"></span></li>
-				{/each}
-			</ul>
-		{:else if postsError}
+		{#if postsError}
 			<div class="msg-block" role="alert">
 				<p class="msg-empty">That didn't load. Probably me, not you.</p>
-				<button type="button" class="msg-retry" on:click={loadPosts}>Try again <ArrowUpRight class="ico" /></button>
+				<button type="button" class="msg-retry" on:click={() => invalidateAll()}>Try again <ArrowUpRight class="ico" /></button>
 			</div>
 		{:else if posts.length === 0}
 			<p class="msg-empty">Nothing published yet — the first piece is coming.</p>
@@ -227,16 +192,10 @@
 			</div>
 		</header>
 
-		{#if eventsLoading}
-			<ol class="timeline" aria-hidden="true">
-				{#each [1, 2, 3] as n}
-					<li class="tl-node skeleton-node"><span class="tl-dot"></span><span class="sk-date"></span><span class="sk-title"></span></li>
-				{/each}
-			</ol>
-		{:else if eventsError}
+		{#if eventsError}
 			<div class="msg-block" role="alert">
 				<p class="msg-empty">Couldn't pull the calendar just now.</p>
-				<button type="button" class="msg-retry" on:click={loadEvents}>Try again <ArrowUpRight class="ico" /></button>
+				<button type="button" class="msg-retry" on:click={() => invalidateAll()}>Try again <ArrowUpRight class="ico" /></button>
 			</div>
 		{:else if events.length === 0}
 			<p class="msg-empty">Nothing on the calendar right now. Past talks live in <a href="/talks" class="msg-link">the archive</a> — or <a href="/contact" class="msg-link">invite me to your event</a>.</p>

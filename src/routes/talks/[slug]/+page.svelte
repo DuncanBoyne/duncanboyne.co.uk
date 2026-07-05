@@ -1,56 +1,29 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
 	import { ArrowLeft, ExternalLink, Globe } from 'lucide-svelte';
 	import Linkedin from '$lib/components/icons/Linkedin.svelte';
-	import { marked } from 'marked';
-	import { getTalkBySlug, getEventsByTalkSlug, getFeedbackByTalkSlug } from '$lib/supabase';
-	import type { Talk, Event, TalkFeedback } from '$lib/types';
+	import Seo from '$lib/components/Seo.svelte';
+	import { renderMarkdown } from '$lib/markdown';
+	import { formatDate } from '$lib/format';
+	import type { PageData } from './$types';
 
-	let talk: Talk | null = null;
-	let upcomingEvents: Event[] = [];
-	let pastEvents: Event[] = [];
-	let feedback: TalkFeedback[] = [];
-	let loading = true;
-	let error: string | null = null;
+	export let data: PageData;
 
-	$: slug = $page.params.slug ?? '';
+	// Partition against the time of viewing, not the time of the last build.
+	const now = new Date().toISOString();
 
-	function formatDate(dateString: string): string {
-		return new Date(dateString).toLocaleDateString('en-GB', {
-			weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
-		});
-	}
-
-	onMount(async () => {
-		try {
-			const [talkData, events, feedbackData] = await Promise.all([
-				getTalkBySlug(slug),
-				getEventsByTalkSlug(slug),
-				getFeedbackByTalkSlug(slug)
-			]);
-			talk = talkData;
-			feedback = feedbackData || [];
-			const now = new Date().toISOString();
-			upcomingEvents = (events || []).filter(e => e.event_date >= now);
-			pastEvents = (events || []).filter(e => e.event_date < now);
-		} catch (e) {
-			error = 'Failed to load this talk.';
-			console.error(e);
-		} finally {
-			loading = false;
-		}
-	});
+	$: talk = data.talk;
+	$: feedback = data.feedback;
+	$: upcomingEvents = data.events.filter(e => e.event_date >= now);
+	$: pastEvents = data.events.filter(e => e.event_date < now);
 </script>
 
-<svelte:head>
-	{#if talk}
-		<title>{talk.title} — Duncan Boyne</title>
-		<meta name="description" content={talk.excerpt || ''} />
-	{:else}
-		<title>Talk — Duncan Boyne</title>
-	{/if}
-</svelte:head>
+<Seo
+	title="{talk.title} — Duncan Boyne"
+	description={talk.excerpt || talk.title}
+	path="/talks/{talk.slug}"
+	image={talk.image || '/headshot.png'}
+	type="article"
+/>
 
 <article>
 	<!-- Back nav -->
@@ -63,19 +36,6 @@
 	</div>
 
 	<div class="wrap">
-		{#if loading}
-			<div class="skeleton-wrap">
-				<div class="sk-badge"></div>
-				<div class="sk-title"></div>
-				{#each [1,2,3,4] as _}<div class="sk-line"></div>{/each}
-			</div>
-		{:else if error || !talk}
-			<div class="not-found">
-				<h1>Talk Not Found</h1>
-				<p>{error || 'This talk could not be found.'}</p>
-				<a href="/talks" class="btn-primary"><ArrowLeft class="w-4 h-4 mr-2" /> Back to Speaking</a>
-			</div>
-		{:else}
 			<header class="post-header">
 				<p class="post-eyebrow">
 					<span class="post-type"><span class="type-mark" aria-hidden="true"></span>{talk.type === 'workshop' ? 'Workshop' : 'Talk'}</span>
@@ -106,7 +66,7 @@
 			{/if}
 
 			<div class="talk-content">
-				{@html marked(talk.content)}
+				{@html renderMarkdown(talk.content)}
 			</div>
 
 			<!-- Upcoming events -->
@@ -120,7 +80,7 @@
 								<div class="event-info">
 									<span class="event-title">{event.title}</span>
 									<span class="event-meta">
-										{formatDate(event.event_date)}
+										{formatDate(event.event_date, 'weekday')}
 										{#if event.location}<span class="event-sep">·</span>{event.location}{/if}
 									</span>
 								</div>
@@ -148,7 +108,7 @@
 								<div class="event-info">
 									<span class="event-title">{event.title}</span>
 									<span class="event-meta">
-										{formatDate(event.event_date)}
+										{formatDate(event.event_date, 'weekday')}
 										{#if event.location}<span class="event-sep">·</span>{event.location}{/if}
 									</span>
 								</div>
@@ -192,7 +152,6 @@
 			<div class="post-footer">
 				<a href="/talks" class="back-link"><ArrowLeft class="w-4 h-4" /> Back to Speaking</a>
 			</div>
-		{/if}
 	</div>
 </article>
 
@@ -249,18 +208,6 @@
 	.event-meta { font-size: 0.78rem; color: var(--color-muted); }
 	.event-sep { margin: 0 0.35rem; opacity: 0.4; }
 	.event-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
-
-	/* Skeleton */
-	.skeleton-wrap { padding: clamp(2rem, 5vw, 4rem) 0; display: flex; flex-direction: column; gap: 1rem; }
-	.sk-badge { height: 1.5rem; background: var(--color-border); width: 5rem; }
-	.sk-title { height: 2.5rem; background: var(--color-border); width: 75%; }
-	.sk-line { height: 0.875rem; background: var(--color-border); }
-	.sk-line:nth-child(odd) { width: 90%; }
-
-	/* Not found */
-	.not-found { padding: clamp(3rem, 8vw, 6rem) 0; }
-	.not-found h1 { font-size: 1.5rem; font-weight: 900; margin: 0 0 0.75rem; }
-	.not-found p { color: var(--color-muted); margin: 0 0 2rem; }
 
 	/* Feedback */
 	.feedback-block { margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid var(--color-border); }

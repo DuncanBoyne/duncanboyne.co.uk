@@ -1,72 +1,23 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
 	import { ArrowLeft, Calendar, Star, BookOpen } from 'lucide-svelte';
-	import { getBookBySlug, getBooks } from '$lib/supabase';
-	import { marked } from 'marked';
-	import type { Book } from '$lib/types';
+	import Seo from '$lib/components/Seo.svelte';
+	import { renderMarkdown } from '$lib/markdown';
+	import { formatDate } from '$lib/format';
+	import { bookStatusLabels, bookStatusColors } from '$lib/labels';
+	import type { PageData } from './$types';
 
-	const renderer = new marked.Renderer();
-	const originalLinkRenderer = renderer.link.bind(renderer);
-	renderer.link = function (args) {
-		const html = originalLinkRenderer(args);
-		return html.replace('<a ', '<a target="_blank" rel="noopener noreferrer" ');
-	};
-	marked.setOptions({ renderer });
-
-	let book: Book | null = null;
-	let relatedBooks: Book[] = [];
-	let loading = true;
-	let error: string | null = null;
-
-	const statusLabels: Record<string, string> = {
-		want_to_read: 'Want to Read',
-		reading: 'Reading',
-		completed: 'Completed'
-	};
-
-	const statusColors: Record<string, string> = {
-		want_to_read: 'bg-info/20 text-info',
-		reading: 'bg-warning/20 text-warning',
-		completed: 'bg-success/20 text-success'
-	};
-
-	$: slug = $page.params.slug ?? '';
-
-	onMount(async () => {
-		try {
-			book = await getBookBySlug(slug);
-			if (book && book.tags && book.tags.length > 0) {
-				const allBooks = (await getBooks()) || [];
-				relatedBooks = allBooks.filter(
-					b => b.id !== book!.id && b.tags.some(t => book!.tags.includes(t))
-				).slice(0, 3);
-			}
-		} catch (e) {
-			error = 'Failed to load this book. It may not exist.';
-			console.error(e);
-		} finally {
-			loading = false;
-		}
-	});
-
-	function formatDate(dateString: string): string {
-		return new Date(dateString).toLocaleDateString('en-GB', {
-			day: 'numeric',
-			month: 'long',
-			year: 'numeric'
-		});
-	}
+	export let data: PageData;
+	$: book = data.book;
+	$: relatedBooks = data.relatedBooks;
 </script>
 
-<svelte:head>
-	{#if book}
-		<title>{book.title} - Reading List - Duncan Boyne</title>
-		<meta name="description" content={book.excerpt || `${book.title} by ${book.author}`} />
-	{:else}
-		<title>Book - Duncan Boyne</title>
-	{/if}
-</svelte:head>
+<Seo
+	title="{book.title} — Reading List — Duncan Boyne"
+	description={book.excerpt || `${book.title} by ${book.author}`}
+	path="/reading/{book.slug}"
+	image={book.image || '/headshot.png'}
+	type="article"
+/>
 
 <article class="py-16">
 	<div class="container-custom max-w-4xl">
@@ -78,34 +29,10 @@
 			Back to Reading List
 		</a>
 
-		{#if loading}
-			<div class="animate-pulse space-y-4">
-				<div class="h-8 bg-border rounded w-3/4" />
-				<div class="h-4 bg-border rounded w-1/3" />
-				<div class="flex space-x-4">
-					<div class="h-4 bg-border rounded w-32" />
-					<div class="h-4 bg-border rounded w-24" />
-				</div>
-				<div class="space-y-2">
-					{#each [1, 2, 3, 4, 5] as _}
-						<div class="h-4 bg-border rounded" />
-					{/each}
-				</div>
-			</div>
-		{:else if error || !book}
-			<div class="text-center py-12">
-				<h1 class="text-2xl font-bold text-text mb-4">Book Not Found</h1>
-				<p class="text-muted mb-8">{error || 'This book could not be found.'}</p>
-				<a href="/reading" class="btn-primary">
-					<ArrowLeft class="w-4 h-4 mr-2" />
-					Back to Reading List
-				</a>
-			</div>
-		{:else}
 			<header class="mb-8">
 				<div class="flex items-center gap-3 mb-4">
-					<span class="text-xs font-medium px-2 py-1 rounded-full {statusColors[book.status]}">
-						{statusLabels[book.status]}
+					<span class="text-xs font-medium px-2 py-1 rounded-full {bookStatusColors[book.status]}">
+						{bookStatusLabels[book.status]}
 					</span>
 					{#if book.rating}
 						<div class="flex items-center text-sm text-accent">
@@ -129,13 +56,13 @@
 					{#if book.started_at}
 						<div class="flex items-center">
 							<Calendar class="w-4 h-4 mr-2" aria-hidden="true" />
-							Started {formatDate(book.started_at)}
+							Started {formatDate(book.started_at, 'long')}
 						</div>
 					{/if}
 					{#if book.finished_at}
 						<div class="flex items-center">
 							<Calendar class="w-4 h-4 mr-2" aria-hidden="true" />
-							Finished {formatDate(book.finished_at)}
+							Finished {formatDate(book.finished_at, 'long')}
 						</div>
 					{/if}
 				</div>
@@ -161,7 +88,7 @@
 
 			{#if book.review}
 				<div class="blog-content">
-					{@html marked(book.review)}
+					{@html renderMarkdown(book.review)}
 				</div>
 			{:else if book.excerpt}
 				<p class="text-lg text-muted">{book.excerpt}</p>
@@ -195,7 +122,6 @@
 					</div>
 				</div>
 			{/if}
-		{/if}
 	</div>
 </article>
 

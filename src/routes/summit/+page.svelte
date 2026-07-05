@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Calendar, MapPin, Users, Target, Sparkles, ExternalLink, ArrowUpRight } from 'lucide-svelte';
 	import Linkedin from '$lib/components/icons/Linkedin.svelte';
+	import Seo from '$lib/components/Seo.svelte';
 
 	const audiences = [
 		'Business Leaders',
@@ -35,10 +36,11 @@
 	];
 </script>
 
-<svelte:head>
-	<title>East of England Summit - Duncan Boyne</title>
-	<meta name="description" content="The East of England Summit — a free, community-focused Power Platform conference founded by Duncan Boyne, bringing together Power Platform enthusiasts in Norwich." />
-</svelte:head>
+<Seo
+	title="East of England Summit — Duncan Boyne"
+	description="The East of England Summit — a free, community-focused Power Platform conference founded by Duncan Boyne, bringing together Power Platform enthusiasts in Norwich."
+	path="/summit"
+/>
 
 <!-- ══ HERO — poster cover ═════════════════════════════════════════════ -->
 <section class="band band--cream sm-hero">

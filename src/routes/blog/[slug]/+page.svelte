@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
-	import { ArrowLeft, Calendar, Clock } from 'lucide-svelte';
-	import { getPostBySlug } from '$lib/supabase';
-	import { marked } from 'marked';
+	import { ArrowLeft } from 'lucide-svelte';
 	import Carousel from '$lib/components/Carousel.svelte';
+	import Seo from '$lib/components/Seo.svelte';
+	import { renderMarkdown } from '$lib/markdown';
+	import { formatDate } from '$lib/format';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
+	$: post = data.post;
 
 	const carousels: Record<string, string[]> = {
 		'ai-adoption-power-bi': Array.from({ length: 8 }, (_, i) => `/carousel-ai-power-bi/slide-${i + 1}.png`),
@@ -12,43 +15,6 @@
 		'linkedin-analytics-dashboard-claude-code': Array.from({ length: 10 }, (_, i) => `/carousel-linkedin-dashboard/slide-${i + 1}.png`),
 		'deneb-two-measure-heatmap': Array.from({ length: 10 }, (_, i) => `/carousel-deneb-two-measure-heatmap/slide-${i + 1}.png`)
 	};
-	import type { Post } from '$lib/types';
-
-	const renderer = new marked.Renderer();
-	const originalLinkRenderer = renderer.link.bind(renderer);
-	renderer.link = function (args) {
-		const html = originalLinkRenderer(args);
-		return html.replace('<a ', '<a target="_blank" rel="noopener noreferrer" ');
-	};
-	marked.setOptions({ renderer });
-
-	let post: Post | null = null;
-	let loading = true;
-	let error: string | null = null;
-
-	$: slug = $page.params.slug;
-
-	onMount(async () => {
-		try {
-			if (!slug) {
-				throw new Error('Missing blog slug');
-			}
-			post = await getPostBySlug(slug);
-		} catch (e) {
-			error = 'Failed to load this blog post. It may not exist.';
-			console.error(e);
-		} finally {
-			loading = false;
-		}
-	});
-
-	function formatDate(dateString: string): string {
-		return new Date(dateString).toLocaleDateString('en-US', {
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric'
-		});
-	}
 
 	function estimateReadingTime(content: string): number {
 		const wordsPerMinute = 200;
@@ -57,14 +23,13 @@
 	}
 </script>
 
-<svelte:head>
-	{#if post}
-		<title>{post.title} - Duncan Boyne</title>
-		<meta name="description" content={post.excerpt || ''} />
-	{:else}
-		<title>Blog Post - Duncan Boyne</title>
-	{/if}
-</svelte:head>
+<Seo
+	title="{post.title} — Duncan Boyne"
+	description={post.excerpt || post.title}
+	path="/blog/{post.slug}"
+	image={post.featured_image || '/headshot.png'}
+	type="article"
+/>
 
 <article>
 	<!-- Back link -->
@@ -77,58 +42,43 @@
 	</div>
 
 	<div class="wrap">
-		{#if loading}
-			<div class="skeleton-wrap">
-				<div class="sk-title"></div>
-				<div class="sk-meta"></div>
-				<div class="sk-img"></div>
-				{#each [1,2,3,4,5] as _}<div class="sk-line"></div>{/each}
-			</div>
-		{:else if error || !post}
-			<div class="not-found">
-				<h1>Post Not Found</h1>
-				<p>{error || 'This blog post could not be found.'}</p>
-				<a href="/blog" class="btn-primary"><ArrowLeft class="w-4 h-4 mr-2" /> Back to Writing</a>
-			</div>
-		{:else}
-			<header class="post-header">
-				<p class="post-eyebrow">
-					{#if post.published_at}
-						<time datetime={post.published_at}>{formatDate(post.published_at)}</time>
-					{/if}
-					<span class="meta-sep" aria-hidden="true"></span>
-					<span>{estimateReadingTime(post.content)} min read</span>
-				</p>
-				<h1 class="post-title">{post.title}</h1>
-				{#if post.tags?.length}
-					<div class="post-tags">
-						{#each post.tags as tag}
-							<span class="tag">{tag}</span>
-						{/each}
-					</div>
+		<header class="post-header">
+			<p class="post-eyebrow">
+				{#if post.published_at}
+					<time datetime={post.published_at}>{formatDate(post.published_at, 'long')}</time>
 				{/if}
-			</header>
-
-			{#if post.featured_image && !carousels[post.slug]}
-				<div class="post-image">
-					<img src={post.featured_image} alt={post.title} />
+				<span class="meta-sep" aria-hidden="true"></span>
+				<span>{estimateReadingTime(post.content)} min read</span>
+			</p>
+			<h1 class="post-title">{post.title}</h1>
+			{#if post.tags?.length}
+				<div class="post-tags">
+					{#each post.tags as tag}
+						<span class="tag">{tag}</span>
+					{/each}
 				</div>
 			{/if}
+		</header>
 
-			{#if carousels[post.slug]}
-				<div class="post-image">
-					<Carousel images={carousels[post.slug]} alt={post.title} />
-				</div>
-			{/if}
-
-			<div class="blog-content">
-				{@html marked(post.content)}
-			</div>
-
-			<div class="post-footer">
-				<a href="/blog" class="back-link"><ArrowLeft class="w-4 h-4" /> Back to Writing</a>
+		{#if post.featured_image && !carousels[post.slug]}
+			<div class="post-image">
+				<img src={post.featured_image} alt={post.title} />
 			</div>
 		{/if}
+
+		{#if carousels[post.slug]}
+			<div class="post-image">
+				<Carousel images={carousels[post.slug]} alt={post.title} />
+			</div>
+		{/if}
+
+		<div class="blog-content">
+			{@html renderMarkdown(post.content)}
+		</div>
+
+		<div class="post-footer">
+			<a href="/blog" class="back-link"><ArrowLeft class="w-4 h-4" /> Back to Writing</a>
+		</div>
 	</div>
 </article>
 
@@ -205,19 +155,6 @@
 
 	/* Footer */
 	.post-footer { padding: 3rem 0 4rem; border-top: 1px solid var(--color-border); margin-top: 3rem; }
-
-	/* Skeleton */
-	.skeleton-wrap { padding: clamp(2rem, 5vw, 4rem) 0; display: flex; flex-direction: column; gap: 1rem; }
-	.sk-title { height: 2.5rem; background: var(--color-border); width: 75%; }
-	.sk-meta { height: 0.75rem; background: var(--color-border); width: 40%; }
-	.sk-img { aspect-ratio: 16/9; background: var(--color-border); margin: 1rem 0; }
-	.sk-line { height: 0.875rem; background: var(--color-border); }
-	.sk-line:nth-child(odd) { width: 90%; }
-
-	/* Not found */
-	.not-found { padding: clamp(3rem, 8vw, 6rem) 0; }
-	.not-found h1 { font-size: 1.5rem; font-weight: 900; margin: 0 0 0.75rem; }
-	.not-found p { color: var(--color-muted); margin: 0 0 2rem; }
 
 	.blog-content {
 		font-size: 1.125rem;
