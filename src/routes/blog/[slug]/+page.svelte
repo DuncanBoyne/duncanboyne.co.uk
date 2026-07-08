@@ -278,4 +278,28 @@
 		border: 1px solid var(--color-border);
 		box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 	}
+
+	/* Inline Power BI embeds. Mirrors the .embed pattern on /reports/[slug] so a
+	   report inside a post is interactive in place, not a link to a new tab.
+	   Wrap the iframe in <div class="pbi-embed"> in the post markdown. */
+	.blog-content :global(.pbi-embed) {
+		width: 100%;
+		aspect-ratio: 600 / 373.5;
+		margin: 2rem 0;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+	}
+	.blog-content :global(.pbi-embed iframe) {
+		width: 100%;
+		height: 100%;
+		display: block;
+		border: 0;
+	}
+
+	/* Any other embed pasted without the wrapper still scales instead of
+	   overflowing the column on mobile. */
+	.blog-content :global(iframe) {
+		display: block;
+		max-width: 100%;
+	}
 </style>
