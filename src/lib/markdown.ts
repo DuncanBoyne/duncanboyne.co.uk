@@ -9,7 +9,7 @@ import DOMPurify from 'isomorphic-dompurify';
 // Embeds are opt-in, one host at a time. DOMPurify drops <iframe> by default,
 // so a post can only embed something served from a host named here. Anything
 // else (including a javascript: or http: src) is removed before render.
-const ALLOWED_IFRAME_HOSTS = new Set(['app.powerbi.com']);
+const ALLOWED_IFRAME_HOSTS = new Set(['app.powerbi.com', 'www.youtube.com', 'www.youtube-nocookie.com']);
 
 DOMPurify.addHook('uponSanitizeElement', (node, data) => {
 	if (data.tagName !== 'iframe') return;
