@@ -42,8 +42,8 @@
 	const socialLinks = [
 		{ href: 'https://github.com/DuncanBoyne', icon: Github, label: 'GitHub', username: '@DuncanBoyne' },
 		{ href: 'https://linkedin.com/in/duncanboyne', icon: Linkedin, label: 'LinkedIn', username: 'in/duncanboyne' },
-		{ href: 'https://youtube.com/@PowerBIKindaGuy', icon: Youtube, label: 'YouTube', username: '@PowerBIKindaGuy' },
-		{ href: 'https://youtube.com/@PowerPlatformClinic', icon: Youtube, label: 'YouTube', username: '@PowerPlatformClinic' }
+		{ href: 'https://www.youtube.com/@PowerBIButWhy', icon: Youtube, label: 'YouTube', username: '@PowerBIButWhy' },
+		{ href: 'https://www.youtube.com/@TheAIStrategyPlaybook', icon: Youtube, label: 'YouTube', username: '@TheAIStrategyPlaybook' }
 	];
 </script>
 

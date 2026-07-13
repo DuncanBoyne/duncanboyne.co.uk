@@ -93,10 +93,10 @@
 	</div>
 	<div class="wrap">
 		<p class="cta-pre">Want more?</p>
-		<a href="https://youtube.com/@PowerBIKindaGuy" target="_blank" rel="noopener noreferrer" class="cta-main">
+		<a href="https://www.youtube.com/@PowerBIButWhy" target="_blank" rel="noopener noreferrer" class="cta-main">
 			YouTube <ArrowUpRight class="cta-ico" />
 		</a>
-		<p class="cta-sub">Subscribe to <strong>@PowerBIKindaGuy</strong> for Power BI tips and tutorials.</p>
+		<p class="cta-sub">Subscribe to <strong>@PowerBIButWhy</strong> for Power BI tips and tutorials.</p>
 	</div>
 </section>
 

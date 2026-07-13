@@ -8,7 +8,8 @@
 	const social = [
 		{ href: 'https://github.com/DuncanBoyne', icon: Github, label: 'GitHub', handle: '@DuncanBoyne' },
 		{ href: 'https://linkedin.com/in/duncanboyne', icon: Linkedin, label: 'LinkedIn', handle: 'in/duncanboyne' },
-		{ href: 'https://youtube.com/@PowerBIKindaGuy', icon: Youtube, label: 'YouTube', handle: '@PowerBIKindaGuy' }
+		{ href: 'https://www.youtube.com/@PowerBIButWhy', icon: Youtube, label: 'YouTube', handle: '@PowerBIButWhy' },
+		{ href: 'https://www.youtube.com/@TheAIStrategyPlaybook', icon: Youtube, label: 'YouTube', handle: '@TheAIStrategyPlaybook' }
 	];
 
 	const skills = [

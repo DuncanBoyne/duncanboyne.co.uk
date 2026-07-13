@@ -32,7 +32,8 @@
 			sameAs: [
 				'https://www.linkedin.com/in/duncanboyne',
 				'https://github.com/DuncanBoyne',
-				'https://www.youtube.com/@PowerBIKindaGuy',
+				'https://www.youtube.com/@PowerBIButWhy',
+				'https://www.youtube.com/@TheAIStrategyPlaybook',
 				'https://sessionize.com/duncan-boyne'
 			]
 		},
@@ -59,7 +60,8 @@
 		sameAs: [
 			'https://www.linkedin.com/in/duncanboyne',
 			'https://github.com/DuncanBoyne',
-			'https://www.youtube.com/@PowerBIKindaGuy'
+			'https://www.youtube.com/@PowerBIButWhy',
+			'https://www.youtube.com/@TheAIStrategyPlaybook'
 		]
 	};
 
